@@ -1,0 +1,456 @@
+<title>K-φ Academy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: sticky header, then one view at a time. Lesson view = contents rail + reading column, like a ledger beside a journal. */
+:root {
+  --bg: #0B0F1A; --surface: #121829; --surface-2: #1A2238; --line: #27314B;
+  --fg: #EDEFF5; --muted: #98A1B7; --hi: #E6FF00; --accent: #E6FF00; --accent-ink: #0B0F1A;
+  --ok: #46D79A; --bad: #FF7A7A; --ok-bg: rgba(70,215,154,.12); --bad-bg: rgba(255,122,122,.12);
+  --shadow: 0 1px 0 rgba(255,255,255,.03), 0 12px 32px rgba(0,0,0,.35);
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --bg: #F3F5FA; --surface: #FFFFFF; --surface-2: #E9EDF5; --line: #D5DBE7;
+  --fg: #121A2E; --muted: #56607A; --hi: #22307A; --accent: #E6FF00; --accent-ink: #121A2E;
+  --ok: #11845A; --bad: #C23A3A; --ok-bg: rgba(17,132,90,.10); --bad-bg: rgba(194,58,58,.10);
+  --shadow: 0 1px 2px rgba(18,26,46,.06), 0 8px 24px rgba(18,26,46,.06); color-scheme: light; } }
+:root[data-theme="light"] {
+  --bg: #F3F5FA; --surface: #FFFFFF; --surface-2: #E9EDF5; --line: #D5DBE7;
+  --fg: #121A2E; --muted: #56607A; --hi: #22307A; --accent: #E6FF00; --accent-ink: #121A2E;
+  --ok: #11845A; --bad: #C23A3A; --ok-bg: rgba(17,132,90,.10); --bad-bg: rgba(194,58,58,.10);
+  --shadow: 0 1px 2px rgba(18,26,46,.06), 0 8px 24px rgba(18,26,46,.06); color-scheme: light; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--f-body); margin: 0; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+a { color: var(--hi); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, summary:focus-visible, label:focus-within { outline: 2px solid var(--hi); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.gut { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1160px; margin: 0 auto; }
+
+/* header */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 20px; min-height: 60px; flex-wrap: wrap; }
+.mark { display: flex; align-items: baseline; gap: 10px; text-decoration: none; color: var(--fg); }
+.mark b { font: 800 22px/1 var(--f-display); color: var(--hi); letter-spacing: -.01em; }
+.mark span { font: 600 13px/1 var(--f-display); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.top nav { display: flex; gap: 18px; margin-left: auto; font-size: 14px; }
+.top nav a { color: var(--muted); text-decoration: none; }
+.top nav a[aria-current="page"], .top nav a:hover { color: var(--fg); }
+
+main { padding-block: 32px 72px; }
+.eyebrow { font: 600 12px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--muted); max-width: 62ch; font-size: 18px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--f-mono); padding: 5px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.chip.live { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font: 600 15px/1 var(--f-body); padding: 12px 18px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; text-decoration: none; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.note { font-size: 14px; color: var(--muted); }
+
+/* catalogue */
+.hero { display: grid; gap: 18px; padding-block: 8px 28px; }
+.hero h1 { font-size: clamp(34px, 6vw, 56px); font-weight: 800; letter-spacing: -.02em; max-width: 18ch; }
+.hero h1 em { font-style: normal; color: var(--hi); }
+.resume { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.resume .bar { flex: 1 1 200px; }
+.bar { height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+section.block { display: grid; gap: 16px; margin-top: 44px; }
+section.block > header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+section.block h2 { font-size: 24px; }
+.paths { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; align-items: start; }
+.path { display: grid; gap: 10px; align-content: start; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.path.star { border-color: var(--hi); }
+.path h3 { font-size: 19px; }
+.path p { margin: 0; color: var(--muted); font-size: 14px; }
+.path .seq { display: flex; flex-wrap: wrap; gap: 6px; }
+.path .cred { font: 500 13px/1.3 var(--f-mono); color: var(--hi); }
+.courses { display: grid; gap: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface); }
+.crow { display: grid; grid-template-columns: 56px minmax(0,1fr) auto; gap: 16px; align-items: center; padding: 16px 18px; text-decoration: none; color: inherit; border-top: 1px solid var(--line); }
+.crow:first-child { border-top: 0; }
+.crow:hover { background: var(--surface-2); }
+.crow .code { font: 700 22px/1 var(--f-mono); color: var(--hi); }
+.crow h3 { font-size: 18px; }
+.crow p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; counter-reset: s; }
+.steps li { list-style: none; padding: 16px; border-left: 2px solid var(--hi); background: var(--surface); border-radius: 0 12px 12px 0; }
+.steps li::before { counter-increment: s; content: "0" counter(s); display: block; font: 600 12px/1 var(--f-mono); color: var(--muted); margin-bottom: 8px; }
+.steps { padding: 0; margin: 0; }
+.steps b { display: block; font-family: var(--f-display); font-size: 16px; margin-bottom: 4px; }
+.steps span { color: var(--muted); font-size: 14px; }
+
+/* course page */
+.course-head { display: grid; gap: 14px; }
+.course-head h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 800; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; color: var(--muted); }
+.facts b { color: var(--fg); font-weight: 600; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 28px; margin-top: 28px; align-items: start; }
+.outcomes { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.chapters { display: grid; gap: 12px; }
+.chapter { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden; }
+.chapter summary { display: flex; align-items: center; gap: 14px; padding: 14px 18px; cursor: pointer; list-style: none; }
+.chapter summary::-webkit-details-marker { display: none; }
+.chapter summary .code { font: 600 14px/1 var(--f-mono); color: var(--hi); width: 30px; }
+.chapter summary h3 { font-size: 17px; flex: 1; min-width: 0; }
+.chapter summary .count { font: 500 13px/1 var(--f-mono); color: var(--muted); }
+.lrow { display: grid; grid-template-columns: 22px 52px minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 11px 18px; border-top: 1px solid var(--line); text-decoration: none; color: inherit; font-size: 15px; }
+a.lrow:hover { background: var(--surface-2); }
+.lrow .c { font: 500 13px/1 var(--f-mono); color: var(--muted); }
+.lrow .m { font: 500 12px/1 var(--f-mono); color: var(--muted); }
+.lrow.off { color: var(--muted); }
+.tick { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; }
+.tick.done { background: var(--accent); border-color: transparent; }
+.tick.done::after { content: ""; width: 8px; height: 4px; border: 2px solid var(--accent-ink); border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -1px); }
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 80px); }
+.panel { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 18px; display: grid; gap: 12px; }
+.panel h3 { font-size: 16px; }
+.panel p { margin: 0; font-size: 14px; color: var(--muted); }
+
+/* lesson player */
+.player { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 36px; align-items: start; }
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 76px); max-height: calc(100vh - 100px); overflow: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.rail .rhead { padding: 14px 16px; border-bottom: 1px solid var(--line); display: grid; gap: 8px; }
+.rail .rhead a { font: 600 15px/1.2 var(--f-display); color: var(--fg); text-decoration: none; }
+.rail .rch { padding: 10px 16px 4px; font: 600 11px/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.rail a.ri { display: grid; grid-template-columns: 18px minmax(0,1fr); gap: 10px; align-items: start; padding: 7px 16px; font-size: 14px; line-height: 1.35; color: var(--muted); text-decoration: none; }
+.rail a.ri:hover { color: var(--fg); }
+.rail a.ri[aria-current="page"] { color: var(--fg); background: var(--surface-2); box-shadow: inset 2px 0 0 var(--hi); }
+.rail .tick { width: 16px; height: 16px; margin-top: 1px; }
+.rail .rfoot { border-top: 1px solid var(--line); margin-top: 8px; padding: 10px 0; }
+.mobile-toc { display: none; }
+.lesson { display: grid; gap: 22px; max-width: 760px; }
+.lesson .crumb { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
+.lesson h1 { font-size: clamp(28px, 4.4vw, 40px); font-weight: 700; letter-spacing: -.01em; }
+.objective { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 12px; align-items: baseline; padding: 14px 16px; border-radius: 12px; background: var(--surface-2); }
+.objective .eyebrow { color: var(--hi); }
+.video { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid var(--line);
+  background: radial-gradient(120% 90% at 20% 10%, rgba(230,255,0,.10), transparent 55%), linear-gradient(160deg, #141C33, #0B0F1A); display: grid; place-items: center; }
+.video .play { width: 64px; height: 64px; border-radius: 50%; background: #E6FF00; display: grid; place-items: center; }
+.video .play::after { content: ""; border-left: 18px solid #0B0F1A; border-top: 11px solid transparent; border-bottom: 11px solid transparent; margin-left: 5px; }
+.video .vlab { position: absolute; left: 16px; bottom: 14px; font: 500 13px/1 var(--f-mono); color: #C9CFDE; }
+.prose { font-size: 17px; line-height: 1.7; }
+.prose > * { margin: 0 0 16px; }
+.prose h3 { font-size: 19px; margin-top: 8px; }
+.prose ul, .prose ol { padding-left: 22px; }
+.prose li { margin: 4px 0; }
+.prose strong { color: var(--fg); font-weight: 600; }
+.tablewrap { overflow-x: auto; }
+.prose table { border-collapse: collapse; width: 100%; font-size: 15px; }
+.prose th, .prose td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.prose th { font: 600 12px/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.try { display: grid; gap: 12px; padding: 18px; border-radius: 14px; border: 1px dashed var(--hi); }
+.try .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.keys { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.keys li { display: grid; grid-template-columns: 24px minmax(0,1fr); gap: 8px; }
+.keys li::before { content: "→"; color: var(--hi); font-family: var(--f-mono); }
+.res { display: flex; flex-wrap: wrap; gap: 8px; }
+.check { display: grid; gap: 16px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.q { display: grid; gap: 10px; }
+.q p { margin: 0; font-weight: 600; }
+.opts { display: grid; gap: 8px; }
+.opt { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; font-size: 15px; }
+.opt input { accent-color: var(--hi); }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-bg); }
+.why { font-size: 14px; color: var(--muted); margin: 0; }
+.pager { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 10px; border-top: 1px solid var(--line); }
+.progress-line { display: flex; align-items: center; gap: 12px; font: 500 13px/1 var(--f-mono); color: var(--muted); }
+.progress-line .bar { flex: 1; }
+
+/* exam + report */
+.tasks { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.rule { padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.rule b { display: block; font: 700 20px/1.1 var(--f-display); color: var(--hi); }
+.rule span { font-size: 13px; color: var(--muted); }
+.report { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden; }
+.report .rh { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--line); font: 500 13px/1.4 var(--f-mono); color: var(--muted); }
+.rline { display: grid; grid-template-columns: 70px minmax(0,1fr); gap: 14px; padding: 12px 18px; border-top: 1px solid var(--line); font-size: 15px; }
+.rline:first-of-type { border-top: 0; }
+.st { font: 600 12px/1 var(--f-mono); padding: 5px 0; text-align: center; border-radius: 6px; height: fit-content; }
+.st.pass { color: var(--ok); background: var(--ok-bg); }
+.st.fail { color: var(--bad); background: var(--bad-bg); }
+.rline small { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+/* certificate */
+.cert { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); padding: clamp(22px, 5vw, 44px); display: grid; gap: 18px; max-width: 760px; }
+.aurora { position: absolute; inset: 0 0 auto; height: 6px;
+  background: linear-gradient(90deg, transparent, #6B4CFF, #18D2C4, #7BFF7A, #E6FF00, transparent); background-size: 220% 100%; animation: sweep 2.4s ease-out 1 both; }
+@keyframes sweep { from { background-position: 100% 0; } to { background-position: 0% 0; } }
+@media (prefers-reduced-motion: reduce) { .aurora { animation: none; } }
+.cert .holder { font: 800 clamp(28px, 5vw, 40px)/1.1 var(--f-display); }
+.cert dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin: 0; }
+.cert dt { font: 600 11px/1.2 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.cert dd { margin: 4px 0 0; font-weight: 600; }
+.valid { display: inline-flex; gap: 8px; align-items: center; font: 600 13px/1 var(--f-mono); color: var(--ok); background: var(--ok-bg); padding: 7px 10px; border-radius: 99px; width: fit-content; }
+.valid::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+.sample { font: 600 11px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border: 1px dashed var(--line); padding: 6px 8px; border-radius: 6px; width: fit-content; }
+.flash { font-size: 14px; color: var(--hi); }
+
+@media (max-width: 900px) {
+  .two { grid-template-columns: 1fr; }
+  .side { position: static; }
+  .player { grid-template-columns: 1fr; gap: 18px; }
+  .rail { display: none; }
+  .mobile-toc { display: block; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .mobile-toc summary { padding: 12px 14px; cursor: pointer; font-weight: 600; }
+  .mobile-toc .rail-in a.ri { display: grid; grid-template-columns: 18px minmax(0,1fr); gap: 10px; padding: 7px 14px; font-size: 14px; color: var(--muted); text-decoration: none; }
+  .mobile-toc .rail-in a.ri[aria-current="page"] { color: var(--fg); background: var(--surface-2); }
+  .mobile-toc .rch { padding: 8px 14px 2px; font: 600 11px/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .crow { grid-template-columns: 40px minmax(0,1fr); }
+  .crow .chip { grid-column: 2; justify-self: start; }
+  .lrow { grid-template-columns: 22px 44px minmax(0,1fr); }
+  .lrow .m { display: none; }
+}
+</style>
+
+<header class="top gut"><div class="wrap">
+  <a class="mark" href="#home"><b>K-φ</b><span>Academy</span></a>
+  <nav aria-label="Main">
+    <a href="#home" data-nav="home">Catalogue</a>
+    <a href="#course-foundation" data-nav="learn">My learning</a>
+    <a href="#certificate-sample" data-nav="cert">Verify</a>
+  </nav>
+</div></header>
+<main class="gut"><div class="wrap" id="view"></div></main>
+
+<script>
+const DATA = /*__DATA__*/null;
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const slug = code => "lesson-" + code.toLowerCase().replace(/\./g, "-");
+const course = id => DATA.courses.find(c => c.id === id);
+const OPEN = DATA.courses.filter(c => c.status === "available");
+const lessonsOf = c => c.chapters.flatMap(ch => ch.lessons.map(l => ({ ...l, ch, c })));
+const ALL = OPEN.flatMap(lessonsOf);
+const flat = lessonsOf(course("foundation"));
+
+/* progress: a per-viewer convenience, kept in this browser only */
+let done = new Set();
+try { done = new Set(JSON.parse(localStorage.getItem("kphi-academy-done") || "[]")); } catch (e) {}
+const save = () => { try { localStorage.setItem("kphi-academy-done", JSON.stringify([...done])); } catch (e) {} };
+const pct = (c = course("foundation")) => { const ls = lessonsOf(c); return Math.round(100 * ls.filter(l => done.has(l.code)).length / ls.length); };
+const nextUp = (c = course("foundation")) => { const ls = lessonsOf(c); return ls.find(l => !done.has(l.code)) || ls[ls.length - 1]; };
+const current = () => OPEN.find(c => pct(c) > 0 && pct(c) < 100) || OPEN.find(c => pct(c) < 100) || OPEN[0];
+const tick = code => `<span class="tick ${done.has(code) ? "done" : ""}" aria-label="${done.has(code) ? "Completed" : "Not started"}"></span>`;
+
+function home() {
+  const cc = current(), p = pct(cc), n = nextUp(cc);
+  const resume = DATA.courses.some(c => c.status === "available" && pct(c) > 0)
+    ? `<div class="resume"><div><div class="eyebrow">Continue</div><b>${esc(n.code)} · ${esc(n.title)}</b></div>
+        <div class="bar" aria-label="${esc(cc.title)} progress ${p}%"><i style="width:${p}%"></i></div>
+        <span class="mono note">${p}% of ${esc(cc.title)}</span><a class="btn primary" href="#${slug(n.code)}">Resume</a></div>`
+    : `<div class="resume"><div><div class="eyebrow">Start here</div><b>F1.1 · ${esc(flat[0].title)}</b></div>
+        <span class="note">Foundation takes about two hours and is required for every other course.</span>
+        <a class="btn primary" href="#${slug(flat[0].code)}">Start Foundation</a></div>`;
+  const paths = DATA.paths.map(pa => `
+    <article class="path ${pa.id === "consultant" ? "star" : ""}">
+      <div class="eyebrow">${esc(pa.hours)}</div><h3>${esc(pa.title)}</h3><p>${esc(pa.who)}</p>
+      <div class="seq">${pa.courses.map(c => `<span class="chip">${esc(course(c).code)} ${esc(course(c).title)}</span>`).join("")}</div>
+      <div class="cred">${esc(pa.credential)}</div>
+    </article>`).join("");
+  const rows = DATA.courses.map(c => `
+    <a class="crow" href="#course-${c.id}">
+      <span class="code">${esc(c.code)}</span>
+      <div><h3>${esc(c.title)}</h3><p>${esc(c.summary)}</p></div>
+      ${c.status === "available" ? `<span class="chip live">Open · ${esc(c.duration.replace("About ", ""))}</span>` : `<span class="chip">In preparation</span>`}
+    </a>`).join("");
+  return `
+  <div class="hero">
+    <div class="eyebrow">FP&amp;A · Cash · Build</div>
+    <h1>Learn K-φ on a live tenant. <em>Get certified by the checker.</em></h1>
+    <p class="lede">Courses for client finance teams and the consultants who implement K-φ. Every exam is a real task on a tenant of your own, graded automatically against an independent answer key.</p>
+    ${resume}
+  </div>
+  <section class="block"><header><h2>Paths</h2><span class="note">Each path ends with a credential.</span></header><div class="paths">${paths}</div></section>
+  <section class="block"><header><h2>Courses</h2><span class="note">Open for the pilot: ${OPEN.map(c => esc(c.title)).join(", ")}. The others follow.</span></header><div class="courses">${rows}</div></section>
+  <section class="block"><header><h2>How certification works</h2></header>
+    <ol class="steps">
+      <li><b>Learn</b><span>Short lessons, each with a video, the text, and one thing to try in your lab.</span></li>
+      <li><b>Practise</b><span>Your lab is a copy of Halden Trading, a fictional trading group. Reset it any time.</span></li>
+      <li><b>Take the exam</b><span>A fresh tenant, a brief, any tools you like, including any LLM. 72 hours.</span></li>
+      <li><b>Get verified</b><span>The checker grades what is in the tenant. Pass, and your certificate gets a public verify page.</span></li>
+    </ol>
+  </section>`;
+}
+
+function courseView(id) {
+  const c = course(id);
+  if (!c) return home();
+  const open = c.status === "available";
+  const chapters = c.chapters.map((ch, i) => `
+    <details class="chapter" ${i === 0 || !open ? "open" : ""}>
+      <summary><span class="code">${esc(ch.code)}</span><h3>${esc(ch.title)}</h3><span class="count">${ch.lessons.length} lessons</span></summary>
+      ${ch.lessons.map(l => open
+        ? `<a class="lrow" href="#${slug(l.code)}">${tick(l.code)}<span class="c">${esc(l.code)}</span><span>${esc(l.title)}</span><span class="m">${l.minutes} min</span></a>`
+        : `<div class="lrow off"><span class="tick"></span><span class="c">${esc(l.code)}</span><span>${esc(l.title)}</span><span class="m">soon</span></div>`).join("")}
+      ${open && ch.check ? `<div class="lrow off"><span></span><span class="c">✓</span><span>Self-check, ${ch.check.length} questions</span><span class="m">ungraded</span></div>` : ""}
+    </details>`).join("");
+  const n = open ? nextUp(c) : null, p = open ? pct(c) : 0;
+  return `
+  <div class="course-head">
+    <div class="crumb note"><a href="#home">Catalogue</a> / Course ${esc(c.code)}</div>
+    <h1>${esc(c.title)}</h1>
+    <p class="lede">${esc(c.summary)}</p>
+    <div class="facts"><span><b>${esc(c.duration)}</b></span><span>For: <b>${esc(c.audience)}</b></span><span>Prerequisite: <b>${esc(c.prereq)}</b></span><span>Badge: <b>${esc(c.badge)}</b></span></div>
+  </div>
+  <div class="two">
+    <div class="chapters">
+      ${c.outcomes ? `<div class="panel"><h3>You will be able to</h3><ul class="outcomes">${c.outcomes.map(o => `<li>${esc(o)}</li>`).join("")}</ul></div>` : ""}
+      ${chapters}
+    </div>
+    <aside class="side">
+      ${open ? `<div class="panel"><h3>Your progress</h3><div class="bar"><i style="width:${p}%"></i></div><p class="mono">${p}% · next: ${esc(n.code)}</p><a class="btn primary" href="#${slug(n.code)}">${p ? "Resume" : "Start course"}</a></div>
+      <div class="panel"><h3>Lab</h3><p>${esc(c.lab)}</p><button class="btn" data-lab>Open lab</button><p class="flash" hidden data-labmsg>Your lab opens with your pilot invitation.</p></div>
+      <div class="panel"><h3>Exam</h3><p>One task on a fresh tenant, graded by the checker. Three attempts, 24 hours apart.</p><a class="btn" href="#exam-${c.id}">See the exam</a></div>`
+      : `<div class="panel"><h3>In preparation</h3><p>The chapters are set; lessons are being written and recorded. Foundation is open now and is the prerequisite.</p><a class="btn primary" href="#course-foundation">Go to Foundation</a></div>`}
+    </aside>
+  </div>`;
+}
+
+function railItems(c) {
+  return c.chapters.map(ch => `<div class="rch">${esc(ch.code)} · ${esc(ch.title)}</div>` +
+    ch.lessons.map(l => `<a class="ri" href="#${slug(l.code)}" data-code="${esc(l.code)}">${tick(l.code)}<span><span class="mono">${esc(l.code)}</span> ${esc(l.title)}</span></a>`).join("")).join("") +
+    `<div class="rfoot"><a class="ri" href="#exam-${c.id}"><span class="tick"></span><span>${esc(c.exam.title)}</span></a></div>`;
+}
+
+function lessonView(code) {
+  const hit = ALL.find(l => l.code === code);
+  if (!hit) return courseView("foundation");
+  const c = hit.c, ls = lessonsOf(c), i = ls.findIndex(l => l.code === code);
+  const l = ls[i], prev = ls[i - 1], next = ls[i + 1];
+  const last = l.ch.lessons[l.ch.lessons.length - 1].code === l.code;
+  const check = last && l.ch.check ? `
+    <section class="check" aria-label="Chapter self-check">
+      <div><div class="eyebrow">Self-check · ${esc(l.ch.code)} · ungraded</div><h3 style="margin-top:6px">Before you move on</h3></div>
+      ${l.ch.check.map((q, qi) => `<div class="q" data-q="${qi}"><p>${qi + 1}. ${esc(q.q)}</p><div class="opts">${q.options.map((o, oi) =>
+        `<label class="opt" for="q-${esc(l.ch.code)}-${qi}-${oi}"><input type="radio" id="q-${esc(l.ch.code)}-${qi}-${oi}" name="q-${esc(l.ch.code)}-${qi}" value="${oi}"> ${esc(o)}</label>`).join("")}</div>
+        <p class="why" hidden></p></div>`).join("")}
+    </section>` : "";
+  const p = pct(c);
+  return `
+  <div class="player">
+    <nav class="rail" aria-label="Course contents"><div class="rhead"><a href="#course-${c.id}">${esc(c.title)}</a><div class="bar"><i style="width:${p}%"></i></div><span class="mono note">${p}% complete</span></div>${railItems(c)}</nav>
+    <article class="lesson">
+      <details class="mobile-toc"><summary>Course contents · ${p}%</summary><div class="rail-in">${railItems(c)}</div></details>
+      <div class="crumb"><a href="#course-${c.id}">${esc(c.title)}</a> / ${esc(l.ch.code)} ${esc(l.ch.title)} <span class="chip">${esc(l.code)}</span><span class="chip">${l.minutes} min</span></div>
+      <h1>${esc(l.title)}</h1>
+      <div class="objective"><span class="eyebrow">Objective</span><span>${esc(l.objective)}</span></div>
+      <div class="video" role="img" aria-label="Lesson video, in production"><span class="play"></span><span class="vlab">Video in production · ${Math.max(2, Math.min(4, Math.round(l.minutes / 2.5)))} min</span></div>
+      <div class="prose">${l.read.replace(/<table>/g, '<div class="tablewrap"><table>').replace(/<\/table>/g, "</table></div>")}</div>
+      <section class="try"><div class="eyebrow">Try it in your lab</div><div>${esc(l.try)}</div>
+        <div class="row"><button class="btn" data-lab>Open lab</button><span class="flash" hidden data-labmsg>Your lab opens with your pilot invitation.</span></div></section>
+      <section><div class="eyebrow" style="margin-bottom:10px">Key points</div><ul class="keys">${l.points.map(k => `<li>${esc(k)}</li>`).join("")}</ul></section>
+      ${l.resources ? `<section><div class="eyebrow" style="margin-bottom:10px">Resources</div><div class="res">${l.resources.map(r => `<span class="chip">${esc(r)} · pilot</span>`).join("")}</div></section>` : ""}
+      ${check}
+      <div class="pager">
+        ${prev ? `<a class="btn" href="#${slug(prev.code)}">← ${esc(prev.code)}</a>` : `<a class="btn" href="#course-${c.id}">← Course</a>`}
+        <button class="btn primary" data-complete="${esc(l.code)}" data-next="${next ? slug(next.code) : "exam-" + c.id}">${done.has(l.code) ? "Completed · next" : "Mark complete · next"} →</button>
+      </div>
+    </article>
+  </div>`;
+}
+
+function examView(id) {
+  const c = course(id);
+  if (!c || !c.exam) return courseView(id);
+  const e = c.exam;
+  const report = e.report.map(([s, t, d]) => `<div class="rline"><span class="st ${s}">${s.toUpperCase()}</span><div>${esc(t)}<small>${esc(d)}</small></div></div>`).join("");
+  return `
+  <div class="course-head">
+    <div class="crumb note"><a href="#home">Catalogue</a> / <a href="#course-${c.id}">${esc(c.title)}</a> / Exam</div>
+    <h1>${esc(e.title)}</h1>
+    <p class="lede">${esc(e.situation)}</p>
+  </div>
+  <div class="two">
+    <div class="chapters">
+      <div class="panel"><h3>Your task</h3><ol class="tasks">${e.tasks.map(t => `<li>${esc(t)}</li>`).join("")}</ol></div>
+      <div class="panel"><h3>What the checker verifies</h3><ul class="outcomes">${e.checks.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
+        <p>One problem is hidden in the data. Finding it is part of the exam.</p></div>
+      <section class="block" style="margin-top:12px"><header><h2>What your report looks like</h2><span class="sample">Example, failed attempt</span></header>
+        <div class="report"><div class="rh"><span>Attempt 1 of 3 · ${esc(c.title)}</span><span>${e.report.filter(r => r[0] === "pass").length} of ${e.report.length} checks passed · next attempt in 24 h</span></div>${report}</div>
+      </section>
+    </div>
+    <aside class="side">
+      <div class="rules">
+        <div class="rule"><b>72 h</b><span>tenant stays open</span></div>
+        <div class="rule"><b>3</b><span>attempts, 24 h apart</span></div>
+        <div class="rule"><b>Any LLM</b><span>only the result is graded</span></div>
+      </div>
+      <div class="panel"><h3>Ready?</h3><p>Starting creates a fresh tenant with your own variant of the dataset.</p>
+        <button class="btn primary" data-start>Start exam</button><p class="flash" hidden data-startmsg>Exams open with the pilot invitation.</p></div>
+    </aside>
+  </div>`;
+}
+
+function certView() {
+  return `
+  <div class="course-head"><div class="crumb note"><a href="#home">Catalogue</a> / Verify a certificate</div>
+    <h1>Verify a certificate</h1><p class="lede">Every certificate has a public page like this one. Anyone can check that it is real, current and what it covers.</p></div>
+  <div style="margin-top:28px; display:grid; gap:14px">
+    <span class="sample">Sample certificate</span>
+    <article class="cert"><span class="aurora" aria-hidden="true"></span>
+      <div class="eyebrow">K-φ Certified · academy.k-phi.com/verify/KPA-26-0007</div>
+      <div class="holder">Alex Morgan</div>
+      <span class="valid">Valid</span>
+      <dl>
+        <div><dt>Credential</dt><dd>K-φ Certified Consultant</dd></div>
+        <div><dt>Founding Builder</dt><dd class="mono">#7</dd></div>
+        <div><dt>Platform version</dt><dd class="mono">2026.11</dd></div>
+        <div><dt>Issued</dt><dd class="mono">2026-12-04</dd></div>
+        <div><dt>Expires</dt><dd class="mono">2027-12-04</dd></div>
+        <div><dt>Checks passed</dt><dd class="mono">24 / 24</dd></div>
+      </dl>
+      <p class="note" style="margin:0">Certified builders are independent. They hold no stake in K-φ and receive no referral fees. Revenue from published extensions, if any, is disclosed here.</p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap"><button class="btn primary" data-li>Add to LinkedIn</button><button class="btn" data-copy>Copy verify link</button></div>
+      <p class="flash" hidden data-certmsg></p>
+    </article>
+  </div>`;
+}
+
+function render() {
+  const h = (location.hash || "#home").slice(1);
+  let html, nav = "home";
+  if (h.startsWith("course-")) { html = courseView(h.slice(7)); nav = "learn"; }
+  else if (h.startsWith("lesson-")) { const code = h.slice(7).toUpperCase().replace(/-/, "."); html = lessonView(code); nav = "learn"; }
+  else if (h.startsWith("exam-")) { html = examView(h.slice(5)); nav = "learn"; }
+  else if (h === "certificate-sample") { html = certView(); nav = "cert"; }
+  else html = home();
+  $("#view").innerHTML = html;
+  document.querySelectorAll("[data-nav]").forEach(a => { if (a.dataset.nav === nav) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+  const cur = h.startsWith("lesson-") ? h.slice(7).toUpperCase().replace(/-/, ".") : null;
+  document.querySelectorAll(".ri[data-code]").forEach(a => { if (a.dataset.code === cur) a.setAttribute("aria-current", "page"); });
+  window.scrollTo(0, 0);
+}
+
+document.addEventListener("click", e => {
+  const t = e.target.closest("button, input[type=radio]");
+  if (!t) return;
+  if (t.matches("[data-complete]")) { done.add(t.dataset.complete); save(); location.hash = t.dataset.next; }
+  else if (t.matches("[data-lab]")) { const m = t.parentElement.parentElement.querySelector("[data-labmsg]") || t.parentElement.querySelector("[data-labmsg]"); if (m) m.hidden = false; }
+  else if (t.matches("[data-start]")) $("[data-startmsg]").hidden = false;
+  else if (t.matches("[data-li]")) { const m = $("[data-certmsg]"); m.textContent = "In the live version, this opens LinkedIn with the certificate pre-filled."; m.hidden = false; }
+  else if (t.matches("[data-copy]")) {
+    const m = $("[data-certmsg]"), url = "https://academy.k-phi.com/verify/KPA-26-0007";
+    const ok = () => { m.textContent = "Link copied."; m.hidden = false; };
+    try { navigator.clipboard.writeText(url).then(ok, () => { m.textContent = url; m.hidden = false; }); } catch (err) { m.textContent = url; m.hidden = false; }
+  }
+  else if (t.matches("input[type=radio]")) {
+    const qEl = t.closest(".q"), ch = ALL.find(l => t.name.startsWith("q-" + l.ch.code + "-")).ch;
+    const q = ch.check[+qEl.dataset.q], pick = +t.value;
+    qEl.querySelectorAll(".opt").forEach((o, oi) => { o.classList.remove("right", "wrong"); if (oi === q.answer) o.classList.add("right"); else if (oi === pick) o.classList.add("wrong"); });
+    const w = qEl.querySelector(".why"); w.textContent = (pick === q.answer ? "Right. " : "Not quite. ") + q.why; w.hidden = false;
+  }
+});
+window.addEventListener("hashchange", render);
+render();
+</script>
