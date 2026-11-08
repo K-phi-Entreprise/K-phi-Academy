@@ -4,8 +4,8 @@ K-φ Certified Builder. One page. Each line has a proposed default; reply with t
 
 ## Names and badges
 
-1. **Programme name:** K-φ Academy. **Credential:** K-φ Certified.
-2. **Badges:** Foundation (module 0), FP&A, Cash, Build. **K-φ Certified Consultant** = Foundation + all three tracks.
+1. **Programme name:** K-φ Academy. **Credentials (decided 8 Nov):** AI-Ready Finance Practitioner and AI-Ready Finance Consultant, certified by K-φ.
+2. **Paths:** every path starts with Foundation and AI for finance. Practitioner = those two (4 h); Practitioner · FP&A, · Cash or · Build adds one course (8 h); **AI-Ready Finance Consultant** = all six courses, including Implementation (18 h).
 3. **Founding cohort:** the pilot group is numbered "Founding Builder #1 to #5". The title is permanent and carries no financial rights.
 
 ## Pass rules

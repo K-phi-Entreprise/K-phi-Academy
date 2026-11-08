@@ -3,7 +3,7 @@ from content_fpa import L, Q
 
 COURSE = {
     "id": "cash", "code": "C", "title": "Cash", "badge": "Cash", "duration": "About 4 hours", "status": "available",
-    "audience": "Treasurers, cash managers, consultants.", "prereq": "Foundation",
+    "audience": "Treasurers, cash managers, consultants.", "prereq": "Foundation, AI for finance",
     "summary": "Bank structure, categorisation, the cash position, receivables and payables, the cash forecast and payment controls.",
     "outcomes": [
         "Organise bank accounts by entity and by pool, the way treasury reads them.",
@@ -108,6 +108,25 @@ So:
 """,
               "In your lab, find one intercompany transfer and check both sides are categorised as intercompany.",
               ["For the group, intercompany is neither income nor spending.", "Categorise and match both sides.", "Note cash in transit at period end."]),
+            L("C2.4", "Rule suggestions with an assistant", 6,
+              "Use an assistant to propose categorisation rules, and review them before they run.",
+              """
+Writing categorisation rules is repetitive: look at uncategorised lines, find a pattern, write a rule. An assistant is good at finding the patterns.
+
+Export the uncategorised lines (or let a connected assistant read them through K-φ) and ask:
+
+> Here are bank lines that have no category. Group them by pattern (counterparty, reference, amount). For each group, propose a rule and a category from this list: customer receipts, supplier payments, payroll, tax, financing, intercompany, other. Show three example lines per rule and say which lines no rule covers.
+
+Then review before any rule runs:
+
+- **Too broad?** A rule matching "PAYMENT" in the reference will catch half the bank.
+- **Intercompany** must match group companies only (lesson C2.3).
+- **Payroll and tax** lines may hold personal data; share only what the task needs (lesson A4.1).
+
+You create the rules in K-φ yourself, after review. The assistant proposes; the rules you approve are what run.
+""",
+              "In your lab, ask your assistant for rule proposals on the review list, reject one that is too broad, and create the others.",
+              ["The assistant finds patterns and proposes rules.", "Review breadth, intercompany and personal data.", "You create the rules after review."]),
         ], "check": [
             Q("Which flows should rules cover first?", ["The rarest ones", "The largest and most regular", "Card payments"], 1, "Payroll, tax and the largest counterparties cover most of the volume."),
             Q("Both sides of an intercompany transfer are categorised as customer receipt and supplier payment. What is wrong in the group view?", ["Nothing", "Receipts and payments are both inflated", "The bank balance is wrong"], 1, "Money that never left the group shows as coming in and going out."),

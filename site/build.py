@@ -7,6 +7,7 @@ Outputs:
 import json, os, re, shutil, markdown
 from content_foundation import COURSE
 from content_fpa import COURSE as FPA
+from content_ai import COURSE as AI
 from content_cash import COURSE as CASH
 from content_outlines import OUTLINES, PATHS
 
@@ -19,7 +20,7 @@ def md(text):
     return markdown.markdown(text, extensions=["tables"])
 
 
-OPEN = [COURSE, FPA, CASH]
+OPEN = [COURSE, AI, FPA, CASH]
 
 
 def data():
@@ -30,12 +31,12 @@ def data():
             for l in ch["lessons"]:
                 l["read"] = md(l["read"])
         out.append(f)
-    order = ["foundation", "fpa", "cash", "build", "implementation"]
+    order = ["foundation", "ai", "fpa", "cash", "build", "implementation"]
     allc = {c["id"]: c for c in out + OUTLINES}
     return {"courses": [allc[i] for i in order], "paths": PATHS}
 
 
-DESC = "Courses and certification for K-φ: Foundation, FP&A, Cash and Build. Every exam is a real task on a live tenant, graded automatically."
+DESC = "Become an AI-Ready Finance Practitioner or Consultant, certified by K-φ. Every exam is a real task on a live tenant, graded automatically."
 HEAD = (f'<meta name="description" content="{DESC}">\n'
         '<link rel="icon" type="image/svg+xml" href="favicon.svg">\n'
         '<link rel="icon" type="image/x-icon" href="favicon.ico">\n'

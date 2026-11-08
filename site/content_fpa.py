@@ -10,7 +10,7 @@ def Q(q, options, answer, why):
 
 COURSE = {
     "id": "fpa", "code": "P", "title": "FP&A", "badge": "FP&A", "duration": "About 4 hours", "status": "available",
-    "audience": "Controllers, FP&A analysts, consultants.", "prereq": "Foundation",
+    "audience": "Controllers, FP&A analysts, consultants.", "prereq": "Foundation, AI for finance",
     "summary": "From ledger to statements, KPIs, budgets, forecasts, scenarios and valuation you can defend.",
     "outcomes": [
         "Produce statements and KPIs from the ledger and explain every figure.",
@@ -175,6 +175,25 @@ Timing and error variances do not need management action, but they must be named
 """,
               "In your lab, run budget versus actuals for the group and find the largest variance.",
               ["Compare any version with actuals.", "Name the cause: volume, price, timing or error.", "Agree a materiality threshold with the client."]),
+            L("P3.4", "Variance commentary with an assistant", 7,
+              "Let an assistant draft the commentary, and check it before it goes out.",
+              """
+Writing variance commentary every month is a good job for an assistant connected to K-φ (course A, lesson A6.1). It reads budget versus actuals through K-φ's tools and drafts the text; you check and sign.
+
+A prompt that works:
+
+> You are preparing the October variance commentary for Halden Trading's CFO. Use K-φ to get budget versus actuals for the group, October and year to date. Comment only on variances above 5% and 50,000 USD. For each, give the figure, whether it is favourable or unfavourable, and the likely cause (volume, price, timing or error). Say where you are unsure.
+
+Then check, as in lesson A5.2:
+
+- Every figure traces to K-φ.
+- **Favourable and unfavourable** are right. For costs, over budget is unfavourable; assistants get this wrong more than anything else.
+- The causes are plausible, and the ones the assistant marked as unsure are confirmed with the people who know.
+
+Save the prompt with the month's file. Next month, reuse it and compare.
+""",
+              "In your lab, have your assistant draft the commentary with the prompt above, then check every sign.",
+              ["An assistant drafts; you check and sign.", "Check favourable and unfavourable on every line.", "Reuse the same prompt each month."]),
         ], "check": [
             Q("You edit the Q2 reforecast. What happens to the budget?", ["It changes too", "Nothing", "It is deleted"], 1, "Editing a version changes only that version."),
             Q("A variance comes from an invoice booked one month late. What kind is it?", ["Volume", "Timing", "Price"], 1, "It reverses next month and needs no management action, but it must be named."),

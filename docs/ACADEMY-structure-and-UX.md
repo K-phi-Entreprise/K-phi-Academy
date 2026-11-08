@@ -1,5 +1,7 @@
 # K-φ Academy: structure and learner experience
 
+> Update 8 Nov 2026: a course A, "AI for finance" (what a model is, agents, MCP, agentic workflows, safety, verifying AI output, K-φ with AI), is now required on every path right after Foundation. Credentials are AI-Ready Finance Practitioner and AI-Ready Finance Consultant. FP&A and Cash each gained an assistant lesson (P3.4, C2.4). The live site is the reference for the current syllabus.
+
 Draft, 7 November 2026. Replaces the flat module pages as the master structure; their content moves into the lessons below.
 
 ## 1. Structure
