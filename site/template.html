@@ -45,6 +45,17 @@ h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.1
 .top nav { display: flex; gap: 18px; margin-left: auto; font-size: 14px; }
 .top nav a { color: var(--muted); text-decoration: none; }
 .top nav a[aria-current="page"], .top nav a:hover { color: var(--fg); }
+.acct { display: flex; align-items: center; gap: 10px; position: relative; }
+.acct .btn { padding: 8px 14px; font-size: 14px; }
+.acct .who { display: flex; align-items: center; gap: 8px; background: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px 4px 4px; color: var(--fg); cursor: pointer; font: 500 14px/1 var(--f-body); }
+.acct .av { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font: 700 12px/1 var(--f-mono); }
+.acct .menu { position: absolute; right: 0; top: calc(100% + 8px); min-width: 240px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 8px; display: grid; gap: 2px; z-index: 6; }
+.acct .menu .id { padding: 8px 10px 10px; border-bottom: 1px solid var(--line); margin-bottom: 4px; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.acct .menu .id b { display: block; color: var(--fg); font-size: 14px; }
+.acct .menu a, .acct .menu button { text-align: left; padding: 9px 10px; border-radius: 8px; border: 0; background: none; color: var(--fg); font: 500 14px/1.2 var(--f-body); text-decoration: none; cursor: pointer; }
+.acct .menu a:hover, .acct .menu button:hover { background: var(--surface-2); }
+.banner { margin-bottom: 18px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: 14px; }
+@media (max-width: 560px) { .top nav { order: 3; width: 100%; margin-left: 0; padding-bottom: 10px; } .acct { margin-left: auto; } .acct .who span.nm { display: none; } }
 
 main { padding-block: 32px 72px; }
 .eyebrow { font: 600 12px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
@@ -226,6 +237,7 @@ a.lrow:hover { background: var(--surface-2); }
     <a href="#course-foundation" data-nav="learn">My learning</a>
     <a href="#certificate-sample" data-nav="cert">Verify</a>
   </nav>
+  <div class="acct" id="acct" hidden></div>
 </div></header>
 <main class="gut"><div class="wrap" id="view"></div></main>
 <footer class="foot gut"><div class="wrap">
@@ -436,7 +448,9 @@ function render() {
   else if (h.startsWith("exam-")) { html = examView(h.slice(5)); nav = "learn"; }
   else if (h === "certificate-sample") { html = certView(); nav = "cert"; }
   else html = home();
-  $("#view").innerHTML = html;
+  $("#view").innerHTML = (FLASH ? `<div class="banner" role="status">${esc(FLASH)}</div>` : "") + html;
+  FLASH = "";
+  drawAccount();
   document.querySelectorAll("[data-nav]").forEach(a => { if (a.dataset.nav === nav) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
   const cur = h.startsWith("lesson-") ? h.slice(7).toUpperCase().replace(/-/, ".") : null;
   document.querySelectorAll(".ri[data-code]").forEach(a => { if (a.dataset.code === cur) a.setAttribute("aria-current", "page"); });
@@ -463,6 +477,85 @@ document.addEventListener("click", e => {
     const w = qEl.querySelector(".why"); w.textContent = (pick === q.answer ? "Right. " : "Not quite. ") + q.why; w.hidden = false;
   }
 });
-window.addEventListener("hashchange", render);
-render();
+/* ── Sign in with a K-φ account (K-phi-engine, blocks/academy) ──────────────
+   The academy is static; sign-in happens on K-φ, which sends the person back
+   with a 2-minute code in the fragment (#signin-<code>). The code becomes an
+   academy key, kept in this browser. Until the production app serves the
+   academy routes, sign-in shows only when a K-φ host is chosen: ?api=staging. */
+const AUTH_HOSTS = { prod: "https://k-phi.com", staging: "https://staging.k-phi.com", us: "https://us.k-phi.com", eu: "https://eu.k-phi.com" };
+const DEFAULT_API = null; /* becomes AUTH_HOSTS.prod once production serves /academy/signin */
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
+(function pickHost() {
+  const m = /[?&]api=([a-z]+)/.exec(location.search || "");
+  if (!m) return;
+  if (m[1] === "off") store.set("kphi-academy-api", null);
+  else if (AUTH_HOSTS[m[1]]) store.set("kphi-academy-api", AUTH_HOSTS[m[1]]);
+  try { history.replaceState(null, "", location.pathname + location.hash); } catch (e) {}
+})();
+const apiBase = () => { const v = store.get("kphi-academy-api"); return Object.values(AUTH_HOSTS).includes(v) ? v : DEFAULT_API; };
+let SESSION = null;
+try { SESSION = JSON.parse(store.get("kphi-academy-session") || "null"); } catch (e) { SESSION = null; }
+if (SESSION && (!SESSION.token || !SESSION.api || Date.parse(SESSION.expires_at || 0) < Date.now())) { SESSION = null; store.set("kphi-academy-session", null); }
+let FLASH = "";
+
+function drawAccount() {
+  const el = $("#acct"), api = apiBase();
+  if (!SESSION && !api) { el.hidden = true; el.innerHTML = ""; return; }
+  el.hidden = false;
+  if (!SESSION) {
+    el.innerHTML = `<a class="btn" href="${esc(api)}/academy/signin">Sign in</a><a class="btn primary" href="${esc(api)}/academy/signup">Sign up</a>`;
+    return;
+  }
+  const u = SESSION.user || {}, ini = (u.email || "?").slice(0, 2).toUpperCase();
+  el.innerHTML = `<button class="who" type="button" aria-haspopup="true" aria-expanded="false" data-acct><span class="av" aria-hidden="true">${esc(ini)}</span><span class="nm">${esc(u.email || "Account")}</span></button>
+    <div class="menu" role="menu" hidden>
+      <div class="id"><b>${esc(u.email || "")}</b>${esc(u.company || "")}</div>
+      <a role="menuitem" href="#course-${current().id}">My learning</a>
+      <a role="menuitem" href="${esc(SESSION.api)}/app" rel="noopener">Open K-φ</a>
+      <button role="menuitem" type="button" data-signout>Sign out</button>
+    </div>`;
+}
+
+async function finishSignIn(code) {
+  const api = apiBase() || AUTH_HOSTS.prod;
+  try {
+    const r = await fetch(api + "/api/academy/session", { method: "POST", headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: JSON.stringify({ code }) });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok || !d.token) { FLASH = d.error || "Sign-in did not complete. Try again."; return; }
+    SESSION = { token: d.token, expires_at: d.expires_at, user: d.user, api };
+    store.set("kphi-academy-session", JSON.stringify(SESSION));
+    FLASH = "Signed in as " + (d.user && d.user.email || "you") + ".";
+  } catch (e) { FLASH = "Could not reach K-φ to finish signing in. Check your connection and try again."; }
+}
+
+async function checkSession() {
+  if (!SESSION) return;
+  try {
+    const r = await fetch(SESSION.api + "/api/academy/me", { headers: { Authorization: "Bearer " + SESSION.token } });
+    if (r.status === 401) { SESSION = null; store.set("kphi-academy-session", null); FLASH = "Your academy session ended. Sign in again."; render(); return; }
+    const d = await r.json().catch(() => null);
+    if (d && d.user) { SESSION.user = d.user; store.set("kphi-academy-session", JSON.stringify(SESSION)); drawAccount(); }
+  } catch (e) { /* offline: keep the session, try again next visit */ }
+}
+
+document.addEventListener("click", e => {
+  const who = e.target.closest("[data-acct]"), menu = $("#acct .menu");
+  if (who && menu) { menu.hidden = !menu.hidden; who.setAttribute("aria-expanded", String(!menu.hidden)); return; }
+  if (e.target.closest("[data-signout]")) { SESSION = null; store.set("kphi-academy-session", null); FLASH = "Signed out of the academy."; location.hash = "home"; render(); return; }
+  if (menu && !e.target.closest("#acct")) menu.hidden = true;
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = $("#acct .menu"); if (m) m.hidden = true; } });
+
+window.addEventListener("hashchange", () => { if (!/^#signin-/.test(location.hash)) render(); else boot(); });
+async function boot() {
+  const m = /^#signin-(.+)$/.exec(location.hash || "");
+  if (m) {
+    if (m[1] === "failed") FLASH = "Sign-in did not complete. Try again.";
+    else await finishSignIn(m[1]);
+    try { history.replaceState(null, "", location.pathname + "#home"); } catch (e) { location.hash = "home"; }
+  }
+  render();
+  checkSession();
+}
+boot();
 </script>
