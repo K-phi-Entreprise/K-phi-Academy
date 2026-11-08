@@ -127,7 +127,9 @@ a.lrow:hover { background: var(--surface-2); }
 .rail .tick { width: 16px; height: 16px; margin-top: 1px; }
 .rail .rfoot { border-top: 1px solid var(--line); margin-top: 8px; padding: 10px 0; }
 .mobile-toc { display: none; }
-.lesson { display: grid; gap: 22px; max-width: 760px; }
+.lesson { display: grid; gap: 22px; max-width: 760px; min-width: 0; }
+.lesson > * { min-width: 0; }
+.res .chip { white-space: normal; line-height: 1.35; }
 .lesson .crumb { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
 .lesson h1 { font-size: clamp(28px, 4.4vw, 40px); font-weight: 700; letter-spacing: -.01em; }
 .objective { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 12px; align-items: baseline; padding: 14px 16px; border-radius: 12px; background: var(--surface-2); }
