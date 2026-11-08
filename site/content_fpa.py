@@ -198,30 +198,28 @@ Practical consequences:
             L("P4.2", "Collections and disbursements: ledger or open invoices", 7,
               "Choose the right source for cash coming in and going out.",
               """
-For two lines, the forecast lets you choose the source:
+Opening receivables and payables (cash still to collect from customers and to pay to suppliers) can come from two sources. A toggle on the forecast chooses which:
 
-- **Receivable collections** (cash from customers)
-- **Payable disbursements** (cash to suppliers)
+- **GL to cash**, the default, works from the ledger balances through your rules and payment terms. It covers every line and works for any client.
+- **Open invoices** works from the invoices still unpaid, each at its expected date. It is more precise for the coming weeks, but it needs the invoices in K-φ (lesson F3.2).
 
-**GL to cash** works from the ledger: sales and purchases are turned into cash using payment terms. It covers every line and works for any client.
+An invoice matched to a bank receipt or payment leaves the open list and the forecast; a partly paid one stays for what is left.
 
-**Open invoices** works from the actual invoices still unpaid, with their due dates. It is more precise for the coming weeks, but it only covers what has been invoiced.
-
-A common setup: open invoices for the near term, the ledger beyond. The choice is made on each rule, so you can set it per entity.
+Use open invoices when the client's invoices are complete and up to date in K-φ. If they are not, the ledger is the safer source.
 """,
-              "In your lab, set Halden Trading Inc.'s collections rule to open invoices and compare the next eight weeks.",
-              ["Two sources: ledger (GL to cash) or open invoices.", "Open invoices is more precise for the near term.", "The choice is set on each rule."]),
+              "In your lab, switch the forecast's source to open invoices and compare the next eight weeks with GL to cash.",
+              ["Two sources: ledger (GL to cash, the default) or open invoices.", "Open invoices is more precise for the near term.", "Use it only when the invoices in K-φ are complete."]),
             L("P4.3", "Run-rate assumptions, opt-in", 5,
               "Use run-rate sales without hiding the assumption.",
               """
 A forecast built only from open invoices stops when invoicing stops, which understates future collections. The fix is to add **projected new sales** based on the recent run rate.
 
-In K-φ, this is **opt-in on each collections rule**, off by default, with a short explanation beside the checkbox. Turning it on is a decision someone has to take and can explain.
+In K-φ, this is **opt-in and off by default**. Turning it on is a decision someone has to take and can explain.
 
 When you turn it on, say so in the forecast's notes: "New sales projected at the run rate of the last three months." A reader who does not know will mistake an assumption for an order book.
 """,
               "In your lab, turn on projected new sales for one entity and write the note.",
-              ["Run-rate new sales are opt-in, off by default.", "Turning it on is a decision to explain.", "Write the assumption in the forecast's notes."]),
+              ["Run-rate new sales are opt-in and off by default.", "Turning it on is a decision to explain.", "Write the assumption in the forecast's notes."]),
             L("P4.4", "Stating assumptions", 5,
               "Make every forecast readable by someone who did not build it.",
               """
@@ -241,7 +239,7 @@ The last line matters as much as the others. What a forecast leaves out is where
               ["List assumptions in plain words.", "Say what is not included.", "A forecast must be readable without its author."]),
         ], "check": [
             Q("The forecast changed overnight and no rule was edited. What changed?", ["Nothing, it is random", "An input, such as new actuals", "The theme"], 1, "With deterministic replay, only inputs or rules can move a forecast."),
-            Q("Projected new sales from the run rate are...", ["On by default", "Opt-in on each collections rule", "Not available"], 1, "They are an assumption, so they are opt-in and off by default."),
+            Q("Projected new sales from the run rate are...", ["On by default", "Opt-in, off by default", "Not available"], 1, "They are an assumption, so they are opt-in and off by default."),
             Q("Which source is more precise for the next few weeks of collections?", ["Open invoices", "The ledger", "The budget"], 0, "Open invoices carry real amounts and due dates."),
         ]},
         {"code": "P5", "title": "Scenarios", "lessons": [
@@ -359,16 +357,16 @@ If a difference stays unexplained, say so in the pack. An unexplained difference
     ],
     "exam": {
         "title": "Exam: statements, forecast and scenario",
-        "situation": "Your tenant holds Halden Trading's ledger, as at the end of the Foundation exam, and this year's budget.",
+        "situation": "Your exam tenant is a fresh copy of Halden Trading, already set up: three entities, 24 months of ledger and this year's budget.",
         "tasks": [
             "Produce the year-to-date P&L and balance sheet for the group and for each entity.",
-            "Create a version, \"Forecast Q4\", from the budget. Set the collections rule for Halden Trading Inc. to open invoices, and keep run-rate new sales off.",
+            "Create a version, \"Forecast Q4\", from the budget. Set its receivables and payables source to open invoices, and keep run-rate new sales off.",
             "Build a scenario, \"GBP down 10%\", on that version.",
             "In the submission form, give group EBITDA year to date, DSO for Halden Trading Ltd, and the scenario's effect on group cash at year end.",
         ],
         "checks": [
             "Statement totals per entity and for the group match the answer key",
-            "Version exists, rules set as asked, budget unchanged",
+            "Version exists, source set as asked, budget unchanged",
             "Scenario year-end cash differs from the version by the expected amount",
             "Submitted figures match the answer key within tolerance",
             "Seeded misclassification found and fixed at its source",

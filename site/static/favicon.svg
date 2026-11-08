@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs><linearGradient id="band" x1="0" x2="1"><stop offset="0" stop-color="#C5B358"/><stop offset=".33" stop-color="#36D6A0"/><stop offset=".66" stop-color="#534AB7"/><stop offset="1" stop-color="#E6007E"/></linearGradient></defs>
+  <rect width="512" height="512" rx="96" fill="#050509"/>
+  <rect y="492" width="512" height="20" fill="url(#band)"/>
+  <text x="256" y="372" text-anchor="middle" font-family="Inter,Arial,Helvetica,sans-serif" font-weight="700" font-size="380" fill="#E6FF00">φ</text>
+</svg>

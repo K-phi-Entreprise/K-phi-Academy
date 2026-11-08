@@ -195,6 +195,10 @@ a.lrow:hover { background: var(--surface-2); }
 .valid::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
 .sample { font: 600 11px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border: 1px dashed var(--line); padding: 6px 8px; border-radius: 6px; width: fit-content; }
 .flash { font-size: 14px; color: var(--hi); }
+.foot { border-top: 1px solid var(--line); background: var(--surface); padding-block: 22px calc(22px + env(safe-area-inset-bottom, 0px)); }
+.foot .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; font-size: 13px; color: var(--muted); }
+.foot b { color: var(--hi); font-family: var(--f-display); }
+.foot a { margin-left: auto; }
 
 @media (max-width: 900px) {
   .two { grid-template-columns: 1fr; }
@@ -222,6 +226,11 @@ a.lrow:hover { background: var(--surface-2); }
   </nav>
 </div></header>
 <main class="gut"><div class="wrap" id="view"></div></main>
+<footer class="foot gut"><div class="wrap">
+  <span><b>K-φ</b> Academy · FP&amp;A · Cash · Build</span>
+  <span>Certified builders are independent of K-φ. They hold no stake in it and receive no referral fees.</span>
+  <a href="https://k-phi.com" rel="noopener">k-phi.com</a>
+</div></footer>
 
 <script>
 const DATA = /*__DATA__*/null;
@@ -429,6 +438,7 @@ function render() {
   document.querySelectorAll("[data-nav]").forEach(a => { if (a.dataset.nav === nav) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
   const cur = h.startsWith("lesson-") ? h.slice(7).toUpperCase().replace(/-/, ".") : null;
   document.querySelectorAll(".ri[data-code]").forEach(a => { if (a.dataset.code === cur) a.setAttribute("aria-current", "page"); });
+  const learn = document.querySelector('[data-nav="learn"]'); if (learn) learn.href = "#course-" + current().id;
   window.scrollTo(0, 0);
 }
 

@@ -36,7 +36,7 @@ In a pool, one account often acts as the **header**: the account that receives t
 Set the header so that:
 
 - the pool's balance reads at a glance on the header line;
-- transfers between the header and the other accounts are recognised as movements inside the pool, not as income or spending;
+- transfers between the header and the other accounts are categorised as internal movements, never as income or spending;
 - funding needs show on the account that will actually be drawn.
 
 Ask the treasurer how the pool works in practice: zero-balancing at day end, target balances, or manual transfers. The setup should follow what the bank actually does.
@@ -126,10 +126,10 @@ Typical questions it answers:
 
 The chart always shows today's date, so actuals and forecast are clearly separated.
 
-Save the layouts the client uses every week, so nobody rebuilds them each Monday.
+Agree with the treasurer on the two or three views used every week, and use the same ones each time, so the numbers are comparable from one week to the next.
 """,
               "In your lab, build a worksheet with entities in rows, weeks in columns, and filter on customer receipts.",
-              ["Chart on top, pivot-style report below.", "Rows and columns are yours to choose.", "Save the layouts used every week."]),
+              ["Chart on top, pivot-style report below.", "Rows and columns are yours to choose.", "Use the same weekly views every time."]),
             L("C3.2", "Presenting the position", 5,
               "Give management the position in three lines.",
               """
@@ -214,7 +214,7 @@ The cash forecast brings together:
 - **Bank balances and transactions**, the starting point;
 - **Open receivables and payables**, with their due dates;
 - **The FP&A budget and ledger**, mapped to cash categories;
-- **Known movements** such as transfers and loan repayments.
+- **Known movements** the treasurer types or pastes in: a tax payment, a loan repayment, a dividend. Each has a date, a signed amount and an account, and can repeat. When the other party is a group company, K-φ adds the mirror line in that company and keeps the two linked.
 
 Each input covers a different horizon. Bank and invoices are precise for the coming weeks. The budget takes over further out.
 
@@ -236,7 +236,7 @@ Keep one rule per category and write down why it was chosen. "Payroll: budget, p
             L("C5.3", "Funding needs and overdraft windows", 7,
               "Spot when an entity will run short, and for how long.",
               """
-When the forecast goes below zero, or below a minimum the client sets, K-φ shows a **funding need**: an **overdraft window** with a start date and an end date. The end date can be open if the forecast never recovers.
+When an entity's forecast goes below zero, K-φ shows a **funding need**: an **overdraft window** with a start date and an end date. The end date can be open if the forecast never recovers.
 
 For each window, the treasurer needs three answers:
 
@@ -288,7 +288,7 @@ Review who can sign each quarter, along with the roles review. A signer who has 
     ],
     "exam": {
         "title": "Exam: position, invoices and forecast",
-        "situation": "Your tenant holds Halden Trading's ledger and budget, six bank accounts with three months of statements, and open receivables and payables.",
+        "situation": "Your exam tenant is a fresh copy of Halden Trading, already set up: three entities, the ledger and budget, six bank accounts with three months of statements, and open receivables and payables.",
         "tasks": [
             "Organise the six accounts by entity, and create one pool for the two GBP accounts with the main account as header.",
             "Categorise all transactions. Nothing may stay uncategorised.",

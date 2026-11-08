@@ -22,7 +22,7 @@ A certification path answers the third directly and helps with the second. The f
 
 ## 3. Curriculum
 
-One foundation module and three tracks. About a day and a half in total.
+One foundation module and three tracks. About 16 hours in total for the full Consultant path; 2 hours for Foundation.
 
 | Module | Covers | Hands-on task (checked automatically) |
 |---|---|---|

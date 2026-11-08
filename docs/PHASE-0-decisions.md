@@ -31,7 +31,7 @@ K-φ Certified Builder. One page. Each line has a proposed default; reply with t
 
 14. **Pilot:** free, by invitation, five consultants chosen by Vincent.
 15. **After the pilot:** free for consultants, by invite code, capped at 50. Paid for client staff (price to be set later).
-16. **Language of the LLM:** candidates use any LLM (Claude, Codex, Gemini CLI). Only the result in the tenant is graded.
+16. **Tools:** candidates use any LLM (Claude, Codex, Gemini CLI). Only the result in the tenant is graded.
 
 ## Public surface
 
@@ -48,9 +48,8 @@ K-φ Certified Builder. One page. Each line has a proposed default; reply with t
 
 The module pages describe the product as I understand it. Please confirm or correct:
 
-22. A scenario can take an FX move as a driver (module 1 exam: "GBP down 10%").
-23. The cash forecast offers a 13-week view by entity (module 2 exam).
-24. Daily bank balances are stored, so a past position can be rebuilt (module 2).
+Checked against the engine code on 8 November: scenarios carry an FX rate per scenario, the cash forecast has a 13-week view, daily balances are stored, roles are owner, admin, editor and viewer, Data sources holds bank connections, Google Sheets and variables, and the forecast has a toggle between "GL to cash" and open invoices. Still to confirm:
+
 25. A Build extension can write settlements into the Cash forecast of a given entity (module 3 exam).
 26. The Data library returns FX rates for a past date (module 3 exam, fixed as-of date).
 27. Exams need a submission form (figures and a short note) outside the tenant. Nothing like it exists yet; it is part of Phase 2.

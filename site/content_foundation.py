@@ -118,17 +118,18 @@ A wrong entity list shows up everywhere downstream: consolidated totals, interco
                     "code": "F2.1", "title": "Users and roles", "minutes": 7,
                     "objective": "Give each person the access their job needs, and no more.",
                     "read": """
-Every user has a **role**. The role decides what they can see and what they can change.
+Every user has one of four **roles**:
 
-Start from the job, not from the person's seniority:
-
-| Job | Typical need |
+| Role | Can |
 |---|---|
-| Controller preparing the close | Import and adjust ledger data, edit budgets and forecasts |
-| Treasurer | Banks, cash position, cash forecast, payments |
-| CFO | Read everything, approve sensitive changes |
-| Analyst | Read, build scenarios |
-| Builder | Work in Build, never approve their own changes |
+| Owner | Everything, including the account's governance and billing. Usually one person |
+| Admin | Manage users and settings, and change data |
+| Editor | Change data: imports, budgets, forecasts, categorisation |
+| Viewer | Read only |
+
+Start from the job, not from the person's seniority. A controller preparing the close is an editor. A CFO who reads everything and approves sensitive changes can be an admin named as governance approver. An analyst who only presents figures is a viewer.
+
+Keep owners and admins few. Every extra admin is one more person who can change who can do what.
 
 Three habits keep a tenant clean:
 
@@ -138,7 +139,7 @@ Three habits keep a tenant clean:
 
 An LLM never gets an admin's credentials. When a builder works with an assistant, the assistant acts through the builder pass, with the builder's rights, never through someone else's account.
 """,
-                    "try": "In your lab, create a user with a read-only role and check what they cannot change.",
+                    "try": "In your lab, invite a user as viewer and check what they cannot change.",
                     "points": [
                         "Roles follow the job, not seniority.",
                         "One login per person, removed the day they leave.",
@@ -182,9 +183,9 @@ Two-factor authentication protects the login; it never blocks work in progress. 
 
 A short checklist for a new client:
 
-- [ ] Payment runs need two signers.
-- [ ] Every approver has two-factor authentication on.
-- [ ] No user holds both preparer and approver duties for the same action.
+1. Payment runs need two signers.
+2. Every approver has two-factor authentication on.
+3. No user holds both preparer and approver duties for the same action.
 """,
                     "try": "In your lab, turn on two-factor authentication for your own user.",
                     "points": [
@@ -295,7 +296,7 @@ Bank connections expire after a period set by the bank, after which the client h
                     "read": """
 Some data lives in spreadsheets and will keep living there: a budget, a register of contracts, a price list. K-φ connects them as **data sources** instead of asking the client to retype them.
 
-You find them in Cash, under **Φ Setup**, then **Data sources**: banks, Google Sheets, and files.
+You find them in Cash, under **Φ Setup**, then **Data sources**: bank connections, Google Sheets, and **variables** (your own reference series, such as a price or an index). Ledger and invoice files come in through their own imports (lessons F3.1 and F3.2).
 
 Good practice with a sheet as a source:
 
