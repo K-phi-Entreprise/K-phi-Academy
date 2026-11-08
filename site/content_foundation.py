@@ -160,7 +160,7 @@ Dual control is on by default for Build:
 
 Approvers are named in the account's governance settings, using the roles you already set up. There is no separate mechanism to learn.
 
-The rule for implementers is simple: **the person who prepares a change never approves it.** If a client has only one admin, K-φ itself confirms in place of a second admin; do not work around it by creating a second account for the same person.
+The rule for implementers is simple: **the person who prepares a change never approves it.** If a client has only one admin, K-φ's own team confirms Build changes in place of a second admin; do not work around it by creating a second account for the same person.
 
 When you design a client's setup, write down who prepares and who approves for each sensitive action. That page is what an auditor will ask for first.
 """,
@@ -175,7 +175,7 @@ When you design a client's setup, write down who prepares and who approves for e
                     "code": "F2.3", "title": "Segregation of duties and two-factor authentication", "minutes": 6,
                     "objective": "Apply the two controls auditors check first.",
                     "read": """
-**Segregation of duties.** For payments, K-φ requires at least two signers by default. The person who creates a payment run is not the person who releases it. Keep that default unless the client's own policy is stricter; never loosen it to save a click.
+**Segregation of duties.** For payments, the person who prepares a run can neither approve nor sign it, and the run needs two different signers, each within a signing limit. K-φ enforces this; it is not a setting to loosen. The Cash course covers it in lesson C6.2.
 
 **Two-factor authentication.** Every user can turn it on, and admins and approvers should. Once it is on, sign-in through an accounting system or single sign-on also asks for the code.
 
@@ -183,7 +183,7 @@ Two-factor authentication protects the login; it never blocks work in progress. 
 
 A short checklist for a new client:
 
-1. Payment runs need two signers.
+1. Payment signers each have a signing limit, and there are at least two of them.
 2. Every approver has two-factor authentication on.
 3. No user holds both preparer and approver duties for the same action.
 """,
@@ -199,9 +199,9 @@ A short checklist for a new client:
                 {"q": "Maya prepares a change that lets an extension write into Cash. Who can approve it?",
                  "options": ["Maya, if she is an admin", "A governance approver other than Maya", "Any user with read access"],
                  "answer": 1, "why": "The preparer never approves their own change."},
-                {"q": "A client has a single admin. What do you do about dual control?",
-                 "options": ["Create a second account for the same person", "Let K-φ confirm in place of a second admin", "Turn dual control off"],
-                 "answer": 1, "why": "For single-admin accounts, K-φ confirms. A second account for the same person defeats the control."},
+                {"q": "A client has a single admin. What do you do about dual control on Build changes?",
+                 "options": ["Create a second account for the same person", "Let K-φ's team confirm in place of a second admin", "Turn dual control off"],
+                 "answer": 1, "why": "For single-admin accounts, K-φ's team confirms. A second account for the same person defeats the control."},
                 {"q": "Can a user without two-factor authentication still save their work?",
                  "options": ["Yes", "No, saving is blocked until they set it up"],
                  "answer": 0, "why": "Two-factor authentication protects sign-in and never blocks saving."},
@@ -308,7 +308,7 @@ Anything that has an API can also come in through the developer portal. That rou
 """,
                     "try": "In your lab, connect the sample Google Sheet as a data source and run Sync all.",
                     "points": [
-                        "Sheets and files connect under Φ Setup, Data sources.",
+                        "Sheets and variables connect under Φ Setup, Data sources; files use their own imports.",
                         "One sheet per purpose, with fixed column names.",
                         "Each sheet source has a named owner at the client.",
                     ],
@@ -330,7 +330,7 @@ When you find a problem, **fix it at its source**: correct the file or the mappi
 
 Keep a short note for each import: what was loaded, what you checked, what you fixed. It takes two minutes and saves an hour at the first review.
 """,
-                    "try": "In your lab, compare the imported sample ledger's December closing balance per entity with the figures in the lesson file.",
+                    "try": "In your lab, compare the imported sample ledger's December closing balance per entity with the reference figures supplied with the sample ledger (lesson F3.1).",
                     "points": [
                         "Check coverage, totals, and what did not land.",
                         "Compare with a figure the client trusts.",
@@ -339,7 +339,7 @@ Keep a short note for each import: what was loaded, what you checked, what you f
                 },
             ],
             "check": [
-                {"q": "After an import, the group total is off by exactly one month of revenue. What is the most likely cause?",
+                {"q": "After an import, the group total is short by exactly one month of revenue. What is the most likely cause?",
                  "options": ["A rounding setting", "A missing month in the file", "The wrong theme"],
                  "answer": 1, "why": "A gap of exactly one period points to coverage. Check the months before anything else."},
                 {"q": "A total in K-φ differs from the trial balance. What do you do?",

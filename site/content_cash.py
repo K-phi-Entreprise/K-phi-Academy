@@ -103,7 +103,7 @@ If both sides are categorised as ordinary receipts and payments, the group view 
 So:
 
 - **Categorise both sides as intercompany.**
-- **Match them**: same amount, close dates, the two group companies as counterparties.
+- **Match them**: same amount (after conversion when the two accounts are in different currencies), close dates, the two group companies as counterparties.
 - **Check timing**: a transfer that leaves on the 30th and arrives on the 2nd sits in neither account at month end. Note it as cash in transit.
 """,
               "In your lab, find one intercompany transfer and check both sides are categorised as intercompany.",
@@ -168,7 +168,7 @@ Use the same layout every time, so the reader learns where to look. State the ex
         ]},
         {"code": "C4", "title": "Receivables and payables", "lessons": [
             L("C4.1", "One data model with FP&A", 6,
-              "Use the same entities, units and third parties for invoices as for the ledger.",
+              "Use the same entities, business units and third parties for invoices as for the ledger.",
               """
 Invoices share FP&A's data model. The same top-bar selectors apply: entity, business unit, third party, currency, units.
 
@@ -216,7 +216,7 @@ Matching follows a **tolerance**, set in percent or as an amount, in the ledgers
 
 A good starting point: a small fixed amount for bank fees, and no percentage until the client asks for one. Look at what remains unmatched each week; it is where disputes and errors hide.
 
-Matching incoming payments to invoices belongs to invoices, not to payments.
+You match customer receipts to invoices from the receivables ledger, not from the payments screen.
 """,
               "In your lab, set a matching tolerance and run reconciliation on the receivables.",
               ["Each invoice shows status, paid date and reconciliation.", "Tolerance in percent or amount; keep it narrow.", "Review what remains unmatched each week."]),
@@ -236,6 +236,8 @@ The cash forecast brings together:
 - **Known movements** the treasurer types or pastes in: a tax payment, a loan repayment, a dividend. Each has a date, a signed amount and an account, and can repeat. When the other party is a group company, K-φ adds the mirror line in that company and keeps the two linked.
 
 Each input covers a different horizon. Bank and invoices are precise for the coming weeks. The budget takes over further out.
+
+The usual view for treasury is **13 weeks**, week by week: long enough to see a quarter-end, short enough to stay precise.
 
 When a forecast surprises you, find which input drives the surprise before you change anything.
 """,
@@ -275,7 +277,7 @@ Look at funding needs by entity, not only for the group. A group in surplus can 
             L("C6.1", "Payment runs and approvals", 6,
               "Pay suppliers from where the payables are.",
               """
-Payments sit with payables: a **payment run** picks the invoices to pay, the beneficiaries and the account to pay from, then goes for **approval**.
+Payments sit with payables: a **payment run** picks the invoices to pay, the beneficiaries and the account to pay from, then goes for **approval** and **signature**.
 
 Paying a supplier invoice and moving cash between group companies use the same mechanism, with the same controls.
 
@@ -285,24 +287,29 @@ Before a run, check:
 - beneficiaries added or changed since the last run;
 - invoices disputed or not yet approved.
 
-Changed beneficiary details are the most common route for payment fraud. Confirm any change by a call to a known number, not by replying to the email that asked for it.
+Changed beneficiary details are the most common route for payment fraud. K-φ pays a new beneficiary, or one whose account changed, only 24 hours after another person approved it. Use that time: confirm the change by a call to a known number, not by replying to the email that asked for it.
 """,
               "In your lab, prepare a payment run for three supplier invoices and send it for approval.",
               ["Payment runs live with payables.", "Supplier payments and group transfers share one mechanism.", "Confirm changed bank details by phone."]),
             L("C6.2", "Two signers by default", 5,
               "Apply the payment control auditors look at first.",
               """
-Every payment run needs **at least two signers** by default: the person who prepares it, and another who approves it. Payment rights are enforced by the system, not by a policy document.
+K-φ separates every step of a payment run, and enforces it in the system, not in a policy document:
 
-Keep the default. If a client asks to remove it, ask for the decision in writing from the client's approver and record it, as in lesson F4.2.
+- The person who **prepares** a run cannot approve it or sign it.
+- The **approver** cannot sign it.
+- The run is executed only after **two different signers**, each within their own **signing limit**. "No limit" does not exist: a signer without a limit cannot sign.
+- A change to anyone's payment rights takes effect only when a **second administrator** confirms it.
 
-Review who can sign each quarter, along with the roles review. A signer who has left the company is still a signer until someone removes them.
+The consequence is deliberate: a tenant with a single user cannot pay. Like a bank, it needs a second person.
+
+Review who can sign, and their limits, each quarter, along with the roles review. A signer who has left the company is still a signer until someone removes them.
 """,
               "In your lab, check that the preparer of your payment run cannot approve it.",
-              ["Two signers by default, enforced by the system.", "Changes only on the client's written decision.", "Review signers every quarter."]),
+              ["Preparer, approver and two signers are four different people.", "Every signer has a limit; rights changes need a second admin.", "Review signers and limits every quarter."]),
         ], "check": [
             Q("A supplier emails new bank details. What do you do?", ["Update them", "Confirm by calling a known number", "Reply to the email to confirm"], 1, "Changed bank details are the most common fraud route."),
-            Q("Who approves a payment run?", ["The person who prepared it", "A second signer", "Anyone with read access"], 1, "Two signers is the default and is enforced."),
+            Q("Maya prepared a payment run. What can she do with it?", ["Approve it", "Sign it", "Neither; others approve and sign"], 2, "The preparer can neither approve nor sign; the run needs an approver and two other signers."),
         ]},
     ],
     "exam": {
@@ -324,7 +331,7 @@ Review who can sign each quarter, along with the roles review. A signer who has 
         ],
         "report": [
             ["pass", "Accounts and pool", "Six accounts by entity; GBP pool with header set"],
-            ["fail", "Categorisation", "Customer receipts 1,204,800 USD expected, 1,454,800 found. Both sides of a 250,000 intercompany transfer counted as ordinary flows"],
+            ["fail", "Categorisation", "Customer receipts 1,204,800 USD expected, 1,454,800 found. Both sides of a 250,000 USD intercompany transfer counted as ordinary flows"],
             ["pass", "Invoice directions", "All directions right; 4 intercompany documents flagged"],
             ["pass", "13-week forecast", "Within tolerance for all entities"],
             ["pass", "Submitted figures", "Position, lowest balance and funding window match"],

@@ -31,9 +31,9 @@ Two rules hold everywhere:
 - **The P&L restarts at zero at the start of each fiscal year.** A P&L for May shows January to May (for a calendar fiscal year). This is the rule, not a setting.
 - **The balance sheet is cumulative.** It shows balances at a date, built from everything booked up to that date.
 
-The same selectors as everywhere else apply: entity, business unit, currency, units. A group view adds the entities' statements together; each entity's view stays in its own currency.
+The same selectors as everywhere else apply: entity, business unit, currency, units. A group view brings the entities together in the reporting currency chosen in the top bar; each entity's own view stays in its own currency.
 
-Before presenting a statement, check that the balance sheet balances for each entity and that the P&L's net income matches the movement in retained earnings for the year. If either fails, look at the classification of accounts before anything else.
+Before presenting a statement, check that the balance sheet balances for each entity and that net income, less distributions, matches the movement in retained earnings for the year. If either fails, look at the classification of accounts before anything else.
 """,
               "In your lab, open the P&L for Halden Trading Ltd, then switch the entity selector to the group and compare.",
               ["The P&L is year to date and restarts each fiscal year.", "The balance sheet is cumulative.", "Check balance and net income before presenting."]),
@@ -97,7 +97,7 @@ When a client uses a different definition, write it down and agree whether to ad
               """
 **DSO** (days sales outstanding) estimates how long customers take to pay. **DPO** does the same for suppliers, **DIO** for inventory. The **cash conversion cycle** is DSO plus DIO minus DPO.
 
-K-φ computes them over a **three-month trailing window** by default. A single month is misleading: a strong December inflates sales, so DSO for that month alone looks better than reality.
+K-φ computes them over a **three-month trailing window** by default. A single month can mislead in either direction: a strong or weak month moves sales and receivables unevenly, so one month's DSO says little about how customers actually pay.
 
 Three things to check before quoting a DSO:
 
@@ -148,7 +148,7 @@ Keep the number of live versions small. Each one is a set of rules someone has t
               """
 Many smaller clients have no formal budget. K-φ offers two things in that case.
 
-- **A forecast from the recent run rate**, flagged clearly as an assumption, so the forecast is not empty.
+- **A forecast from the recent run rate**, flagged clearly as an assumption, so the forecast is not empty. This is different from the projected new sales of lesson P4.3, which you add to a forecast on purpose.
 - **One click to create a budget from actuals**, which copies the recent pattern into a new budget the client then adjusts.
 
 The second is usually the better start. It gives the client figures they recognise, and every change they make is a decision they can explain.
@@ -171,7 +171,7 @@ A variance report is only useful if it says why. For each material variance, fin
 | Timing | An invoice booked a month later than planned |
 | Error | Wrong account or wrong period |
 
-Timing and error variances do not need management action, but they must be named so nobody acts on them. Set a threshold for "material" with the client, for example 5% and a fixed amount, and comment only above it.
+Timing and error variances need no business action (errors need an accounting correction), but they must be named so nobody acts on them. Set a threshold for "material" with the client, for example 5% and a fixed amount, and comment only above it.
 """,
               "In your lab, run budget versus actuals for the group and find the largest variance.",
               ["Compare any version with actuals.", "Name the cause: volume, price, timing or error.", "Agree a materiality threshold with the client."]),
@@ -310,7 +310,7 @@ Valuation sits in FP&A, under **Xplore, Valuation**. Its main difference from a 
 
 **Entered by the user:** the risk-free rate, with a dated suggested value, and the peer companies for comparables.
 
-The earnings base is **annualised**. A single month is never a basis for value.
+The earnings base always covers twelve months: trailing, or annualised from several months. A single month is never a basis for value.
 """,
               "In your lab, open a valuation case for the group and find which inputs were measured from the books.",
               ["Valuation is under FP&A, Xplore, Valuation.", "Operating inputs are measured from the tenant.", "Market data defaults; risk-free rate and peers entered."]),
@@ -321,7 +321,7 @@ Projected cash flows come **from the budget, per company**. After the last budge
 
 The extrapolated years are an assumption. Say so when you present, and test how much of the value depends on them.
 
-For groups, the **entity filter drives the valuation**. Multi-country groups are valued bottom-up by default, each company with its own risk; other groups are valued on the consolidated figures. A company that cannot be valued on its own cannot be unchecked.
+For groups, the **entity filter drives the valuation**. Multi-country groups are valued bottom-up by default, each company with its own risk; other groups are valued on the consolidated figures. A company that cannot be valued on its own stays in the filter: it cannot be unchecked.
 """,
               "In your lab, find which projection years are labelled extrapolated, and change one entity in the filter.",
               ["Cash flows come from the budget, per company.", "Years after the budget are extrapolated and labelled.", "The entity filter drives the valuation."]),
@@ -378,7 +378,8 @@ If a difference stays unexplained, say so in the pack. An unexplained difference
         "title": "Exam: statements, forecast and scenario",
         "situation": "Your exam tenant is a fresh copy of Halden Trading, already set up: three entities, 24 months of ledger and this year's budget.",
         "tasks": [
-            "Produce the year-to-date P&L and balance sheet for the group and for each entity.",
+            "Produce the year-to-date P&L and the balance sheet at the latest date, for the group and for each entity.",
+            "Find the one misclassified account and fix it at its source.",
             "Create a version, \"Forecast Q4\", from the budget. Set its receivables and payables source to open invoices, and keep run-rate new sales off.",
             "Build a scenario, \"GBP down 10%\", on that version.",
             "In the submission form, give group EBITDA year to date, DSO for Halden Trading Ltd, and the scenario's effect on group cash at year end.",
@@ -392,9 +393,9 @@ If a difference stays unexplained, say so in the pack. An unexplained difference
         ],
         "report": [
             ["pass", "Statements per entity and group", "All totals within tolerance"],
-            ["pass", "Version and rules", "Forecast Q4 exists; budget unchanged"],
+            ["pass", "Version and source", "Forecast Q4 exists; source: open invoices; run-rate new sales off; budget unchanged"],
             ["fail", "Scenario effect on year-end cash", "Expected −186,400 USD, found +186,400 USD. Check the direction of the currency move"],
-            ["pass", "Submitted figures", "EBITDA and DSO within tolerance"],
+            ["fail", "Submitted figures", "EBITDA 3.1% below the answer key, because the interest charge below was not moved; DSO within tolerance"],
             ["fail", "Seeded misclassification", "An interest charge is still in operating expenses, which understates EBITDA"],
         ],
     },

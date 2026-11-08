@@ -2,7 +2,7 @@
 from content_fpa import L, Q
 
 COURSE = {
-    "id": "ai", "code": "A", "title": "AI for finance", "badge": "AI-ready", "duration": "About 2 hours", "status": "available",
+    "id": "ai", "code": "A", "title": "AI for finance", "badge": "AI-Ready", "duration": "About 2 hours", "status": "available",
     "audience": "Everyone. Required on every path, right after Foundation.", "prereq": "Foundation",
     "summary": "What a model is, what an agent is, how agentic workflows fit in finance, how to keep them safe, and how to prove their output right.",
     "outcomes": [
@@ -108,14 +108,14 @@ K-φ publishes MCP servers. You will connect one in chapter A6.
 | Who decides the steps | You | Fixed in advance | The agent, within limits |
 | Handles the unexpected | You do | It stops or fails | It adapts, or asks |
 | Repeatable | Low | High | Medium to high |
-| Good for | Drafting, questions | Same task, same shape, every day | Tasks with judgment and several systems |
+| Good for | Drafting, questions | Same task, same shape, every day | Tasks with judgement and several systems |
 
-Use an **automation** when the task never changes: a nightly bank sync, a monthly export. Use an **agentic workflow** when each run needs judgment: explaining this month's variances, preparing a funding proposal, building a tool for a new question.
+Use an **automation** when the task never changes: a nightly bank sync, a monthly export. Use an **agentic workflow** when each run needs judgement: explaining this month's variances, preparing a funding proposal, building a tool for a new question.
 
 Many good setups combine both: automations bring the data in, an agent works on it, a person approves.
 """,
               "Classify five tasks of your month-end close as chat, automation or agentic workflow.",
-              ["Automation for fixed tasks, agents for tasks needing judgment.", "Agents adapt or ask when something is unexpected.", "Combine: automation in, agent on top, person approves."]),
+              ["Automation for fixed tasks, agents for tasks needing judgement.", "Agents adapt or ask when something is unexpected.", "Combine: automation in, agent on top, person approves."]),
         ], "check": [
             Q("What turns an assistant into an agent?", ["A longer prompt", "Tools it can call in a loop toward a goal", "A faster model"], 1, "Goal, tools, loop and permissions."),
             Q("An agent can only read balances and statements. What is the worst it can do?", ["Change the ledger", "Give a wrong answer", "Release a payment"], 1, "Read-only tools limit the damage to a wrong answer, which you can check."),
@@ -125,7 +125,7 @@ Many good setups combine both: automations bring the data in, an agent works on 
             L("A3.1", "Where agents help in finance", 7,
               "See where agents add value today, and where they don't yet.",
               """
-Agents help most where work combines **data from several places** with **judgment** and **writing**:
+Agents help most where work combines **data from several places** with **judgement** and **writing**:
 
 - **Close support**: chasing missing items, checking that imports are complete, preparing the checklist status.
 - **Reconciliation**: proposing matches between bank lines and invoices, and explaining the leftovers.
@@ -133,10 +133,10 @@ Agents help most where work combines **data from several places** with **judgmen
 - **Scenarios**: turning a question ("what if our largest customer pays 30 days later?") into a scenario, and summarising the effect.
 - **Building tools**: creating a small application for a question the system does not answer yet (the Build course).
 
-They help least where a mistake is expensive and judgment is thin: releasing payments, posting final journal entries, filing taxes. There, agents can prepare, never release.
+They help least where a mistake is expensive and judgement is thin: releasing payments, posting final journal entries, filing taxes. There, agents can prepare, never release.
 """,
-              "Pick one task from your own month and write which data it needs, which judgment, and what it produces.",
-              ["Agents fit data from several places plus judgment plus writing.", "Close, reconciliation, commentary, scenarios, tools.", "For expensive mistakes, agents prepare and people release."]),
+              "Pick one task from your own month and write which data it needs, which judgement, and what it produces.",
+              ["Agents fit data from several places plus judgement plus writing.", "Close, reconciliation, commentary, scenarios, tools.", "For expensive mistakes, agents prepare and people release."]),
             L("A3.2", "Human in the loop", 6,
               "Put approvals where they belong.",
               """
@@ -281,14 +281,13 @@ Everything in this course applies: the engine computes, the agent builds, a pers
         "tasks": [
             "Connect your assistant to the exam tenant through K-φ's connector. Never paste a password or key into the conversation.",
             "Have the assistant draft the October variance commentary for the group: the three largest variances, each with its cause.",
-            "Have the assistant build and save a scenario in K-φ: \"Largest customer pays 30 days later\", on the current forecast.",
-            "Get the scenario approved by the governance approver before it is saved.",
+            "Have the assistant build a scenario in K-φ: \"Largest customer pays 30 days later\", on the current forecast. Check its driver yourself before you let it save the scenario.",
             "Submit the commentary and the scenario's effect on the lowest group cash balance, after checking both.",
         ],
         "checks": [
             "Every figure in the commentary matches the engine",
             "Scenario saved in K-φ with the right driver and version",
-            "Approval recorded before the save",
+            "No scenario with a wrong driver left in the tenant",
             "Seeded trap caught: the assistant's likely sign error corrected",
             "Submitted cash effect within tolerance",
         ],
@@ -296,7 +295,7 @@ Everything in this course applies: the engine computes, the agent builds, a pers
             ["pass", "Figures in commentary", "All 9 figures trace to engine results"],
             ["fail", "Variance direction", "Freight costs described as favourable; they are 84,200 USD over budget"],
             ["pass", "Scenario saved", "Driver and version correct"],
-            ["pass", "Approval before save", "Approved by Tom Ashby, 2 minutes before the save"],
+            ["pass", "No wrong drafts", "One scenario; none with a wrong driver left in the tenant"],
             ["pass", "Cash effect", "Within tolerance"],
         ],
     },
