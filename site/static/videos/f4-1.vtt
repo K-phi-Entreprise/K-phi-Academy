@@ -1,26 +1,26 @@
 WEBVTT
 
 1
-00:00:00.300 --> 00:00:04.600
+00:00:00.750 --> 00:00:03.573
 F4.1 · Reading the audit trail
 
 2
-00:00:05.300 --> 00:00:10.350
+00:00:05.450 --> 00:00:08.900
 Every change records who made it, what changed and when.
 
 3
-00:00:10.550 --> 00:00:15.600
+00:00:08.950 --> 00:00:12.010
 Approvals and extension writes are recorded too.
 
 4
-00:00:16.300 --> 00:00:20.350
+00:00:16.450 --> 00:00:19.944
 Trace figures, explain changes, and check approvals.
 
 5
-00:00:20.550 --> 00:00:24.600
+00:00:19.994 --> 00:00:23.607
 Read it like a ledger: filter, then read in time order.
 
 6
-00:00:25.300 --> 00:00:29.600
+00:00:25.750 --> 00:00:29.750
 Next: F4.2  What you never do in a client tenant
 

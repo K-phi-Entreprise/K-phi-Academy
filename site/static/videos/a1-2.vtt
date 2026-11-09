@@ -1,22 +1,22 @@
 WEBVTT
 
 1
-00:00:00.300 --> 00:00:04.600
+00:00:00.750 --> 00:00:04.596
 A1.2 · Strong and weak points for finance work
 
 2
-00:00:05.300 --> 00:00:10.850
+00:00:05.746 --> 00:00:08.788
 Models are good with language, structure and code.
 
 3
-00:00:11.050 --> 00:00:16.600
+00:00:08.838 --> 00:00:13.654
 They are unreliable with exact numbers they compute or recall themselves.
 
 4
-00:00:17.300 --> 00:00:24.600
+00:00:17.746 --> 00:00:24.375
 When an assistant needs a DSO, it should ask K-φ through a tool, not compute it from a pasted table.
 
 5
-00:00:25.300 --> 00:00:29.600
+00:00:26.046 --> 00:00:29.778
 Next: A1.3  Context: what the model sees
 

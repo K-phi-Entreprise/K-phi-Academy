@@ -1,50 +1,50 @@
 WEBVTT
 
 1
-00:00:00.300 --> 00:00:04.600
+00:00:00.750 --> 00:00:03.792
 F1.2 · A tour of the interface
 
 2
-00:00:05.300 --> 00:00:09.350
+00:00:05.450 --> 00:00:07.842
 The interface has four fixed areas.
 
 3
-00:00:09.550 --> 00:00:13.600
+00:00:07.893 --> 00:00:10.757
 Tabs, left panel, top bar, and the bell.
 
 4
-00:00:14.300 --> 00:00:17.850
+00:00:14.450 --> 00:00:16.581
 Click a tab to switch workspace.
 
 5
-00:00:18.050 --> 00:00:21.600
+00:00:16.631 --> 00:00:20.402
 Pointing at it does nothing; the left panel follows the tab.
 
 6
-00:00:22.300 --> 00:00:25.850
+00:00:22.450 --> 00:00:24.647
 The top bar filters what you see.
 
 7
-00:00:26.050 --> 00:00:29.600
+00:00:24.697 --> 00:00:28.340
 The same selectors apply in FP&A and in Cash.
 
 8
-00:00:30.300 --> 00:00:33.850
+00:00:30.450 --> 00:00:34.701
 Sync all refreshes every connected source, one after the other.
 
 9
-00:00:34.050 --> 00:00:37.600
+00:00:34.751 --> 00:00:38.477
 Its progress shows in the button; the detail goes to the bell.
 
 10
-00:00:38.300 --> 00:00:41.850
+00:00:39.627 --> 00:00:44.333
 Every page has a back button, and every dialog is a K-φ dialog.
 
 11
-00:00:42.050 --> 00:00:45.600
+00:00:44.383 --> 00:00:47.768
 If something is unreadable in either theme, report it.
 
 12
-00:00:46.300 --> 00:00:50.600
+00:00:49.218 --> 00:00:53.481
 Next: F1.3  Tenants, entities and reporting axes
 

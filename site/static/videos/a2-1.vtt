@@ -1,26 +1,26 @@
 WEBVTT
 
 1
-00:00:00.300 --> 00:00:04.600
+00:00:00.750 --> 00:00:03.483
 A2.1 · From chat to agent
 
 2
-00:00:05.300 --> 00:00:10.350
+00:00:05.450 --> 00:00:08.910
 An agent has a goal, tools, a loop and permissions.
 
 3
-00:00:10.550 --> 00:00:15.600
+00:00:08.960 --> 00:00:13.568
 It calls a tool, reads the result, decides the next step, and repeats.
 
 4
-00:00:16.300 --> 00:00:20.850
+00:00:16.450 --> 00:00:21.044
 An agent with read-only tools can give a wrong answer, which you can check.
 
 5
-00:00:21.050 --> 00:00:25.600
+00:00:21.094 --> 00:00:25.408
 An agent that writes needs the same controls as a person who can.
 
 6
-00:00:26.300 --> 00:00:30.600
+00:00:26.858 --> 00:00:29.829
 Next: A2.2  Tools and MCP
 

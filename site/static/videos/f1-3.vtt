@@ -1,46 +1,46 @@
 WEBVTT
 
 1
-00:00:00.300 --> 00:00:04.600
+00:00:00.750 --> 00:00:04.834
 F1.3 · Tenants, entities and reporting axes
 
 2
-00:00:05.300 --> 00:00:09.350
+00:00:05.984 --> 00:00:10.208
 A tenant is one client account, fully isolated from every other.
 
 3
-00:00:09.550 --> 00:00:13.600
+00:00:10.258 --> 00:00:14.952
 Inside it, entities are the legal companies, each with its own currency.
 
 4
-00:00:14.300 --> 00:00:18.350
+00:00:16.102 --> 00:00:20.573
 A group with a US, a UK and a French company has three entities.
 
 5
-00:00:18.550 --> 00:00:22.600
+00:00:20.623 --> 00:00:22.942
 USD, GBP and EUR.
 
 6
-00:00:23.300 --> 00:00:26.850
+00:00:25.102 --> 00:00:29.703
 Beside entities, K-φ reports by business unit and by third party.
 
 7
-00:00:27.050 --> 00:00:30.600
+00:00:29.753 --> 00:00:34.772
 The same customer is the same third party in the ledger and in the invoices.
 
 8
-00:00:31.300 --> 00:00:37.600
+00:00:35.922 --> 00:00:38.683
 The axes are the selectors in the top bar.
 
 9
-00:00:38.300 --> 00:00:42.350
+00:00:42.922 --> 00:00:46.766
 Settle the entity list and the business units with the client first.
 
 10
-00:00:42.550 --> 00:00:46.600
+00:00:46.816 --> 00:00:49.999
 A wrong entity list shows up everywhere downstream.
 
 11
-00:00:47.300 --> 00:00:51.600
+00:00:52.222 --> 00:00:55.082
 Next: F2.1  Users and roles
 

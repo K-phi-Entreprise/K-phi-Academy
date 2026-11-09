@@ -1,6 +1,6 @@
 """K-φ Academy lesson video, F1.1: One system of record for FP&A, Cash and Build.
 1920x1080, 30 fps, silent captions on screen (and as a WebVTT file), sound bed added by ffmpeg."""
-import sys, math, subprocess
+import sys, os, math, subprocess
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 import diagram3 as D
@@ -204,4 +204,20 @@ if __name__ == "__main__":
         p = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
                               "-c:v", "libx264", "-crf", "20", "-preset", "veryfast", "-pix_fmt", "yuv420p", sys.argv[2]], stdin=subprocess.PIPE)
         for i in range(N): p.stdin.write(frame(i).tobytes())
-        p.stdin.close(); sys.exit(p.wait())
+        p.stdin.close(); p.wait()
+        # narration, fitted to the fixed caption windows (a line too long is read a little faster)
+        import narrate
+        clips = []
+        for t0, t1, txt in CAPS:
+            room = t1 - t0 - 0.35; au = narrate.line(txt); sp = 1.0
+            while len(au) / narrate.SR > room and sp < 1.3:
+                sp = round(sp + 0.05, 2); au = narrate.line(txt, speed=sp)
+            clips.append((t0 + 0.15, au))
+        out = sys.argv[2]; base = out.replace(".mp4", "")
+        narrate.mix(clips, DUR, base + "_voice.wav")
+        import lv
+        lv.bed(DUR, base + ".m4a")
+        os.replace(out, base + "_v.mp4")
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", base + "_v.mp4", "-i", base + "_voice.wav", "-i", base + ".m4a",
+                        "-filter_complex", "[2:a]volume=0.32[b];[1:a]aresample=48000[v];[v][b]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11[a]",
+                        "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", out], check=True)

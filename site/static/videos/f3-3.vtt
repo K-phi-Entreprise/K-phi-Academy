@@ -1,34 +1,34 @@
 WEBVTT
 
 1
-00:00:00.300 --> 00:00:04.600
+00:00:00.750 --> 00:00:03.528
 F3.3 · Bank connections
 
 2
-00:00:05.300 --> 00:00:08.850
+00:00:05.450 --> 00:00:07.679
 Banks connect through open banking.
 
 3
-00:00:09.050 --> 00:00:12.600
+00:00:07.729 --> 00:00:12.226
 Balances are stored day by day, so any past position can be rebuilt.
 
 4
-00:00:13.300 --> 00:00:20.600
+00:00:13.450 --> 00:00:18.029
 Organise accounts by entity, and by pool for accounts managed together.
 
 5
-00:00:21.300 --> 00:00:24.850
+00:00:21.450 --> 00:00:24.816
 Agree account names with the treasurer before go-live.
 
 6
-00:00:25.050 --> 00:00:28.600
+00:00:24.866 --> 00:00:28.125
 Payment-provider accounts are kept out of the bank list.
 
 7
-00:00:29.300 --> 00:00:36.600
+00:00:29.450 --> 00:00:33.892
 An expired connection is the most common reason for a missing balance.
 
 8
-00:00:37.300 --> 00:00:41.600
+00:00:37.750 --> 00:00:41.780
 Next: F3.4  Sheets, files and Data sources
 

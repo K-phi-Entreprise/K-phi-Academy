@@ -1,26 +1,26 @@
 WEBVTT
 
 1
-00:00:00.300 --> 00:00:04.600
+00:00:00.750 --> 00:00:04.532
 A4.2 · Prompt injection and untrusted content
 
 2
-00:00:05.300 --> 00:00:09.850
+00:00:05.682 --> 00:00:11.456
 Documents, emails and web pages can carry instructions written to manipulate an agent.
 
 3
-00:00:10.050 --> 00:00:14.600
+00:00:11.506 --> 00:00:13.314
 This is prompt injection.
 
 4
-00:00:15.300 --> 00:00:19.850
+00:00:15.682 --> 00:00:19.298
 An invoice cannot change what the agent is allowed to do.
 
 5
-00:00:20.050 --> 00:00:24.600
+00:00:19.348 --> 00:00:23.703
 Changed bank details are still confirmed by a call to a known number.
 
 6
-00:00:25.300 --> 00:00:29.600
+00:00:25.982 --> 00:00:30.338
 Next: A5.1  Deterministic engine, model on top
 

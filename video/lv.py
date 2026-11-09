@@ -155,6 +155,26 @@ def captions(lesson):
             caps.append((a, b, c))
     return caps
 
+def narrated(lesson):
+    """Time every scene to its narration: captions run back to back at the pace of the voice,
+    and a scene lasts at least as long as what is said in it."""
+    import copy, narrate
+    L = copy.deepcopy(lesson); clips, caps, t = [], [], 0.0
+    tl = []
+    for s in L["scenes"]:
+        cs = s.get("cap", [])
+        if isinstance(cs, str): cs = [cs]
+        audio = [narrate.line(c) for c in cs]
+        lead = 0.9 if s["type"] in ("title", "end") else 0.6
+        need = lead + sum(len(a) / narrate.SR + 0.45 for a in audio) + 0.5
+        d = max(s["d"], need); s["d"] = d
+        u = t + lead
+        for c, a in zip(cs, audio):
+            dur = len(a) / narrate.SR
+            clips.append((u, a)); caps.append((u - 0.15, u + dur + 0.25, c)); u += dur + 0.45
+        tl.append((t, t + d, s)); t += d
+    return L, tl, t, caps, clips
+
 def render_frame(lesson, tl, caps, total, i):
     t = i / FPS; img = Image.new("RGBA", (W, H), BG + (255,)); cv = Canvas(img)
     for t0, t1, s in tl:
@@ -183,7 +203,10 @@ def bed(total, path):
 
 if __name__ == "__main__":
     code = sys.argv[1]; L = importlib.import_module({"F": "scripts_f", "A": "scripts_a", "P": "scripts_p", "C": "scripts_c"}[code[0]]).LESSONS[code]
-    tl, total = timeline(L); caps = captions(L)
+    import os
+    NARR = os.environ.get("NARRATE", "1") != "0"
+    if NARR: L, tl, total, caps, clips = narrated(L)
+    else: tl, total = timeline(L); caps = captions(L); clips = []
     if sys.argv[2] == "preview":
         for k, (t0, t1, s) in enumerate(tl):
             render_frame(L, tl, caps, total, int(((t0 + t1) / 2 + 0.6) * FPS)).save(f"/tmp/pv_{code}_{k}.png")
@@ -195,6 +218,13 @@ if __name__ == "__main__":
         for i in range(int(total * FPS)): p.stdin.write(render_frame(L, tl, caps, total, i).tobytes())
         p.stdin.close(); p.wait()
         bed(total, out.replace(".mp4", ".m4a"))
-        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", tmp, "-i", out.replace(".mp4", ".m4a"), "-c", "copy", "-shortest", "-movflags", "+faststart", out], check=True)
+        if clips:
+            import narrate
+            narrate.mix(clips, total, out.replace(".mp4", "_voice.wav"))
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", tmp, "-i", out.replace(".mp4", "_voice.wav"), "-i", out.replace(".mp4", ".m4a"),
+                            "-filter_complex", "[2:a]volume=0.32[b];[1:a]aresample=48000,volume=1.0[v];[v][b]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11[a]",
+                            "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", out], check=True)
+        else:
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", tmp, "-i", out.replace(".mp4", ".m4a"), "-c", "copy", "-shortest", "-movflags", "+faststart", out], check=True)
         vtt(caps, out.replace(".mp4", ".vtt"))
         print(out, f"{total:.0f}s")

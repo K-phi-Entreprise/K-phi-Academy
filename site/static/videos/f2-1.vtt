@@ -1,38 +1,38 @@
 WEBVTT
 
 1
-00:00:00.300 --> 00:00:04.600
+00:00:00.750 --> 00:00:03.569
 F2.1 · Users and roles
 
 2
-00:00:05.300 --> 00:00:10.350
+00:00:05.450 --> 00:00:07.785
 Every user has one of four roles.
 
 3
-00:00:10.550 --> 00:00:15.600
+00:00:07.835 --> 00:00:10.296
 Owner, admin, editor or viewer.
 
 4
-00:00:16.300 --> 00:00:20.350
+00:00:16.450 --> 00:00:20.028
 Give each person the access their job needs, and no more.
 
 5
-00:00:20.550 --> 00:00:24.600
+00:00:20.078 --> 00:00:22.030
 Keep owners and admins few.
 
 6
-00:00:25.300 --> 00:00:29.350
+00:00:25.450 --> 00:00:28.695
 One login per person, removed the day they leave.
 
 7
-00:00:29.550 --> 00:00:33.600
+00:00:28.745 --> 00:00:32.790
 Review roles every quarter; access grows, it rarely shrinks.
 
 8
-00:00:34.300 --> 00:00:40.600
+00:00:34.450 --> 00:00:40.637
 An LLM acts through the builder pass, with the builder's rights, never through someone else's account.
 
 9
-00:00:41.300 --> 00:00:45.600
+00:00:42.087 --> 00:00:45.987
 Next: F2.2  Governance approvers and dual control
 

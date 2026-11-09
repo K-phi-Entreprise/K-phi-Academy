@@ -1,38 +1,38 @@
 WEBVTT
 
 1
-00:00:00.300 --> 00:00:04.600
+00:00:00.750 --> 00:00:05.681
 F2.3 · Segregation of duties and two-factor authentication
 
 2
-00:00:05.300 --> 00:00:09.850
+00:00:06.831 --> 00:00:11.023
 The person who prepares a payment run can neither approve nor sign it.
 
 3
-00:00:10.050 --> 00:00:14.600
+00:00:11.073 --> 00:00:14.932
 The run needs two different signers, each within a signing limit.
 
 4
-00:00:15.300 --> 00:00:19.350
+00:00:16.831 --> 00:00:20.647
 In K-φ, prepare, approve and sign are separate rights.
 
 5
-00:00:19.550 --> 00:00:23.600
+00:00:20.697 --> 00:00:23.171
 A signer without a limit cannot sign.
 
 6
-00:00:24.300 --> 00:00:27.850
+00:00:25.831 --> 00:00:29.738
 Every user can turn on two-factor; admins and approvers should.
 
 7
-00:00:28.050 --> 00:00:31.600
+00:00:29.788 --> 00:00:32.862
 It protects sign-in and never blocks saving work.
 
 8
-00:00:32.300 --> 00:00:40.600
+00:00:34.012 --> 00:00:36.167
 Three checks auditors look at first.
 
 9
-00:00:41.300 --> 00:00:45.600
+00:00:43.312 --> 00:00:47.059
 Next: F3.1  Importing a general ledger
 

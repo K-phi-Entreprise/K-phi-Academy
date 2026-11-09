@@ -1,18 +1,18 @@
 WEBVTT
 
 1
-00:00:00.300 --> 00:00:04.600
+00:00:00.750 --> 00:00:05.083
 P7.1 · The board pack and why it calculates nothing
 
 2
-00:00:05.300 --> 00:00:09.350
+00:00:06.233 --> 00:00:08.972
 The board pack calculates nothing of its own.
 
 3
-00:00:09.550 --> 00:00:13.600
+00:00:09.022 --> 00:00:13.747
 So its figures always match the screens. A wrong figure is fixed upstream.
 
 4
-00:00:14.300 --> 00:00:18.600
+00:00:15.533 --> 00:00:19.448
 Next: P7.2  Reconciling what you present
 
