@@ -36,7 +36,7 @@ The three share one data model. A figure is imported once and reused everywhere,
 
 As an implementer, this is the idea to keep in mind: **custom logic belongs inside the system that holds the data**, not in a file next to it.
 """,
-                    "try": "Open your lab tenant and switch between the FP&A, Cash and Build workspaces using the switcher at the top of the left panel.",
+                    "try": "Open your lab tenant and switch between the workspaces with the tabs at the top of the left panel.",
                     "points": [
                         "K-φ is one system of record for FP&A, Cash and Build.",
                         "Data comes in once and is reused across workspaces.",
@@ -45,11 +45,11 @@ As an implementer, this is the idea to keep in mind: **custom logic belongs insi
                 },
                 {
                     "code": "F1.2", "title": "A tour of the interface", "minutes": 7,
-                    "objective": "Find your way around: switcher, left panel, top bar, notifications.",
+                    "objective": "Find your way around: workspace tabs, left panel, top bar, notifications.",
                     "read": """
 The interface has four fixed areas.
 
-1. **The workspace switcher** at the top of the left panel: FP&A, CASH, BUILD. You switch by clicking. Pointing at a workspace does nothing.
+1. **The workspace tabs** at the top of the left panel: FP&A and CASH, plus BUILD once Build is turned on for the account. You switch by clicking. Pointing at a tab does nothing.
 2. **The left panel** lists the pages of the selected workspace, and only those.
 3. **The top bar** holds the selectors that filter what you see: entity, business unit, third party, currency, units. They apply in FP&A and Cash alike.
 4. **The bell** collects notifications: finished imports, sync results, approvals waiting for you.
@@ -62,7 +62,7 @@ K-φ works in light and dark themes. Everything should stay readable in both; if
 """,
                     "try": "In your lab, change the entity selector in the top bar, then open the same page in FP&A and in Cash and check that the filter follows you.",
                     "points": [
-                        "Click the switcher to change workspace; the left panel follows it.",
+                        "Click a workspace tab to switch; the left panel follows it.",
                         "Top-bar selectors filter FP&A and Cash the same way.",
                         "Sync all refreshes every source; details go to the bell.",
                     ],
@@ -100,7 +100,7 @@ A wrong entity list shows up everywhere downstream: consolidated totals, interco
                 },
             ],
             "check": [
-                {"q": "A user points at the CASH label in the switcher without clicking. What happens?",
+                {"q": "A user points at the CASH tab without clicking. What happens?",
                  "options": ["The left panel switches to Cash", "Nothing; switching needs a click", "A preview of Cash opens"],
                  "answer": 1, "why": "Switching is by click only, so the panel never changes by accident."},
                 {"q": "Where do you look to find out whether last night's data sync finished?",
