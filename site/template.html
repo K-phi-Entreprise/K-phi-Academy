@@ -311,7 +311,7 @@ function home() {
   <section class="block"><header><h2>Courses</h2><span class="note">Open for the pilot: ${OPEN.map(c => esc(c.title)).join(", ")}. The others follow.</span></header><div class="courses">${rows}</div></section>
   <section class="block"><header><h2>How certification works</h2></header>
     <ol class="steps">
-      <li><b>Learn</b><span>Short lessons on K-φ and on working with AI agents, each with a video, the text, and one thing to try in your lab.</span></li>
+      <li><b>Learn</b><span>Short lessons on K-φ and on working with AI agents, each with one thing to try in your lab. Videos are being recorded.</span></li>
       <li><b>Practise</b><span>Your lab is a copy of Halden Trading, a fictional trading group. Reset it any time.</span></li>
       <li><b>Take the exam</b><span>A fresh tenant, a brief, any tools you like, including any LLM. 72 hours.</span></li>
       <li><b>Get verified</b><span>The checker grades what is in the tenant. Pass, and your certificate gets a public verify page.</span></li>
@@ -381,7 +381,7 @@ function lessonView(code) {
       <div class="crumb"><a href="#course-${c.id}">${esc(c.title)}</a> / ${esc(l.ch.code)} ${esc(l.ch.title)} <span class="chip">${esc(l.code)}</span><span class="chip">${l.minutes} min</span></div>
       <h1>${esc(l.title)}</h1>
       <div class="objective"><span class="eyebrow">Objective</span><span>${esc(l.objective)}</span></div>
-      <div class="video" role="img" aria-label="Lesson video, in production"><span class="play"></span><span class="vlab">Video in production · ${Math.max(2, Math.min(4, Math.round(l.minutes / 2.5)))} min</span></div>
+      ${l.video ? `<video class="video" controls preload="metadata" src="${esc(l.video)}"${l.poster ? ` poster="${esc(l.poster)}"` : ""}></video>` : ""}
       <div class="prose">${l.read.replace(/<table>/g, '<div class="tablewrap"><table>').replace(/<\/table>/g, "</table></div>")}</div>
       <section class="try"><div class="eyebrow">Try it in your lab</div><div>${esc(l.try)}</div>
         <div class="row"><button class="btn" data-lab>Open lab</button><span class="flash" hidden data-labmsg>Your lab opens with your pilot invitation.</span></div></section>
