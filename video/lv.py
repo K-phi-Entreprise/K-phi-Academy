@@ -182,7 +182,7 @@ def bed(total, path):
         "-af", f"lowpass=f=1800,afade=t=in:d=3,afade=t=out:st={total - 4}:d=4,aecho=0.6:0.5:400:0.25,volume=1.4", "-c:a", "aac", "-b:a", "96k", path], check=True)
 
 if __name__ == "__main__":
-    code = sys.argv[1]; L = importlib.import_module("scripts_f").LESSONS[code]
+    code = sys.argv[1]; L = importlib.import_module({"F": "scripts_f", "A": "scripts_a", "P": "scripts_p", "C": "scripts_c"}[code[0]]).LESSONS[code]
     tl, total = timeline(L); caps = captions(L)
     if sys.argv[2] == "preview":
         for k, (t0, t1, s) in enumerate(tl):

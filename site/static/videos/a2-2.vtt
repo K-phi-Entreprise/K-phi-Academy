@@ -1,0 +1,26 @@
+WEBVTT
+
+1
+00:00:00.300 --> 00:00:04.600
+A2.2 · Tools and MCP
+
+2
+00:00:05.300 --> 00:00:09.850
+MCP is an open standard for connecting assistants to other systems.
+
+3
+00:00:10.050 --> 00:00:14.600
+A system publishes its tools once; any assistant that supports MCP can use them.
+
+4
+00:00:15.300 --> 00:00:19.850
+The agent sees what the connected account sees.
+
+5
+00:00:20.050 --> 00:00:24.600
+Give write tools only to the people, and agents, who need them.
+
+6
+00:00:25.300 --> 00:00:29.600
+Next: A2.3  Chat, automation, agentic workflow
+

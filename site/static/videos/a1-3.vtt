@@ -1,0 +1,26 @@
+WEBVTT
+
+1
+00:00:00.300 --> 00:00:04.600
+A1.3 · Context: what the model sees
+
+2
+00:00:05.300 --> 00:00:09.350
+A model only works with its context.
+
+3
+00:00:09.550 --> 00:00:13.600
+Your instructions, the conversation, files, and what its tools returned.
+
+4
+00:00:14.300 --> 00:00:18.850
+Say who you are, give the data, state the rules.
+
+5
+00:00:19.050 --> 00:00:23.600
+Context is limited: for a new task, start a new conversation.
+
+6
+00:00:24.300 --> 00:00:28.600
+Next: A2.1  From chat to agent
+

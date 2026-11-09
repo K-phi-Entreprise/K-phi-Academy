@@ -1,0 +1,26 @@
+WEBVTT
+
+1
+00:00:00.300 --> 00:00:04.600
+A4.1 · Data and credentials
+
+2
+00:00:05.300 --> 00:00:10.350
+Know whether your plan trains on your data and how long it keeps it.
+
+3
+00:00:10.550 --> 00:00:15.600
+Share only what the task needs.
+
+4
+00:00:16.300 --> 00:00:20.350
+Anything in a conversation can end up in logs.
+
+5
+00:00:20.550 --> 00:00:24.600
+Connect systems through connectors; the builder pass never shows a secret.
+
+6
+00:00:25.300 --> 00:00:29.600
+Next: A4.2  Prompt injection
+

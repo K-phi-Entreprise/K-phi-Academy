@@ -1,0 +1,22 @@
+WEBVTT
+
+1
+00:00:00.300 --> 00:00:04.600
+P4.1 · Forecast rules and deterministic replay
+
+2
+00:00:05.300 --> 00:00:09.850
+Each forecast line follows a saved rule, replayed every time.
+
+3
+00:00:10.050 --> 00:00:14.600
+When a figure moves, an input or a rule changed, and both are visible.
+
+4
+00:00:15.300 --> 00:00:22.600
+Typing over a forecast line breaks the link between inputs and output.
+
+5
+00:00:23.300 --> 00:00:27.600
+Next: P4.2  Ledger or open invoices
+

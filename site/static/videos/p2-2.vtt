@@ -1,0 +1,30 @@
+WEBVTT
+
+1
+00:00:00.300 --> 00:00:04.600
+P2.2 · Working capital: DSO, DPO, DIO and trailing windows
+
+2
+00:00:05.300 --> 00:00:09.350
+DSO, DPO and DIO estimate days to collect, to sell stock, and to pay.
+
+3
+00:00:09.550 --> 00:00:13.600
+The cash conversion cycle is DSO plus DIO minus DPO.
+
+4
+00:00:14.300 --> 00:00:17.850
+K-φ uses a three-month trailing window by default.
+
+5
+00:00:18.050 --> 00:00:21.600
+A single month can mislead in either direction.
+
+6
+00:00:22.300 --> 00:00:29.600
+DSO is a pointer. When it moves, open the receivables by customer.
+
+7
+00:00:30.300 --> 00:00:34.600
+Next: P2.3  Covenants and headroom
+

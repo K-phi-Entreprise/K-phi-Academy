@@ -1,0 +1,22 @@
+WEBVTT
+
+1
+00:00:00.300 --> 00:00:04.600
+C4.1 · One data model with FP&A
+
+2
+00:00:05.300 --> 00:00:09.850
+Invoices use the same entity, business unit and third-party selectors as FP&A.
+
+3
+00:00:10.050 --> 00:00:14.600
+The same customer links its invoices to its ledger account.
+
+4
+00:00:15.300 --> 00:00:21.600
+From a DSO to the customers behind it.
+
+5
+00:00:22.300 --> 00:00:26.600
+Next: C4.2  Direction and intercompany rules
+
