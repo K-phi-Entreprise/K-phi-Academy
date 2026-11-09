@@ -1,4 +1,5 @@
 <title>K-φ Academy</title>
+<script>/* dark by default; light only when the visitor chose it */try{if(localStorage.getItem("kphi-academy-theme")==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,11 +16,6 @@
   --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
   color-scheme: dark;
 }
-@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
-  --bg: #F3F5FA; --surface: #FFFFFF; --surface-2: #E9EDF5; --line: #D5DBE7;
-  --fg: #121A2E; --muted: #56607A; --hi: #22307A; --accent: #E6FF00; --accent-ink: #121A2E;
-  --ok: #11845A; --bad: #C23A3A; --ok-bg: rgba(17,132,90,.10); --bad-bg: rgba(194,58,58,.10);
-  --shadow: 0 1px 2px rgba(18,26,46,.06), 0 8px 24px rgba(18,26,46,.06); color-scheme: light; } }
 :root[data-theme="light"] {
   --bg: #F3F5FA; --surface: #FFFFFF; --surface-2: #E9EDF5; --line: #D5DBE7;
   --fg: #121A2E; --muted: #56607A; --hi: #22307A; --accent: #E6FF00; --accent-ink: #121A2E;
@@ -40,7 +36,20 @@ h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.1
 .top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
 .top .wrap { display: flex; align-items: center; gap: 20px; min-height: 60px; flex-wrap: wrap; }
 .mark { display: flex; align-items: baseline; gap: 10px; text-decoration: none; color: var(--fg); }
-.mark b { font: 800 22px/1 var(--f-display); color: var(--hi); letter-spacing: -.01em; }
+.mark .kphi { position: relative; display: inline-block; font: 800 22px/1 Arial, Helvetica, sans-serif; letter-spacing: 1px; color: var(--hi); }
+.mark .kphi::after { content: "K-φ"; position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, transparent 0%, transparent 28%, #C5B358 38%, #36D6A0 47%, #534AB7 54%, #E6007E 62%, transparent 74%, transparent 100%);
+  background-size: 300% 100%; background-repeat: no-repeat; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: brandSweep 2.6s linear .5s 1 both; }
+.mark:hover .kphi::after { animation: brandSweepAgain 2.6s linear 0s 1 both; }
+@keyframes brandSweep { 0% { opacity: 0; background-position: 160% 0; } 10% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; background-position: -160% 0; } }
+@keyframes brandSweepAgain { 0% { opacity: 0; background-position: 160% 0; } 10% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; background-position: -160% 0; } }
+@media (prefers-reduced-motion: reduce) { .mark .kphi::after { animation: none !important; } }
+.theme-toggle { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
+.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle .sun { display: none; }
+:root[data-theme="light"] .theme-toggle .sun { display: block; }
+:root[data-theme="light"] .theme-toggle .moon { display: none; }
 .mark span { font: 600 13px/1 var(--f-display); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .top nav { display: flex; gap: 18px; margin-left: auto; font-size: 14px; }
 .top nav a { color: var(--muted); text-decoration: none; }
@@ -197,7 +206,7 @@ a.lrow:hover { background: var(--surface-2); }
 /* certificate */
 .cert { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); padding: clamp(22px, 5vw, 44px); display: grid; gap: 18px; max-width: 760px; }
 .aurora { position: absolute; inset: 0 0 auto; height: 6px;
-  background: linear-gradient(90deg, transparent, #6B4CFF, #18D2C4, #7BFF7A, #E6FF00, transparent); background-size: 220% 100%; animation: sweep 2.4s ease-out 1 both; }
+  background: linear-gradient(90deg, transparent, #C5B358, #36D6A0, #534AB7, #E6007E, transparent); background-size: 220% 100%; animation: sweep 2.4s ease-out 1 both; }
 @keyframes sweep { from { background-position: 100% 0; } to { background-position: 0% 0; } }
 @media (prefers-reduced-motion: reduce) { .aurora { animation: none; } }
 .cert .holder { font: 800 clamp(28px, 5vw, 40px)/1.1 var(--f-display); }
@@ -210,7 +219,7 @@ a.lrow:hover { background: var(--surface-2); }
 .flash { font-size: 14px; color: var(--hi); }
 .foot { border-top: 1px solid var(--line); background: var(--surface); padding-block: 22px calc(22px + env(safe-area-inset-bottom, 0px)); }
 .foot .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; font-size: 13px; color: var(--muted); }
-.foot b { color: var(--hi); font-family: var(--f-display); }
+.foot b { color: var(--hi); font: 800 14px/1 Arial, Helvetica, sans-serif; letter-spacing: 1px; }
 .foot a { margin-left: auto; }
 
 @media (max-width: 900px) {
@@ -231,12 +240,16 @@ a.lrow:hover { background: var(--surface-2); }
 </style>
 
 <header class="top gut"><div class="wrap">
-  <a class="mark" href="#home"><b>K-φ</b><span>Academy</span></a>
+  <a class="mark" href="#home" aria-label="K-φ Academy, home"><b class="kphi">K-φ</b><span>Academy</span></a>
   <nav aria-label="Main">
     <a href="#home" data-nav="home">Catalogue</a>
     <a href="#course-foundation" data-nav="learn">My learning</a>
     <a href="#certificate-sample" data-nav="cert">Verify</a>
   </nav>
+  <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to light mode" title="Light or dark">
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  </button>
   <div class="acct" id="acct" hidden></div>
 </div></header>
 <main class="gut"><div class="wrap" id="view"></div></main>
@@ -544,6 +557,15 @@ document.addEventListener("click", e => {
   if (e.target.closest("[data-signout]")) { SESSION = null; store.set("kphi-academy-session", null); FLASH = "Signed out of the academy."; location.hash = "home"; render(); return; }
   if (menu && !e.target.closest("#acct")) menu.hidden = true;
 });
+function themeLabel() { const b = $("[data-theme-toggle]"); if (!b) return; const light = document.documentElement.getAttribute("data-theme") === "light"; b.setAttribute("aria-label", light ? "Switch to dark mode" : "Switch to light mode"); }
+document.addEventListener("click", e => {
+  if (!e.target.closest("[data-theme-toggle]")) return;
+  const light = document.documentElement.getAttribute("data-theme") !== "light";
+  if (light) document.documentElement.setAttribute("data-theme", "light"); else document.documentElement.removeAttribute("data-theme");
+  store.set("kphi-academy-theme", light ? "light" : null);
+  themeLabel();
+});
+themeLabel();
 document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = $("#acct .menu"); if (m) m.hidden = true; } });
 
 window.addEventListener("hashchange", () => { if (!/^#signin-/.test(location.hash)) render(); else boot(); });
