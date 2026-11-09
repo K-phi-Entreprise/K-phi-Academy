@@ -154,7 +154,7 @@ a.lrow:hover { background: var(--surface-2); }
 .lesson h1 { font-size: clamp(28px, 4.4vw, 40px); font-weight: 700; letter-spacing: -.01em; }
 .objective { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 12px; align-items: baseline; padding: 14px 16px; border-radius: 12px; background: var(--surface-2); }
 .objective .eyebrow { color: var(--hi); }
-.video { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid var(--line);
+.video { position: relative; display: block; width: 100%; background: #000; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid var(--line);
   background: radial-gradient(120% 90% at 20% 10%, rgba(230,255,0,.10), transparent 55%), linear-gradient(160deg, #141C33, #0B0F1A); display: grid; place-items: center; }
 .video .play { width: 64px; height: 64px; border-radius: 50%; background: #E6FF00; display: grid; place-items: center; }
 .video .play::after { content: ""; border-left: 18px solid #0B0F1A; border-top: 11px solid transparent; border-bottom: 11px solid transparent; margin-left: 5px; }
@@ -311,7 +311,7 @@ function home() {
   <section class="block"><header><h2>Courses</h2><span class="note">Open for the pilot: ${OPEN.map(c => esc(c.title)).join(", ")}. The others follow.</span></header><div class="courses">${rows}</div></section>
   <section class="block"><header><h2>How certification works</h2></header>
     <ol class="steps">
-      <li><b>Learn</b><span>Short lessons on K-φ and on working with AI agents, each with one thing to try in your lab. Videos are being recorded.</span></li>
+      <li><b>Learn</b><span>Short lessons on K-φ and on working with AI agents, each with a short video and one thing to try in your lab. Foundation videos are live; the others follow.</span></li>
       <li><b>Practise</b><span>Your lab is a copy of Halden Trading, a fictional trading group. Reset it any time.</span></li>
       <li><b>Take the exam</b><span>A fresh tenant, a brief, any tools you like, including any LLM. 72 hours.</span></li>
       <li><b>Get verified</b><span>The checker grades what is in the tenant. Pass, and your certificate gets a public verify page.</span></li>
@@ -381,7 +381,7 @@ function lessonView(code) {
       <div class="crumb"><a href="#course-${c.id}">${esc(c.title)}</a> / ${esc(l.ch.code)} ${esc(l.ch.title)} <span class="chip">${esc(l.code)}</span><span class="chip">${l.minutes} min</span></div>
       <h1>${esc(l.title)}</h1>
       <div class="objective"><span class="eyebrow">Objective</span><span>${esc(l.objective)}</span></div>
-      ${l.video ? `<video class="video" controls preload="metadata" src="${esc(l.video)}"${l.poster ? ` poster="${esc(l.poster)}"` : ""}></video>` : ""}
+      ${l.video ? `<video class="video" controls playsinline preload="metadata" src="${esc(l.video)}"${l.poster ? ` poster="${esc(l.poster)}"` : ""}>${l.captions ? `<track kind="captions" srclang="en" label="English" src="${esc(l.captions)}">` : ""}</video>` : ""}
       <div class="prose">${l.read.replace(/<table>/g, '<div class="tablewrap"><table>').replace(/<\/table>/g, "</table></div>")}</div>
       <section class="try"><div class="eyebrow">Try it in your lab</div><div>${esc(l.try)}</div>
         <div class="row"><button class="btn" data-lab>Open lab</button><span class="flash" hidden data-labmsg>Your lab opens with your pilot invitation.</span></div></section>

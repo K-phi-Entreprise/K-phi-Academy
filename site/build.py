@@ -30,6 +30,10 @@ def data():
         for ch in f["chapters"]:
             for l in ch["lessons"]:
                 l["read"] = md(l["read"])
+                v = "videos/" + l["code"].lower().replace(".", "-")
+                if os.path.exists(os.path.join(HERE, "static", v + ".mp4")):
+                    l["video"] = v + ".mp4"
+                    if os.path.exists(os.path.join(HERE, "static", v + ".vtt")): l["captions"] = v + ".vtt"
         out.append(f)
     order = ["foundation", "ai", "fpa", "cash", "build", "implementation"]
     allc = {c["id"]: c for c in out + OUTLINES}
@@ -61,8 +65,7 @@ def main():
     full = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
             '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n' + HEAD +
             '</head>\n<body>\n' + body + '\n</body>\n</html>\n')
-    for f in os.listdir(os.path.join(HERE, "static")):
-        shutil.copy(os.path.join(HERE, "static", f), os.path.join(DIST, f))
+    shutil.copytree(os.path.join(HERE, "static"), DIST, dirs_exist_ok=True)
     with open(os.path.join(DIST, "index.html"), "w", encoding="utf-8") as fh:
         fh.write(full)
     n = sum(len(ch["lessons"]) for c in OPEN for ch in c["chapters"])

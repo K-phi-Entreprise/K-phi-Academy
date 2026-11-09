@@ -1,0 +1,38 @@
+WEBVTT
+
+1
+00:00:00.300 --> 00:00:04.600
+F3.1 · Importing a general ledger
+
+2
+00:00:05.300 --> 00:00:08.850
+The general ledger is the base of FP&A.
+
+3
+00:00:09.050 --> 00:00:12.600
+Statements, KPIs and the forecast all start from it.
+
+4
+00:00:13.300 --> 00:00:18.350
+Each line needs an entity, a date, an account and its amount.
+
+5
+00:00:18.550 --> 00:00:23.600
+Third party and business unit are optional, and worth having.
+
+6
+00:00:24.300 --> 00:00:28.850
+Before importing, open the file and check it.
+
+7
+00:00:29.050 --> 00:00:33.600
+Size is not the problem; inconsistency is.
+
+8
+00:00:34.300 --> 00:00:40.600
+Once the ledger is right, the statements build themselves.
+
+9
+00:00:41.300 --> 00:00:45.600
+Next: F3.2  Accounting connectors
+

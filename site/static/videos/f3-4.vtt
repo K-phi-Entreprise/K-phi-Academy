@@ -1,0 +1,34 @@
+WEBVTT
+
+1
+00:00:00.300 --> 00:00:04.600
+F3.4 · Sheets, files and Data sources
+
+2
+00:00:05.300 --> 00:00:09.350
+Data sources sit in Cash, under Φ Setup.
+
+3
+00:00:09.550 --> 00:00:13.600
+Bank connections, Google Sheets and variables.
+
+4
+00:00:14.300 --> 00:00:18.850
+A register of forward contracts is a good source; a workbook of everything is not.
+
+5
+00:00:19.050 --> 00:00:23.600
+If someone renames a column, the sync breaks.
+
+6
+00:00:24.300 --> 00:00:27.850
+Ledger and invoice files have their own imports.
+
+7
+00:00:28.050 --> 00:00:31.600
+Anything with an API comes in through the developer portal.
+
+8
+00:00:32.300 --> 00:00:36.600
+Next: F3.5  Checking an import
+
