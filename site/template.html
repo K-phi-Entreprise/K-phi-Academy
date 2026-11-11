@@ -23,6 +23,7 @@
   --shadow: 0 1px 2px rgba(18,26,46,.06), 0 8px 24px rgba(18,26,46,.06); color-scheme: light; }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--f-body); margin: 0; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
 a { color: var(--hi); text-underline-offset: 3px; }
@@ -217,6 +218,11 @@ a.lrow:hover { background: var(--surface-2); }
 .valid::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
 .sample { font: 600 11px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border: 1px dashed var(--line); padding: 6px 8px; border-radius: 6px; width: fit-content; }
 .flash { font-size: 14px; color: var(--hi); }
+.watch { display: flex; align-items: center; gap: 12px; margin-top: -10px; }
+.watch .wbar { flex: 1; height: 8px; border-radius: 99px; overflow: hidden; background: var(--surface-2); }
+.watch canvas { display: block; width: 100%; height: 8px; }
+.watch .wtxt { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.watch.ok .wtxt { color: var(--ok); }
 .foot { border-top: 1px solid var(--line); background: var(--surface); padding-block: 22px calc(22px + env(safe-area-inset-bottom, 0px)); }
 .foot .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; font-size: 13px; color: var(--muted); }
 .foot b { color: var(--hi); font: 800 14px/1 Arial, Helvetica, sans-serif; letter-spacing: 1px; }
@@ -381,7 +387,8 @@ function lessonView(code) {
       <div class="crumb"><a href="#course-${c.id}">${esc(c.title)}</a> / ${esc(l.ch.code)} ${esc(l.ch.title)} <span class="chip">${esc(l.code)}</span><span class="chip">${l.minutes} min</span></div>
       <h1>${esc(l.title)}</h1>
       <div class="objective"><span class="eyebrow">Objective</span><span>${esc(l.objective)}</span></div>
-      ${l.video ? `<video class="video" controls playsinline preload="metadata" src="${esc(l.video)}"${l.poster ? ` poster="${esc(l.poster)}"` : ""}>${l.captions ? `<track kind="captions" srclang="en" label="English" src="${esc(l.captions)}">` : ""}</video>` : ""}
+      ${l.video ? `<video class="video" controls playsinline preload="metadata" src="${esc(l.video)}"${l.poster ? ` poster="${esc(l.poster)}"` : ""}>${l.captions ? `<track kind="captions" srclang="en" label="English" src="${esc(l.captions)}">` : ""}</video>
+        <div class="watch" data-watch="${esc(l.code)}"><div class="wbar"><canvas width="760" height="8" aria-hidden="true"></canvas></div><span class="wtxt mono">Watched 0%</span></div>` : ""}
       <div class="prose">${l.read.replace(/<table>/g, '<div class="tablewrap"><table>').replace(/<\/table>/g, "</table></div>")}</div>
       <section class="try"><div class="eyebrow">Try it in your lab</div><div>${esc(l.try)}</div>
         <div class="row"><button class="btn" data-lab>Open lab</button><span class="flash" hidden data-labmsg>Your lab opens with your pilot invitation.</span></div></section>
@@ -390,7 +397,7 @@ function lessonView(code) {
       ${check}
       <div class="pager">
         ${prev ? `<a class="btn" href="#${slug(prev.code)}">← ${esc(prev.code)}</a>` : `<a class="btn" href="#course-${c.id}">← Course</a>`}
-        <button class="btn primary" data-complete="${esc(l.code)}" data-next="${next ? slug(next.code) : "exam-" + c.id}">${done.has(l.code) ? "Completed · next" : "Mark complete · next"} →</button>
+        <button class="btn primary" data-complete="${esc(l.code)}" data-next="${next ? slug(next.code) : "exam-" + c.id}" ${gateOpen(l) ? "" : "disabled"}>${done.has(l.code) ? "Completed · next" : gateOpen(l) ? "Mark complete · next" : gateLabel(l)} →</button>
       </div>
     </article>
   </div>`;
@@ -453,6 +460,63 @@ function certView() {
   </div>`;
 }
 
+/* ── Watching the lesson video ─────────────────────────────────────────────
+   "Mark complete" opens once 90% of the video has actually been played. The
+   browser's own record of played ranges is used, so skipping ahead does not
+   count; ranges add up across visits. The video pauses when the tab is hidden,
+   speed is capped at 2x, and the chapter's self-check must be answered. */
+const NEED = 0.9;
+let WATCH = {};
+try { WATCH = JSON.parse(localStorage.getItem("kphi-academy-watch") || "{}"); } catch (e) { WATCH = {}; }
+const saveWatch = () => { try { localStorage.setItem("kphi-academy-watch", JSON.stringify(WATCH)); } catch (e) {} };
+function mergeRanges(rs) {
+  rs = rs.filter(r => r[1] > r[0]).sort((a, b) => a[0] - b[0]); const out = [];
+  for (const r of rs) { const last = out[out.length - 1]; if (last && r[0] <= last[1] + 0.25) last[1] = Math.max(last[1], r[1]); else out.push([r[0], r[1]]); }
+  return out;
+}
+const coverage = (code) => { const w = WATCH[code]; if (!w || !w.dur) return 0; return Math.min(1, w.ranges.reduce((s, r) => s + (r[1] - r[0]), 0) / w.dur); };
+const lessonByCode = (code) => ALL.find(x => x.code === code);
+function checkAnswered(l) {
+  const lastOfCh = l.ch.lessons[l.ch.lessons.length - 1].code === l.code;
+  if (!lastOfCh || !l.ch.check) return true;
+  const a = (WATCH._checks || {})[l.ch.code] || [];
+  return l.ch.check.every((_, i) => a.includes(i));
+}
+function gateOpen(l) { return done.has(l.code) || ((!l.video || coverage(l.code) >= NEED) && checkAnswered(l)); }
+function gateLabel(l) {
+  if (l.video && coverage(l.code) < NEED) return `Watch the video to continue · ${Math.round(coverage(l.code) * 100)}%`;
+  return "Answer the self-check to continue";
+}
+function refreshGate(code) {
+  const l = lessonByCode(code), b = $(`[data-complete="${code}"]`); if (!l || !b) return;
+  const open = gateOpen(l); b.disabled = !open;
+  b.textContent = (done.has(code) ? "Completed · next" : open ? "Mark complete · next" : gateLabel(l)) + " →";
+}
+function drawWatch(code) {
+  const box = $(`[data-watch="${code}"]`); if (!box) return;
+  const w = WATCH[code] || { ranges: [], dur: 0 }, cv = box.querySelector("canvas"), g = cv.getContext("2d");
+  g.clearRect(0, 0, cv.width, cv.height);
+  g.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#E6FF00";
+  if (w.dur) for (const r of w.ranges) g.fillRect(cv.width * r[0] / w.dur, 0, Math.max(1, cv.width * (r[1] - r[0]) / w.dur), cv.height);
+  const pc = Math.round(coverage(code) * 100);
+  box.querySelector(".wtxt").textContent = done.has(code) || pc >= NEED * 100 ? `Watched ${pc}% · done` : `Watched ${pc}% · ${Math.round(NEED * 100)}% needed`;
+  box.classList.toggle("ok", done.has(code) || pc >= NEED * 100);
+}
+function setupWatch() {
+  const v = $("video.video"), box = $("[data-watch]"); if (!v || !box) return;
+  const code = box.dataset.watch;
+  const record = () => {
+    if (!v.duration || !isFinite(v.duration)) return;
+    const w = WATCH[code] || { ranges: [], dur: v.duration }; w.dur = v.duration;
+    const now = []; for (let i = 0; i < v.played.length; i++) now.push([v.played.start(i), v.played.end(i)]);
+    w.ranges = mergeRanges(w.ranges.concat(now)); WATCH[code] = w; saveWatch(); drawWatch(code); refreshGate(code);
+  };
+  v.addEventListener("timeupdate", record); v.addEventListener("pause", record); v.addEventListener("ended", record); v.addEventListener("loadedmetadata", () => { drawWatch(code); });
+  v.addEventListener("ratechange", () => { if (v.playbackRate > 2) v.playbackRate = 2; });
+  drawWatch(code);
+}
+document.addEventListener("visibilitychange", () => { if (document.hidden) { const v = $("video.video"); if (v && !v.paused) v.pause(); } });
+
 function render() {
   const h = (location.hash || "#home").slice(1);
   let html, nav = "home";
@@ -468,13 +532,14 @@ function render() {
   const cur = h.startsWith("lesson-") ? h.slice(7).toUpperCase().replace(/-/, ".") : null;
   document.querySelectorAll(".ri[data-code]").forEach(a => { if (a.dataset.code === cur) a.setAttribute("aria-current", "page"); });
   const learn = document.querySelector('[data-nav="learn"]'); if (learn) learn.href = "#course-" + current().id;
+  setupWatch();
   window.scrollTo(0, 0);
 }
 
 document.addEventListener("click", e => {
   const t = e.target.closest("button, input[type=radio]");
   if (!t) return;
-  if (t.matches("[data-complete]")) { done.add(t.dataset.complete); save(); location.hash = t.dataset.next; }
+  if (t.matches("[data-complete]")) { if (t.disabled) return; done.add(t.dataset.complete); save(); location.hash = t.dataset.next; }
   else if (t.matches("[data-lab]")) { const m = t.parentElement.parentElement.querySelector("[data-labmsg]") || t.parentElement.querySelector("[data-labmsg]"); if (m) m.hidden = false; }
   else if (t.matches("[data-start]")) $("[data-startmsg]").hidden = false;
   else if (t.matches("[data-li]")) { const m = $("[data-certmsg]"); m.textContent = "In the live version, this opens LinkedIn with the certificate pre-filled."; m.hidden = false; }
@@ -488,6 +553,9 @@ document.addEventListener("click", e => {
     const q = ch.check[+qEl.dataset.q], pick = +t.value;
     qEl.querySelectorAll(".opt").forEach((o, oi) => { o.classList.remove("right", "wrong"); if (oi === q.answer) o.classList.add("right"); else if (oi === pick) o.classList.add("wrong"); });
     const w = qEl.querySelector(".why"); w.textContent = (pick === q.answer ? "Right. " : "Not quite. ") + q.why; w.hidden = false;
+    WATCH._checks = WATCH._checks || {}; const got = WATCH._checks[ch.code] || [];
+    if (!got.includes(+qEl.dataset.q)) got.push(+qEl.dataset.q); WATCH._checks[ch.code] = got; saveWatch();
+    const lastCode = ch.lessons[ch.lessons.length - 1].code; refreshGate(lastCode);
   }
 });
 /* ── Sign in with a K-φ account (K-phi-engine, blocks/academy) ──────────────
@@ -496,7 +564,7 @@ document.addEventListener("click", e => {
    academy key, kept in this browser. Until the production app serves the
    academy routes, sign-in shows only when a K-φ host is chosen: ?api=staging. */
 const AUTH_HOSTS = { prod: "https://k-phi.com", staging: "https://staging.k-phi.com", us: "https://us.k-phi.com", eu: "https://eu.k-phi.com" };
-const DEFAULT_API = null; /* becomes AUTH_HOSTS.prod once production serves /academy/signin */
+const DEFAULT_API = AUTH_HOSTS.prod; /* production serves /academy/signin since 11 Nov 2026 (PR #263) */
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
 (function pickHost() {
   const m = /[?&]api=([a-z]+)/.exec(location.search || "");
