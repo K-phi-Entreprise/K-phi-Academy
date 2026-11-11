@@ -320,10 +320,10 @@ function home() {
         <span class="note">Foundation takes about two hours and is required for every other course.</span>
         <a class="btn primary" href="#${slug(flat[0].code)}">Start Foundation</a></div>`;
   const paths = DATA.paths.map(pa => `
-    <article class="path ${pa.id === "consultant" ? "star" : ""}">
+    <article class="path ${pa.id === "architect" ? "star" : ""}">
       <div class="eyebrow">${esc(pa.hours)}</div><h3>${esc(pa.title)}</h3><p>${esc(pa.who)}</p>
       <div class="seq">${pa.courses.map(c => `<span class="chip">${esc(course(c).code)} ${esc(course(c).title)}</span>`).join("")}</div>
-      <div class="cred">${esc(pa.credential)}</div>
+      <div class="cred">AI-ready</div>
     </article>`).join("");
   const rows = DATA.courses.map(c => `
     <a class="crow" href="#course-${c.id}">
@@ -567,7 +567,8 @@ function certView() {
       <div class="holder">Alex Morgan</div>
       <span class="valid">Valid</span>
       <dl>
-        <div><dt>Credential</dt><dd>AI-Ready Finance Consultant</dd></div>
+        <div><dt>Credential</dt><dd>K-φ Architect</dd></div>
+        <div><dt>AI-ready</dt><dd>Includes AI for finance</dd></div>
         <div><dt>Founding Builder</dt><dd class="mono">#7</dd></div>
         <div><dt>Platform version</dt><dd class="mono">2026.11</dd></div>
         <div><dt>Issued</dt><dd class="mono">2026-12-04</dd></div>

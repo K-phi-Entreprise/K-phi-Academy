@@ -2,7 +2,7 @@
 from content_fpa import L, Q
 
 COURSE = {
-    "id": "ai", "code": "A", "title": "AI for finance", "badge": "AI-Ready", "duration": "About 2 hours", "status": "available",
+    "id": "ai", "code": "A", "title": "AI for finance", "badge": "AI for finance", "duration": "About 2 hours", "status": "available",
     "audience": "Everyone. Required on every path, right after Foundation.", "prereq": "Foundation",
     "summary": "What a model is, what an agent is, how agentic workflows fit in finance, how to keep them safe, and how to prove their output right.",
     "outcomes": [

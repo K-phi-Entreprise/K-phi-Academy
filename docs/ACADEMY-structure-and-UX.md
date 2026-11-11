@@ -21,7 +21,7 @@ Draft, 7 November 2026. Replaces the flat module pages as the master structure; 
 | FP&A Specialist | F + FP&A | FP&A |
 | Cash Specialist | F + Cash | Cash |
 | Builder | F + Build | Build |
-| **Consultant** | F + FP&A + Cash + Build + Implementation | **K-φ Certified Consultant** |
+| **Architect** | F + FP&A + Cash + Build + Implementation | **K-φ Architect** |
 
 Client finance staff typically take Foundation plus one specialist path. Consultants take the full path.
 
@@ -74,7 +74,7 @@ Client finance staff typically take Foundation plus one specialist path. Consult
 | B6. Publishing | B6.1 Functions as APIs · B6.2 Community listing, opt-in · B6.3 Ownership and buyout |
 | Lab and exam | FX forward valuation extension with write-back and approval, one seeded inverted quote |
 
-### Course I: Implementation (about 2 h, Consultant path only)
+### Course I: Implementation (about 2 h, Architect path only)
 
 | Chapter | Lessons |
 |---|---|

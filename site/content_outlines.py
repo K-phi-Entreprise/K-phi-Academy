@@ -15,8 +15,8 @@ OUTLINES = [
         C("B5", "Verifying AI-built logic", [("B5.1", "Building a known-answer case"), ("B5.2", "Signs, dates, units, quotes"), ("B5.3", "Checking what was written, not what was shown"), ("B5.4", "Keeping the test with the extension")]),
         C("B6", "Publishing", [("B6.1", "Functions as APIs"), ("B6.2", "Community listing, opt-in"), ("B6.3", "Ownership and buyout")]),
      ]},
-    {"id": "implementation", "code": "I", "title": "Implementation", "badge": "AI-Ready Finance Consultant", "duration": "About 2 hours", "status": "preparing",
-     "audience": "Consultants. Last course of the Consultant path.", "prereq": "Foundation, AI for finance, FP&A, Cash, Build",
+    {"id": "implementation", "code": "I", "title": "Implementation", "badge": "K-φ Architect", "duration": "About 2 hours", "status": "preparing",
+     "audience": "Implementers. Last course of the Architect path.", "prereq": "Foundation, AI for finance, FP&A, Cash, Build",
      "summary": "Scope, run and hand over a K-φ implementation: discovery, parallel run over two closes, go-live, handover.",
      "chapters": [
         C("I1", "Scoping", [("I1.1", "Discovery questions"), ("I1.2", "Data inventory: what lives where")]),
@@ -26,9 +26,9 @@ OUTLINES = [
 ]
 
 PATHS = [
-    {"id": "practitioner", "title": "AI-Ready Practitioner", "who": "Everyone starting on K-φ", "courses": ["foundation", "ai"], "credential": "AI-Ready Finance Practitioner", "hours": "4 h"},
-    {"id": "fpa", "title": "FP&A Specialist", "who": "Controllers and FP&A teams", "courses": ["foundation", "ai", "fpa"], "credential": "AI-Ready Finance Practitioner · FP&A", "hours": "8 h"},
-    {"id": "cash", "title": "Cash Specialist", "who": "Treasurers and cash managers", "courses": ["foundation", "ai", "cash"], "credential": "AI-Ready Finance Practitioner · Cash", "hours": "8 h"},
-    {"id": "builder", "title": "Builder", "who": "People who build on K-φ with an LLM", "courses": ["foundation", "ai", "build"], "credential": "AI-Ready Finance Practitioner · Build", "hours": "8 h"},
-    {"id": "consultant", "title": "Consultant", "who": "Implementers working with clients", "courses": ["foundation", "ai", "fpa", "cash", "build", "implementation"], "credential": "AI-Ready Finance Consultant", "hours": "18 h"},
+    {"id": "practitioner", "title": "K-φ Practitioner", "who": "Everyone starting on K-φ", "courses": ["foundation", "ai"], "credential": "K-φ Practitioner", "hours": "4 h"},
+    {"id": "fpa", "title": "K-φ FP&A Specialist", "who": "Controllers and FP&A teams", "courses": ["foundation", "ai", "fpa"], "credential": "K-φ FP&A Specialist", "hours": "8 h"},
+    {"id": "cash", "title": "K-φ Treasury Specialist", "who": "Treasurers and cash managers", "courses": ["foundation", "ai", "cash"], "credential": "K-φ Treasury Specialist", "hours": "8 h"},
+    {"id": "builder", "title": "K-φ Builder", "who": "People who build on K-φ with an LLM", "courses": ["foundation", "ai", "build"], "credential": "K-φ Builder", "hours": "8 h"},
+    {"id": "architect", "title": "K-φ Architect", "who": "Implementers who design and run K-φ for clients", "courses": ["foundation", "ai", "fpa", "cash", "build", "implementation"], "credential": "K-φ Architect", "hours": "18 h"},
 ]

@@ -22,7 +22,7 @@ A certification path answers the third directly and helps with the second. The f
 
 ## 3. Curriculum
 
-One foundation module and three tracks. About 16 hours in total for the full Consultant path; 2 hours for Foundation.
+One foundation module and three tracks. About 16 hours in total for the full Architect path; 2 hours for Foundation.
 
 | Module | Covers | Hands-on task (checked automatically) |
 |---|---|---|
@@ -39,7 +39,7 @@ All four modules use one shared dataset. The Build exam reuses the FP&A and Cash
 |---|---|---|
 | Foundation | Module 0 | Everyone (prerequisite) |
 | FP&A / Cash / Build | Foundation + that track | Specialists, client staff |
-| **K-φ Certified Consultant** | Foundation + all three tracks | Implementers |
+| **K-φ Architect** | Foundation + all three tracks | Implementers |
 
 - A client's own finance staff can stop at Foundation plus one track. This is the "internal builder" level and answers the continuity question from the buyer's side.
 - Each certificate is a signed record (holder, level, platform version, date, expiry) with a public page at `academy.k-phi.com/verify/<id>`, showing the checker report and an anonymised summary of the build.

@@ -40,7 +40,7 @@ def data():
     return {"courses": [allc[i] for i in order], "paths": PATHS}
 
 
-DESC = "Become an AI-Ready Finance Practitioner or Consultant, certified by K-φ. Every exam is a real task on a live tenant, graded automatically."
+DESC = "Become a certified K-φ Practitioner, Specialist, Builder or Architect, AI-ready. Every exam is a real task on a live tenant, graded automatically."
 HEAD = (f'<meta name="description" content="{DESC}">\n'
         '<link rel="icon" type="image/svg+xml" href="favicon.svg">\n'
         '<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">\n'
