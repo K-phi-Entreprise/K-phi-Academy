@@ -174,6 +174,8 @@ a.lrow:hover { background: var(--surface-2); }
 .try .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
 .verify { display: grid; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
 .verify .ask { font-weight: 600; }
+.verify .files { display: flex; flex-wrap: wrap; gap: 8px; }
+.verify .files .btn { font-size: 13px; }
 .verify form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .verify input[type=text] { flex: 1 1 220px; min-width: 0; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
 .verify .out { margin: 0; padding: 10px 12px; border-radius: 10px; }
@@ -341,7 +343,7 @@ function home() {
   <section class="block"><header><h2>How certification works</h2></header>
     <ol class="steps">
       <li><b>Learn</b><span>Short lessons on K-φ and on working with AI agents, each with a short captioned video and one thing to try in K-φ.</span></li>
-      <li><b>Practise</b><span>Sign in and you get your own practice company, a copy of Halden Trading: three companies, two years of books, six bank accounts. Try each step there.</span></li>
+      <li><b>Practise</b><span>Sign in and you get your own practice company, a copy of Halden Trading. You set it up yourself from the academy's files, like a client on day one, then try each step there. K-φ checks your work.</span></li>
       <li><b>Take the exam</b><span>A fresh tenant, a brief, any tools you like, including any LLM. 72 hours.</span></li>
       <li><b>Get verified</b><span>The checker grades what is in the tenant. Pass, and your certificate gets a public verify page.</span></li>
     </ol>
@@ -688,7 +690,8 @@ function verifyBox(l) {
   const passed = PASSED[l.code];
   const head = `<div class="eyebrow">Check my work${passed ? " · passed" : ""}</div>`;
   if (!SESSION) return `<div class="verify">${head}<p class="note">Sign in (top right) to have K-φ check this step in your practice company.</p></div>`;
-  const file = c.file ? `<div class="row"><button class="btn" type="button" data-file="${esc(c.file)}">Download ${esc(c.file)}</button><span class="note">Your own variant of the file: import it in your practice company.</span></div>` : "";
+  const fl = (c.files && c.files.length) ? c.files : (c.file ? [c.file] : []);
+  const file = fl.length ? `<div class="files">${fl.map(f => `<button class="btn" type="button" data-file="${esc(f)}">Download ${esc(f)}</button>`).join("")}</div><span class="note">Your own variant of ${fl.length > 1 ? "these files" : "the file"}: import ${fl.length > 1 ? "them" : "it"} in your practice company.</span>` : "";
   const input = c.kind === "answer" ? `<input type="text" name="answer" autocomplete="off" inputmode="${c.unit ? "decimal" : "text"}" placeholder="${c.unit ? "Amount in " + esc(c.unit) : "Your answer"}" aria-label="${esc(c.prompt)}">` : "";
   return `<div class="verify" data-verify="${esc(l.code)}">${head}${file}<div class="ask">${esc(c.prompt)}</div>
     <form data-checkform="${esc(l.code)}">${input}<button class="btn primary" type="submit">${c.kind === "answer" ? "Check" : "Check my company"}</button></form>

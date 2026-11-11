@@ -18,6 +18,103 @@ COURSE = {
     ],
     "chapters": [
         {
+            "code": "S0", "title": "Set up your practice company",
+            "lessons": [
+                {
+                    "code": "S0.1", "title": "Your practice company and its three entities", "minutes": 5,
+                    "objective": "Open your own practice company and give it its three entities, each in its own currency.",
+                    "read": """
+Every lesson in this academy happens in **your practice company**: your own copy of Halden Trading, a distribution group that is moving to K-φ. It is a K-φ company of its own, separate from the account you signed in with, so nothing you do here touches real books.
+
+It starts the way a client's company starts on day one: **empty**. Only the six bank accounts are there, because banks are connected, not typed in. Everything else you bring in yourself, from the files the academy gives you, in four steps:
+
+1. **The entities**, in this lesson.
+2. **The ledger**, 23 months of it (S0.2).
+3. **The bank statements**, one per account (S0.3).
+4. **The open receivables and payables** (S0.4).
+
+Halden Trading has three legal companies. Each keeps its books in its own currency:
+
+| Code | Company | Currency |
+|---|---|---|
+| HTUS | Halden Trading Inc. | USD |
+| HTUK | Halden Trading Ltd | GBP |
+| HTFR | Halden Négoce SAS | EUR |
+
+The codes matter: the ledger file uses them on every line. An entity created with the wrong currency stays wrong in every report that converts it.
+""",
+                    "try": "In your practice company, open Configuration from the FP&A home and create the three entities with exactly these codes, names and currencies.",
+                    "points": [
+                        "Your practice company is yours alone, separate from your own K-φ account.",
+                        "It starts empty, like a client on day one.",
+                        "Each entity has a code and a currency: the ledger relies on both.",
+                    ],
+                },
+                {
+                    "code": "S0.2", "title": "Import the ledger", "minutes": 8,
+                    "objective": "Bring 23 months of general ledger into K-φ, once, and check that every company-month landed.",
+                    "read": """
+The ledger file holds **November 2024 to September 2026** for the three companies: one balanced journal per company per month, about 3,000 lines, with the entity, business unit, account, debit, credit, currency and third party on each line.
+
+Import it from **File import** on the FP&A home. K-φ reads the columns, shows you a preview with the totals of debits and credits, and saves it as one version.
+
+Two things to watch:
+
+- **Once only.** Importing the same file twice doubles every figure. If it happens, delete the extra version and keep one.
+- **The totals.** Debits equal credits in the preview. If they do not, the file did not land as it should.
+
+October 2026 is not in this file. It arrives later, in lesson F3.1, the way a new month arrives at a client.
+""",
+                    "try": "In your practice company, download the ledger file below and import it with File import. Then open the P&L and check that the 23 months are there.",
+                    "points": [
+                        "One file, one import, one version.",
+                        "Debits equal credits before you save.",
+                        "Twice is the most common mistake: delete the extra version.",
+                    ],
+                },
+                {
+                    "code": "S0.3", "title": "Import the bank statements", "minutes": 8,
+                    "objective": "Load eleven months of statements into the six bank accounts, each into its own account.",
+                    "read": """
+The six accounts are already there, with their balance on 31 October 2026, the way a bank connection would show them:
+
+| Bank | Account | Company |
+|---|---|---|
+| JPMorgan Chase | Operating, Payroll | Halden Trading Inc. |
+| Barclays | Operating, Reserve | Halden Trading Ltd |
+| BNP Paribas | Operating, Payroll | Halden Négoce SAS |
+
+What they lack is history. Each statement file holds one account's movements from **December 2025 to October 2026**: customer receipts, supplier payments, payroll, tax, the loan, and the transfers between the group's own accounts.
+
+Import each file from **Import a statement** in Cash, and choose its account by name. A statement in the wrong account is the mistake to avoid: the balances would still add up, but each company's cash would be wrong.
+""",
+                    "try": "In your practice company, download the six statement files below and import each one into its own account from Import a statement in Cash.",
+                    "points": [
+                        "Accounts come from the bank; history comes from the statements.",
+                        "One file per account, into that account.",
+                        "The ledger's cash on each month end equals the bank balance that day.",
+                    ],
+                },
+                {
+                    "code": "S0.4", "title": "Import the open receivables and payables", "minutes": 7,
+                    "objective": "Bring in the invoices still open on 31 October 2026, each in its direction.",
+                    "read": """
+Two files: what customers still owe Halden Trading (**receivables**) and what it still owes its suppliers (**payables**), as at 31 October 2026. Each line has its direction, its company, its customer or supplier, its dates and its open amount.
+
+Import both from the **AR/AP import** in Cash. K-φ maps the columns for you; check the direction before you save.
+
+A few documents are between two group companies: the management fee the subsidiaries owe Halden Trading Inc. They carry the partner company in **Intercompany partner**. K-φ flags them intercompany, so they are left out of the group's cash forecast and matched on both sides.
+""",
+                    "try": "In your practice company, download the two invoice files below and import them with the AR/AP import in Cash, receivables as receivables and payables as payables.",
+                    "points": [
+                        "Receivables and payables are imported in their own direction.",
+                        "Intercompany documents name the partner company.",
+                        "With the ledger, the banks and the invoices in, your company is set up.",
+                    ],
+                },
+            ],
+        },
+        {
             "code": "F1", "title": "Welcome to K-φ",
             "lessons": [
                 {
@@ -408,7 +505,7 @@ When in doubt, stop and ask the client's approver. A delay of an hour is always 
             ],
         },
     ],
-    "lab": "Practise in your own practice company, a copy of Halden Trading: three companies in three currencies, two years of books, banks and invoices.",
+    "lab": "Practise in your own practice company, a copy of Halden Trading. It starts empty: in chapter S0 you set it up from the academy's files, the entities, the ledger, the bank statements and the invoices.",
     "exam": {
         "title": "Exam: set up Halden Trading",
         "situation": "Halden Trading is starting on K-φ. Your exam company is empty: no entities, no users, no ledger.",

@@ -18,7 +18,7 @@ COURSE = {
         "Build a scenario and present what moves in profit, cash and covenant headroom.",
         "Produce a valuation whose inputs are measured from the client's own books.",
     ],
-    "lab": "Practise in your own practice company, a copy of Halden Trading: three companies, 23 months of ledger, and the budget and forecasts you build from it.",
+    "lab": "Practise in your own practice company, a copy of Halden Trading, once you have set it up in Foundation, chapter S0: three companies, 23 months of ledger, and the budget and forecasts you build from it.",
     "chapters": [
         {"code": "P1", "title": "From ledger to statements", "lessons": [
             L("P1.1", "P&L year to date, cumulative balance sheet", 7,

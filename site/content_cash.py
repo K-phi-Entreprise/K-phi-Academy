@@ -11,7 +11,7 @@ COURSE = {
         "Manage receivables and payables, including intercompany, and reconcile them.",
         "Build a cash forecast from banks, invoices and the budget, and spot funding needs early.",
     ],
-    "lab": "Practise in your own practice company, a copy of Halden Trading: six bank accounts with eleven months of statements, open invoices, and the ledger behind them.",
+    "lab": "Practise in your own practice company, a copy of Halden Trading, once you have set it up in Foundation, chapter S0: six bank accounts with eleven months of statements, open invoices, and the ledger behind them.",
     "chapters": [
         {"code": "C1", "title": "Bank structure", "lessons": [
             L("C1.1", "Accounts by entity and by pool", 7,
