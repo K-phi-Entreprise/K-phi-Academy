@@ -384,7 +384,7 @@ A short list. Breaking any of these can cost a client money and a certified buil
 - **Never share a login**, including with an assistant or a colleague.
 - **Never approve your own change.**
 - **Never type over a figure** to make it match; fix its source.
-- **Never leave test data** in a live tenant. Use your lab.
+- **Never leave test data** in a live tenant. Use the demo or a test tenant.
 - **Never loosen a control** (two signers, dual control) without the client's written decision.
 - **Never promise what K-φ does not do.** If you are unsure, ask before you say yes.
 
@@ -393,7 +393,7 @@ When in doubt, stop and ask the client's approver. A delay of an hour is always 
                     "try": "Write down the one rule on this list you have seen broken in a real project, and how it could have been avoided.",
                     "points": [
                         "No shared logins, no self-approval, no typed-over figures.",
-                        "Test in the lab, never in a live tenant.",
+                        "Test in the demo or a test tenant, never in a live tenant.",
                         "Controls change only on the client's written decision.",
                     ],
                 },
@@ -403,7 +403,7 @@ When in doubt, stop and ask the client's approver. A delay of an hour is always 
                  "options": ["Do it, the client asked", "Ask for the decision in writing from the client's approver, and advise against it", "Refuse to work with the client"],
                  "answer": 1, "why": "Controls change only on a written decision. Advise, record, and let the client decide."},
                 {"q": "You need to test an import format. Where do you do it?",
-                 "options": ["In the client's live tenant, then delete the data", "In your lab tenant", "In the client's tenant on a weekend"],
+                 "options": ["In the client's live tenant, then delete the data", "In the demo or a test tenant", "In the client's tenant on a weekend"],
                  "answer": 1, "why": "Test data never goes into a live tenant."},
             ],
         },
