@@ -290,10 +290,10 @@ const lessonsOf = c => c.chapters.flatMap(ch => ch.lessons.map(l => ({ ...l, ch,
 const ALL = OPEN.flatMap(lessonsOf);
 const flat = lessonsOf(course("foundation"));
 
-/* progress: a per-viewer convenience, kept in this browser only */
+/* progress: kept in this browser, and on the learner's account once signed in (syncProgress) */
 let done = new Set();
 try { done = new Set(JSON.parse(localStorage.getItem("kphi-academy-done") || "[]")); } catch (e) {}
-const save = () => { try { localStorage.setItem("kphi-academy-done", JSON.stringify([...done])); } catch (e) {} };
+const save = () => { try { localStorage.setItem("kphi-academy-done", JSON.stringify([...done])); } catch (e) {} pushSoon(); };
 const pct = (c = course("foundation")) => { const ls = lessonsOf(c); return Math.round(100 * ls.filter(l => done.has(l.code)).length / ls.length); };
 const nextUp = (c = course("foundation")) => { const ls = lessonsOf(c); return ls.find(l => !done.has(l.code)) || ls[ls.length - 1]; };
 const current = () => OPEN.find(c => pct(c) > 0 && pct(c) < 100) || OPEN.find(c => pct(c) < 100) || OPEN[0];
@@ -365,7 +365,7 @@ function courseView(id) {
       ${chapters}
     </div>
     <aside class="side">
-      ${open ? `<div class="panel"><h3>Your progress</h3><div class="bar"><i style="width:${p}%"></i></div><p class="mono">${p}% · next: ${esc(n.code)}</p><a class="btn primary" href="#${slug(n.code)}">${p ? "Resume" : "Start course"}</a></div>
+      ${open ? `<div class="panel"><h3>Your progress</h3><div class="bar"><i style="width:${p}%"></i></div><p class="mono">${p}% of lessons · next: ${esc(n.code)}</p><p class="note">${EXAMS_DONE[c.id] && EXAMS_DONE[c.id].passed ? "Exam passed: this course is complete." : "The course is complete once its exam is passed."}${SESSION ? " Saved to your account." : " Sign in to keep your progress on every device."}</p><a class="btn primary" href="#${slug(n.code)}">${p ? "Resume" : "Start course"}</a></div>
       <div class="panel"><h3>Practise</h3><p>${esc(c.lab)}</p>${practiceLink("practice")}</div>
       <div class="panel"><h3>Exam</h3><p>One task on a fresh tenant, graded by the checker. Three attempts, 24 hours apart.</p><a class="btn" href="#exam-${c.id}">See the exam</a></div>`
       : `<div class="panel"><h3>In preparation</h3><p>The chapters are set; lessons are being written and recorded. Foundation is open now and is the prerequisite.</p><a class="btn primary" href="#course-foundation">Go to Foundation</a></div>`}
@@ -600,7 +600,38 @@ function certView() {
 const NEED = 0.9;
 let WATCH = {};
 try { WATCH = JSON.parse(localStorage.getItem("kphi-academy-watch") || "{}"); } catch (e) { WATCH = {}; }
-const saveWatch = () => { try { localStorage.setItem("kphi-academy-watch", JSON.stringify(WATCH)); } catch (e) {} };
+const saveWatch = () => { try { localStorage.setItem("kphi-academy-watch", JSON.stringify(WATCH)); } catch (e) {} pushSoon(); };
+
+/* ── Progress on the account (K-phi-engine, blocks/academy/practice.js) ──
+   Completed lessons and watched parts of videos follow the learner from one
+   device to another; the server merges, so nothing completed is ever lost. */
+let EXAMS_DONE = {}, _pushT = null;
+const _cov = w => (w && w.ranges ? w.ranges.reduce((a, r) => a + Math.max(0, r[1] - r[0]), 0) : 0);
+function pushSoon() { if (!SESSION) return; clearTimeout(_pushT); _pushT = setTimeout(pushProgress, 1500); }
+async function pushProgress() {
+  if (!SESSION) return null;
+  try {
+    const r = await fetch(SESSION.api + "/api/academy/progress", { method: "PUT", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: JSON.stringify({ done: [...done], watch: WATCH }) });
+    return r.ok ? await r.json() : null;
+  } catch (e) { return null; }
+}
+function takeProgress(d) {
+  if (!d) return false;
+  let changed = false;
+  for (const c of d.done || []) if (!done.has(c)) { done.add(c); changed = true; }
+  for (const k of Object.keys(d.watch || {})) {
+    if (k === "_checks") { WATCH._checks = WATCH._checks || {}; for (const ch of Object.keys(d.watch._checks)) { const u = [...new Set([].concat(WATCH._checks[ch] || [], d.watch._checks[ch]))]; if (u.length !== (WATCH._checks[ch] || []).length) { WATCH._checks[ch] = u; changed = true; } } continue; }
+    if (_cov(d.watch[k]) > _cov(WATCH[k])) { WATCH[k] = d.watch[k]; changed = true; }
+  }
+  if (d.checks) { for (const k of Object.keys(d.checks)) if (!PASSED[k]) { PASSED[k] = d.checks[k]; changed = true; } }
+  if (d.exams) { EXAMS_DONE = d.exams; changed = true; }
+  try { localStorage.setItem("kphi-academy-done", JSON.stringify([...done])); localStorage.setItem("kphi-academy-watch", JSON.stringify(WATCH)); } catch (e) {}
+  return changed;
+}
+async function syncProgress() {
+  if (!SESSION) return false;
+  return takeProgress(await pushProgress());   /* the PUT answers with the merged progress */
+}
 function mergeRanges(rs) {
   rs = rs.filter(r => r[1] > r[0]).sort((a, b) => a[0] - b[0]); const out = [];
   for (const r of rs) { const last = out[out.length - 1]; if (last && r[0] <= last[1] + 0.25) last[1] = Math.max(last[1], r[1]); else out.push([r[0], r[1]]); }
@@ -833,10 +864,11 @@ async function boot() {
   }
   render();
   checkSession();
-  /* the checks arrive after the first paint; redraw only a lesson that has one */
+  /* the checks and the saved progress arrive after the first paint; redraw a lesson or course page they change */
   await loadChecks();
+  const synced = await syncProgress();
   const h = location.hash || "";
-  if (CHECKCAT && h.startsWith("#lesson-") && CHECKCAT[h.slice(8).toUpperCase().replace(/-/, ".")]) render();
+  if ((synced && /^#(course-|lesson-|home|$)/.test(h || "#home")) || (CHECKCAT && h.startsWith("#lesson-") && CHECKCAT[h.slice(8).toUpperCase().replace(/-/, ".")])) render();
 }
 boot();
 </script>
