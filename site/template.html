@@ -352,7 +352,7 @@ function courseView(id) {
     </div>
     <aside class="side">
       ${open ? `<div class="panel"><h3>Your progress</h3><div class="bar"><i style="width:${p}%"></i></div><p class="mono">${p}% · next: ${esc(n.code)}</p><a class="btn primary" href="#${slug(n.code)}">${p ? "Resume" : "Start course"}</a></div>
-      <div class="panel"><h3>Lab</h3><p>${esc(c.lab)}</p><button class="btn" data-lab>Open lab</button><p class="flash" hidden data-labmsg>Your lab opens with your pilot invitation.</p></div>
+      <div class="panel"><h3>Practise</h3><p>${esc(c.lab)}</p>${practiceLink("demo")}</div>
       <div class="panel"><h3>Exam</h3><p>One task on a fresh tenant, graded by the checker. Three attempts, 24 hours apart.</p><a class="btn" href="#exam-${c.id}">See the exam</a></div>`
       : `<div class="panel"><h3>In preparation</h3><p>The chapters are set; lessons are being written and recorded. Foundation is open now and is the prerequisite.</p><a class="btn primary" href="#course-foundation">Go to Foundation</a></div>`}
     </aside>
@@ -363,6 +363,14 @@ function railItems(c) {
   return c.chapters.map(ch => `<div class="rch">${esc(ch.code)} · ${esc(ch.title)}</div>` +
     ch.lessons.map(l => `<a class="ri" href="#${slug(l.code)}" data-code="${esc(l.code)}">${tick(l.code)}<span><span class="mono">${esc(l.code)}</span> ${esc(l.title)}</span></a>`).join("")).join("") +
     `<div class="rfoot"><a class="ri" href="#exam-${c.id}"><span class="tick"></span><span>${esc(c.exam.title)}</span></a></div>`;
+}
+
+/* Practice happens in K-φ itself: the demo (no account, nothing saved) or the learner's own account.
+   Lab tenants with Halden Trading come with the exams. */
+function practiceLink(kind) {
+  const host = (SESSION && SESSION.api) || apiBase() || AUTH_HOSTS.prod;
+  if (kind === "account") return `<div class="row"><a class="btn" href="${esc(host)}/app" target="_blank" rel="noopener">Open K-φ</a><span class="note">${SESSION ? "Your account opens in a new tab." : "Sign in first (top right) to get your account."}</span></div>`;
+  return `<div class="row"><a class="btn" href="${esc(host)}/login" target="_blank" rel="noopener">Open the K-φ demo</a><span class="note">On the sign-in page, choose <b>Continue in Demo Mode</b>. Nothing you do there is saved.</span></div>`;
 }
 
 function lessonView(code) {
@@ -390,8 +398,8 @@ function lessonView(code) {
       ${l.video ? `<video class="video" controls playsinline preload="metadata" src="${esc(l.video)}"${l.poster ? ` poster="${esc(l.poster)}"` : ""}>${l.captions ? `<track kind="captions" srclang="en" label="English" src="${esc(l.captions)}">` : ""}</video>
         <div class="watch" data-watch="${esc(l.code)}"><div class="wbar"><canvas width="760" height="8" aria-hidden="true"></canvas></div><span class="wtxt mono">Watched 0%</span></div>` : ""}
       <div class="prose">${l.read.replace(/<table>/g, '<div class="tablewrap"><table>').replace(/<\/table>/g, "</table></div>")}</div>
-      <section class="try"><div class="eyebrow">Try it in your lab</div><div>${esc(l.try)}</div>
-        <div class="row"><button class="btn" data-lab>Open lab</button><span class="flash" hidden data-labmsg>Your lab opens with your pilot invitation.</span></div></section>
+      <section class="try"><div class="eyebrow">Try it</div><div>${esc(l.try)}</div>
+        ${/\bIn the demo\b/.test(l.try) ? practiceLink("demo") : /K-φ account/.test(l.try) ? practiceLink("account") : ""}</section>
       <section><div class="eyebrow" style="margin-bottom:10px">Key points</div><ul class="keys">${l.points.map(k => `<li>${esc(k)}</li>`).join("")}</ul></section>
       ${l.resources ? `<section><div class="eyebrow" style="margin-bottom:10px">Resources</div><div class="res">${l.resources.map(r => `<span class="chip">${esc(r)} · pilot</span>`).join("")}</div></section>` : ""}
       ${check}
@@ -540,7 +548,6 @@ document.addEventListener("click", e => {
   const t = e.target.closest("button, input[type=radio]");
   if (!t) return;
   if (t.matches("[data-complete]")) { if (t.disabled) return; done.add(t.dataset.complete); save(); location.hash = t.dataset.next; }
-  else if (t.matches("[data-lab]")) { const m = t.parentElement.parentElement.querySelector("[data-labmsg]") || t.parentElement.querySelector("[data-labmsg]"); if (m) m.hidden = false; }
   else if (t.matches("[data-start]")) $("[data-startmsg]").hidden = false;
   else if (t.matches("[data-li]")) { const m = $("[data-certmsg]"); m.textContent = "In the live version, this opens LinkedIn with the certificate pre-filled."; m.hidden = false; }
   else if (t.matches("[data-copy]")) {

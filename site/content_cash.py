@@ -11,7 +11,7 @@ COURSE = {
         "Manage receivables and payables, including intercompany, and reconcile them.",
         "Build a cash forecast from banks, invoices and the budget, and spot funding needs early.",
     ],
-    "lab": "Your lab holds Halden Trading's six bank accounts, three months of statements and open invoices. Reset it any time.",
+    "lab": "Practise in the K-φ demo: sample companies with bank accounts, transactions, invoices and payments. It needs no account and nothing you do is saved.",
     "chapters": [
         {"code": "C1", "title": "Bank structure", "lessons": [
             L("C1.1", "Accounts by entity and by pool", 7,
@@ -26,7 +26,7 @@ The same account appears in both views. Choose names people recognise: "HSBC GBP
 
 Accounts held with payment providers are shown apart from bank accounts. They are not part of the bank account list, so they never inflate the bank position by mistake.
 """,
-              "In your lab, check that each of the six accounts belongs to the right entity.",
+              "In the demo, check which entity each bank account belongs to.",
               ["Every account belongs to one entity.", "Pools group accounts managed together.", "Payment-provider accounts stay out of the bank list."]),
             L("C1.2", "Header accounts and reserves", 6,
               "Model cash pools with a header account.",
@@ -41,7 +41,7 @@ Set the header so that:
 
 Ask the treasurer how the pool works in practice: zero-balancing at day end, target balances, or manual transfers. The setup should follow what the bank actually does.
 """,
-              "In your lab, create a pool for the two GBP accounts with the main one as header.",
+              "In the demo, look at how accounts are grouped, and decide which one you would make the header of a pool.",
               ["A header account holds the pool's reserve.", "Transfers inside a pool are not income or spending.", "Follow how the bank actually sweeps."]),
             L("C1.3", "Daily balances and history", 5,
               "Use stored balances to answer questions about the past.",
@@ -54,7 +54,7 @@ K-φ stores each account's balance **day by day**. That lets you rebuild the pos
 
 When a bank connection is renewed after a gap, check that the missing days were filled. A gap shows as a flat line in the chart, which is easy to mistake for a quiet week.
 """,
-              "In your lab, read the group position on the last day of the first month of statements.",
+              "In the demo, read the group position on a date in the past.",
               ["Balances are stored daily.", "Any past position can be rebuilt.", "Check for gaps after a connection is renewed."]),
         ], "check": [
             Q("Why are payment-provider accounts kept out of the bank account list?", ["They are not real accounts", "So they never inflate the bank position by mistake", "Banks require it"], 1, "They are shown apart so the bank position stays what it says."),
@@ -77,7 +77,7 @@ Write rules from the largest flows down:
 
 A good set of rules categorises most lines. The rest goes to review.
 """,
-              "In your lab, write a rule for the payroll payments and run it.",
+              "In the demo, open the transactions and find three that a payroll or tax rule would catch.",
               ["Categories make the position readable.", "Rules match counterparty, reference or pattern.", "Start with the largest, most regular flows."]),
             L("C2.2", "Reviewing what remains", 5,
               "Keep uncategorised transactions at zero.",
@@ -91,7 +91,7 @@ For each line, decide:
 
 Track the number of uncategorised lines. It should trend to zero and stay there. An "Other" category that keeps growing is a review that is not happening.
 """,
-              "In your lab, clear the review list so no transaction stays uncategorised.",
+              "In the demo, find the transactions without a category and decide, for each, one-off or rule.",
               ["Review on a fixed rhythm.", "One-off: categorise; recurring: write a rule.", "A growing \"Other\" means review is not happening."]),
             L("C2.3", "Intercompany movements", 7,
               "Stop intercompany flows from inflating the group position.",
@@ -106,7 +106,7 @@ So:
 - **Match them**: same amount (after conversion when the two accounts are in different currencies), close dates, the two group companies as counterparties.
 - **Check timing**: a transfer that leaves on the 30th and arrives on the 2nd sits in neither account at month end. Note it as cash in transit.
 """,
-              "In your lab, find one intercompany transfer and check both sides are categorised as intercompany.",
+              "In the demo, find one transfer between two group companies and check how both sides are categorised.",
               ["For the group, intercompany is neither income nor spending.", "Categorise and match both sides.", "Note cash in transit at period end."]),
             L("C2.4", "Rule suggestions with an assistant", 6,
               "Use an assistant to propose categorisation rules, and review them before they run.",
@@ -125,7 +125,7 @@ Then review before any rule runs:
 
 You create the rules in K-φ yourself, after review. The assistant proposes; the rules you approve are what run.
 """,
-              "In your lab, ask your assistant for rule proposals on the review list, reject one that is too broad, and create the others.",
+              "Export a few uncategorised bank lines you have, ask your assistant for rule proposals with the prompt above, and reject one that is too broad.",
               ["The assistant finds patterns and proposes rules.", "Review breadth, intercompany and personal data.", "You create the rules after review."]),
         ], "check": [
             Q("Which flows should rules cover first?", ["The rarest ones", "The largest and most regular", "Card payments"], 1, "Payroll, tax and the largest counterparties cover most of the volume."),
@@ -147,7 +147,7 @@ The chart always shows today's date, so actuals and forecast are clearly separat
 
 Agree with the treasurer on the two or three views used every week, and use the same ones each time, so the numbers are comparable from one week to the next.
 """,
-              "In your lab, build a worksheet with entities in rows, weeks in columns, and filter on customer receipts.",
+              "In the demo, open the cash worksheet and set entities in rows, weeks in columns.",
               ["Chart on top, pivot-style report below.", "Rows and columns are yours to choose.", "Use the same weekly views every time."]),
             L("C3.2", "Presenting the position", 5,
               "Give management the position in three lines.",
@@ -160,7 +160,7 @@ Management rarely wants the worksheet. It wants three things:
 
 Use the same layout every time, so the reader learns where to look. State the exchange rates and their date when you convert currencies.
 """,
-              "In your lab, write the three-line position for the group as of the last statement date.",
+              "In the demo, write the three-line position for the group as of today.",
               ["Cash today, what changed, what is coming.", "Same layout every time.", "State exchange rates and their date."]),
         ], "check": [
             Q("What separates actuals from forecast on the worksheet chart?", ["The colour of the bars", "Today's date", "Nothing"], 1, "The chart always shows the real current date."),
@@ -179,7 +179,7 @@ One point needs care: **payer and payee swap** between receivables and payables.
 
 Because the third party is the same object in the ledger and in the invoices, you can go from a DSO to the customers behind it, and from a supplier's invoices to its ledger account.
 """,
-              "In your lab, filter the receivables on one customer, then open that customer in FP&A.",
+              "In the demo, filter the receivables on one customer, then open that customer in FP&A.",
               ["Invoices use the same selectors as FP&A.", "Payer and payee swap between AR and AP.", "Third parties link invoices and ledger."]),
             L("C4.2", "Direction and intercompany rules", 7,
               "Know how K-φ decides whether a document is a receivable, a payable or intercompany.",
@@ -194,7 +194,7 @@ Intercompany invoices matter twice: they must not count in group receivables and
 
 When the direction looks wrong, check the parties' names first. A group company spelled differently in the file is the most common cause.
 """,
-              "In your lab, import the invoice file and find the documents flagged intercompany.",
+              "In the demo, find invoices between two group companies and check they are flagged intercompany.",
               ["Group company paid: receivable. Group company paying: payable.", "Both parties in the group: intercompany.", "Wrong direction usually means a name mismatch."]),
             L("C4.3", "Import mappings", 5,
               "Handle files from any system, and teach K-φ once.",
@@ -205,7 +205,7 @@ When neither party in a document is recognised, a **mapping to a group company i
 
 Review those questions carefully on the first import. A wrong answer is remembered too, and it will send every later document from that source to the wrong company.
 """,
-              "In your lab, import the second invoice file and answer the mapping question it asks.",
+              "Take an invoice export you have and list which parties a first import would ask you to map.",
               ["Varied export formats are accepted.", "Unknown parties: the import asks once and remembers.", "A wrong answer is remembered too; check the first import."]),
             L("C4.4", "Reconciliation and tolerances", 6,
               "Match payments to invoices and see what is still open.",
@@ -218,7 +218,7 @@ A good starting point: a small fixed amount for bank fees, and no percentage unt
 
 You match customer receipts to invoices from the receivables ledger, not from the payments screen.
 """,
-              "In your lab, set a matching tolerance and run reconciliation on the receivables.",
+              "In the demo, find an invoice that is partly paid and check what remains open.",
               ["Each invoice shows status, paid date and reconciliation.", "Tolerance in percent or amount; keep it narrow.", "Review what remains unmatched each week."]),
         ], "check": [
             Q("Halden Trading Ltd pays Halden Négoce SAS for goods. What is the document?", ["A receivable", "A payable", "Intercompany"], 2, "Both parties are group companies."),
@@ -241,7 +241,7 @@ The usual view for treasury is **13 weeks**, week by week: long enough to see a 
 
 When a forecast surprises you, find which input drives the surprise before you change anything.
 """,
-              "In your lab, open the cash forecast and identify which input drives the next four weeks.",
+              "In the demo, open the cash forecast and identify which input drives the next four weeks.",
               ["Banks, invoices, budget and known movements.", "Invoices for the near term, budget further out.", "Find the driving input before changing anything."]),
             L("C5.2", "Category rules and versions", 6,
               "Keep the cash forecast reproducible.",
@@ -252,7 +252,7 @@ The same inputs always give the same forecast. When the forecast moves, either a
 
 Keep one rule per category and write down why it was chosen. "Payroll: budget, paid on the 25th" is enough.
 """,
-              "In your lab, change the rule for supplier payments and compare the forecast before and after.",
+              "In the demo, change the rule for supplier payments and compare the forecast before and after.",
               ["Each category has one saved, versioned rule.", "Same inputs, same forecast.", "Write down why each rule was chosen."]),
             L("C5.3", "Funding needs and overdraft windows", 7,
               "Spot when an entity will run short, and for how long.",
@@ -267,7 +267,7 @@ For each window, the treasurer needs three answers:
 
 Look at funding needs by entity, not only for the group. A group in surplus can still have one company that cannot pay its suppliers.
 """,
-              "In your lab, find the first funding need for Halden Négoce SAS and note its window.",
+              "In the demo, open Funding needs and note the first window: entity, start, end, amount.",
               ["A funding need shows start and end dates.", "The end date can be open.", "Read funding needs per entity, not only for the group."]),
         ], "check": [
             Q("The group forecast is positive. Can an entity still have a funding need?", ["No", "Yes", "Only in another currency"], 1, "A group surplus does not pay one company's suppliers."),
@@ -289,7 +289,7 @@ Before a run, check:
 
 Changed beneficiary details are the most common route for payment fraud. K-φ pays a new beneficiary, or one whose account changed, only 24 hours after another person approved it. Use that time: confirm the change by a call to a known number, not by replying to the email that asked for it.
 """,
-              "In your lab, prepare a payment run for three supplier invoices and send it for approval.",
+              "In the demo, open the payment runs and follow one from preparation to signature.",
               ["Payment runs live with payables.", "Supplier payments and group transfers share one mechanism.", "Confirm changed bank details by phone."]),
             L("C6.2", "Two signers by default", 5,
               "Apply the payment control auditors look at first.",
@@ -305,7 +305,7 @@ The consequence is deliberate: a tenant with a single user cannot pay. Like a ba
 
 Review who can sign, and their limits, each quarter, along with the roles review. A signer who has left the company is still a signer until someone removes them.
 """,
-              "In your lab, check that the preparer of your payment run cannot approve it.",
+              "In the demo, open Payment rights and check that nobody can both prepare and sign.",
               ["Preparer, approver and two signers are four different people.", "Every signer has a limit; rights changes need a second admin.", "Review signers and limits every quarter."]),
         ], "check": [
             Q("A supplier emails new bank details. What do you do?", ["Update them", "Confirm by calling a known number", "Reply to the email to confirm"], 1, "Changed bank details are the most common fraud route."),

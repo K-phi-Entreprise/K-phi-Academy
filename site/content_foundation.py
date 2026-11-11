@@ -36,7 +36,7 @@ The three share one data model. A figure is imported once and reused everywhere,
 
 As an implementer, this is the idea to keep in mind: **custom logic belongs inside the system that holds the data**, not in a file next to it.
 """,
-                    "try": "Open your lab tenant and switch between the workspaces with the tabs at the top of the left panel.",
+                    "try": "In the demo, switch between the workspaces with the tabs at the top of the left panel.",
                     "points": [
                         "K-φ is one system of record for FP&A, Cash and Build.",
                         "Data comes in once and is reused across workspaces.",
@@ -60,7 +60,7 @@ Every page has a back button. Every dialog is a K-φ dialog, never a browser pop
 
 K-φ works in light and dark themes. Everything should stay readable in both; if something doesn't, that is a bug worth reporting.
 """,
-                    "try": "In your lab, change the entity selector in the top bar, then open the same page in FP&A and in Cash and check that the filter follows you.",
+                    "try": "In the demo, change the entity selector in the top bar, then open a page in FP&A and one in Cash and check that the filter follows you.",
                     "points": [
                         "Click a workspace tab to switch; the left panel follows it.",
                         "Top-bar selectors filter FP&A and Cash the same way.",
@@ -91,7 +91,7 @@ Two setup decisions are hard to change later, so take them early with the client
 
 A wrong entity list shows up everywhere downstream: consolidated totals, intercompany, cash pools.
 """,
-                    "try": "In your lab, open the entity list and note each entity's currency. Then find one third party that appears both in FP&A and in Cash.",
+                    "try": "In the demo, open the entity selector and note the entities and their currencies. Then find one customer that appears both in FP&A and in Cash.",
                     "points": [
                         "A tenant is one client, fully isolated.",
                         "Entities are legal companies, each with a currency.",
@@ -139,7 +139,7 @@ Three habits keep a tenant clean:
 
 An LLM never gets an admin's credentials. When a builder works with an assistant, the assistant acts through the builder pass, with the builder's rights, never through someone else's account.
 """,
-                    "try": "In your lab, invite a user as viewer and check what they cannot change.",
+                    "try": "On paper: list five people of a client team you know and give each one of the four roles. Who would be admin, and why?",
                     "points": [
                         "Roles follow the job, not seniority.",
                         "One login per person, removed the day they leave.",
@@ -164,7 +164,7 @@ The rule for implementers is simple: **the person who prepares a change never ap
 
 When you design a client's setup, write down who prepares and who approves for each sensitive action. That page is what an auditor will ask for first.
 """,
-                    "try": "In your lab, name an approver, then prepare a Build change with another user and watch it wait for approval.",
+                    "try": "On paper: for the same team, write who prepares and who approves each Build change. Check nobody does both.",
                     "points": [
                         "Sensitive changes take effect only after approval.",
                         "Approvers come from the roles already in the account.",
@@ -187,7 +187,7 @@ A short checklist for a new client:
 2. Every approver has two-factor authentication on.
 3. No user holds both preparer and approver duties for the same action.
 """,
-                    "try": "In your lab, turn on two-factor authentication for your own user.",
+                    "try": "In the demo, open Cash, Payments, Payment rights and read who can prepare, approve and sign, and each signer's limit.",
                     "points": [
                         "Two signers for payments is the default; keep it.",
                         "Admins and approvers should use two-factor authentication.",
@@ -235,7 +235,7 @@ Before you import, open the file and look:
 
 Large files are fine. What matters is that the file is complete and consistent.
 """,
-                    "try": "In your lab, import the sample ledger provided with this lesson and open the import summary.",
+                    "try": "In the demo, open the P&L and drill into one line until you reach the ledger lines behind it.",
                     "points": [
                         "The ledger is the base of everything in FP&A.",
                         "Check completeness and balance before importing.",
@@ -259,7 +259,7 @@ Invoices imported this way follow the direction rule: when a group company is pa
 
 If the client's system has no connector, a ledger export (lesson F3.1) and an invoice file work the same way.
 """,
-                    "try": "Read the list of connected systems in your lab's Data sources page and note which entity each feeds.",
+                    "try": "In the demo, open Cash, Φ Setup, Data sources and note what is connected and which entity each source feeds.",
                     "points": [
                         "QuickBooks and Xero connect directly; others use files.",
                         "Map each connected company to the right entity.",
@@ -283,7 +283,7 @@ Agree with the treasurer on the account names before go-live. Names are what peo
 
 Bank connections expire after a period set by the bank, after which the client has to authorise again. Put a reminder in the client's calendar; an expired connection is the most common reason for a "missing" balance.
 """,
-                    "try": "In your lab, group the sample accounts by entity and create one pool.",
+                    "try": "In the demo, open the bank accounts and note which entity each belongs to and how they are grouped.",
                     "points": [
                         "Balances are stored daily, so past positions can be rebuilt.",
                         "Organise accounts by entity and by pool.",
@@ -306,7 +306,7 @@ Good practice with a sheet as a source:
 
 Anything that has an API can also come in through the developer portal. That route belongs to Build and is covered in the Build course.
 """,
-                    "try": "In your lab, connect the sample Google Sheet as a data source and run Sync all.",
+                    "try": "In the demo, open Data sources and look at the Google Sheets section. Think of one sheet a client of yours could connect.",
                     "points": [
                         "Sheets and variables connect under Φ Setup, Data sources; files use their own imports.",
                         "One sheet per purpose, with fixed column names.",
@@ -330,7 +330,7 @@ When you find a problem, **fix it at its source**: correct the file or the mappi
 
 Keep a short note for each import: what was loaded, what you checked, what you fixed. It takes two minutes and saves an hour at the first review.
 """,
-                    "try": "In your lab, compare the imported sample ledger's December closing balance per entity with the reference figures supplied with the sample ledger (lesson F3.1).",
+                    "try": "Take a ledger export you have and run the three checks on it: coverage, totals, and what would not land.",
                     "points": [
                         "Check coverage, totals, and what did not land.",
                         "Compare with a figure the client trusts.",
@@ -368,7 +368,7 @@ Use the audit trail to:
 
 Read it like a ledger: filter by user, by period or by object, then read down in time order. If a change has no explanation, ask the person who made it the same day; memories fade fast.
 """,
-                    "try": "In your lab, find the entry for the user you created in lesson F2.1.",
+                    "try": "In the demo, find the audit trail and filter it by user and by period.",
                     "points": [
                         "Every change and every approval is recorded.",
                         "Filter by user, period or object, then read in order.",
@@ -390,7 +390,7 @@ A short list. Breaking any of these can cost a client money and a certified buil
 
 When in doubt, stop and ask the client's approver. A delay of an hour is always cheaper than an unexplained change.
 """,
-                    "try": "Reread your notes from lesson F3.5 and check none of these rules was broken in your lab.",
+                    "try": "Write down the one rule on this list you have seen broken in a real project, and how it could have been avoided.",
                     "points": [
                         "No shared logins, no self-approval, no typed-over figures.",
                         "Test in the lab, never in a live tenant.",
@@ -408,7 +408,7 @@ When in doubt, stop and ask the client's approver. A delay of an hour is always 
             ],
         },
     ],
-    "lab": "Your lab is a practice copy of Halden Trading. Use it freely; you can reset it at any time.",
+    "lab": "Practise in the K-φ demo: sample companies with FP&A and Cash data. It needs no account and nothing you do is saved.",
     "exam": {
         "title": "Exam: set up Halden Trading",
         "report": [

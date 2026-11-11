@@ -11,7 +11,7 @@ COURSE = {
         "Design a finance workflow with an agent, with approvals at the right points.",
         "Keep data and credentials safe, and verify an AI's output before anyone relies on it.",
     ],
-    "lab": "Your lab is a copy of Halden Trading that your AI assistant can reach through K-φ's connector. Reset it any time.",
+    "lab": "Practise in your own K-φ account (the one you signed in with), connected to your AI assistant, and in the K-φ demo, which needs no account.",
     "chapters": [
         {"code": "A1", "title": "What a model is", "lessons": [
             L("A1.1", "What a language model does", 7,
@@ -27,7 +27,7 @@ Three facts follow, and they matter in finance:
 
 An **assistant** (Claude, ChatGPT, Gemini and others) is a model wrapped in a product: a chat window, file uploads, connectors, sometimes memory. In this course, "model" means the engine and "assistant" the product you use.
 """,
-              "Ask your assistant for Halden Trading's cash position today, without connecting anything. Note what it says.",
+              "Ask your assistant for a company's cash position today, without connecting anything. Note what it says.",
               ["A model predicts text; it learns to write, reason and code from that.", "Without tools it has no live data.", "Plausible is not the same as right."]),
             L("A1.2", "Strong and weak points for finance work", 8,
               "Know which finance tasks to give a model, and which to keep away from it.",
@@ -81,7 +81,7 @@ An **agent** is a model that can **act**. It has four parts:
 
 The intelligence is in the model; the **power is in the tools and the permissions**. An agent with read-only tools can be wrong but cannot do damage. An agent that can write to a ledger or release a payment needs the same controls as a person who can.
 """,
-              "Ask your assistant to plan, step by step, how it would prepare Halden Trading's October variance commentary. Note which steps need a tool.",
+              "Ask your assistant to plan, step by step, how it would prepare a month's variance commentary. Note which steps need a tool.",
               ["An agent is a model with a goal, tools, a loop and permissions.", "The power is in the tools and permissions.", "Write access needs the same controls as for a person."]),
             L("A2.2", "Tools and MCP", 7,
               "Understand how assistants connect to finance systems.",
@@ -225,7 +225,7 @@ The answer is to split the work:
 
 This is why K-φ forecasts use saved rules that are replayed, and why a scenario built through an assistant is saved in K-φ, not in the conversation. The figure can be found again, checked and audited. The conversation is only the interface.
 """,
-              "Ask your assistant, connected to your lab, for group EBITDA twice. Check both answers came from the same tool result.",
+              "Connect your assistant to your K-φ account (the one you signed in with) and ask for group EBITDA twice. Check both answers came from the same tool result.",
               ["Models vary; finance figures must not.", "The engine computes; the model asks and explains.", "Results live in the system of record, not the chat."]),
             L("A5.2", "Checking an answer", 7,
               "Catch the errors an assistant makes before anyone relies on them.",
@@ -240,7 +240,7 @@ A short routine for any AI output with numbers in it:
 
 Ask the assistant to show where each figure came from. A good setup makes this easy; if it is hard, improve the setup before relying on it.
 """,
-              "Have your assistant draft a three-line variance commentary for your lab, then run the five checks on it.",
+              "Have your assistant, connected to your K-φ account, draft a three-line variance commentary, then run the five checks on it.",
               ["Trace every figure to a source.", "Signs, directions, units, periods.", "Keep a known-answer case for repeated workflows."]),
         ], "check": [
             Q("Your assistant's commentary says costs were favourable by 120k. The table shows costs 120k over budget. What happened?", ["A rounding issue", "A sign error", "A different period"], 1, "Over budget on costs is unfavourable. Sign errors are the most common."),
@@ -257,7 +257,7 @@ K-φ publishes two MCP servers:
 
 Once connected, ask in plain language: "What drove the change in Halden Trading Ltd's DSO since June?" The assistant calls K-φ's tools, gets exact figures and explains them. The figures come from the engine; the words come from the model.
 """,
-              "Connect your assistant to your lab through K-φ's connector and ask for the group's KPIs.",
+              "Connect your assistant to your K-φ account through K-φ's connector and ask for the group's KPIs.",
               ["Public MCP: anonymous ledger analysis, sandbox deleted in 24 h.", "Private MCP: your tenant, your rights, write-back where allowed.", "Figures from the engine, words from the model."]),
             L("A6.2", "The builder pass", 6,
               "Know how K-φ lets an assistant build on your data.",
@@ -268,7 +268,7 @@ You paste the pass into Claude, Codex or Gemini CLI. The orchestration behind it
 
 Everything in this course applies: the engine computes, the agent builds, a person approves the write-back, and a known-answer case proves the result. The Build course goes through it in detail.
 """,
-              "Read the builder pass from your lab's Build menu and list what it allows and what it does not.",
+              "In your K-φ account, open the Build menu, read the builder pass, and list what it allows and what it does not.",
               ["The builder pass builds new tools inside K-φ with your assistant.", "You describe; the assistant codes; K-φ runs it.", "Approvals and known-answer tests still apply."]),
         ], "check": [
             Q("A prospect sends a ledger file and you have no K-φ account for them yet. What can you use?", ["Nothing until they sign", "The public MCP, in an anonymous sandbox", "Your own tenant"], 1, "The public MCP analyses a ledger without an account, in a sandbox deleted within 24 hours."),
