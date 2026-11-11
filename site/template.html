@@ -179,6 +179,15 @@ a.lrow:hover { background: var(--surface-2); }
 .verify .out { margin: 0; padding: 10px 12px; border-radius: 10px; }
 .verify .out.pass { color: var(--ok); background: var(--ok-bg); }
 .verify .out.fail { color: var(--bad); background: var(--bad-bg); }
+.prep { position: relative; overflow: hidden; max-width: 620px; margin: 56px auto; padding: 44px 32px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); text-align: center; display: grid; gap: 14px; justify-items: center; }
+.prep .aurora { position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #C5B358, #36D6A0, #534AB7, #E6007E, #C5B358); background-size: 200% 100%; animation: prepFlow 3s linear infinite; }
+.prep .mark .kphi { font: 800 40px/1 Arial, Helvetica, sans-serif; letter-spacing: 1px; color: var(--hi); text-transform: none; }
+.prep h1 { margin: 6px 0 0; font-size: clamp(24px, 5vw, 34px); }
+.prep .lede { margin: 0; max-width: 46ch; }
+.prep .pbar { width: 100%; height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.prep .pbar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #36D6A0, #534AB7); transition: width .6s ease; }
+@keyframes prepFlow { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .prep .aurora { animation: none; } .prep .pbar i { transition: none; } }
 [data-exam-live] { display: grid; gap: 12px; align-content: start; }
 [data-exam-live] .files { display: grid; gap: 8px; }
 .examform { display: grid; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
@@ -389,28 +398,15 @@ function practiceLink(kind) {
   return `<div class="row"><button class="btn" type="button" data-practice>Open my practice company</button><span class="note">Your own copy of Halden Trading, in a new tab. That tab is signed into the practice company; sign in again there to get back to your own K-φ account.</span></div>`;
 }
 
-/* Open (and, the first time, create) the learner's practice company. The tab is opened
-   inside the click so no pop-up blocker stops it, then sent to the one-time link. */
-async function openPractice(btn) {
-  if (!SESSION) return;
-  const w = window.open("", "_blank");
-  if (w) { try { w.document.title = "K-φ practice company"; w.document.body.innerHTML = '<p style="font:16px system-ui;padding:40px">Preparing your practice company…</p>'; } catch (e) { /* cross-origin later */ } }
-  const label = btn.textContent; btn.disabled = true; btn.textContent = "Preparing…";
-  try {
-    const r = await fetch(SESSION.api + "/api/academy/practice", { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: "{}" });
-    if (r.status === 404) {
-      /* this K-φ server does not have practice companies yet: the demo instead */
-      if (w) w.location = SESSION.api + "/login"; else window.open(SESSION.api + "/login", "_blank");
-      FLASH = "Practice companies are not on this K-φ server yet, so the demo opened instead: choose Continue in Demo Mode. Nothing you do there is saved.";
-      return;
-    }
-    const d = await r.json().catch(() => ({}));
-    if (r.status === 401) { SESSION = null; store.set("kphi-academy-session", null); if (w) w.close(); FLASH = "Your academy session ended. Sign in again."; return; }
-    if (!r.ok || !d.open_url) { if (w) w.close(); FLASH = d.error || "Your practice company could not be opened. Try again in a minute."; return; }
-    if (w) { w.opener = null; w.location = d.open_url; } else location.href = d.open_url;
-  } catch (e) { if (w) w.close(); FLASH = "Could not reach K-φ. Check your connection and try again."; }
-  finally { btn.disabled = false; btn.textContent = label; if (FLASH) render(); }
+/* Open (and, the first time, create) the learner's practice company: a new tab on the
+   academy's own waiting screen (#prepare-practice), which follows the worker's progress
+   and then goes into K-φ. Blocked pop-up: the waiting screen opens in this tab. */
+function openPrepared(hash) {
+  const url = location.origin + location.pathname + "#" + hash;
+  const w = window.open(url, "_blank");
+  if (!w) location.hash = hash;
 }
+function openPractice() { if (SESSION) openPrepared("prepare-practice"); }
 document.addEventListener("click", e => { const b = e.target.closest("[data-practice]"); if (b) openPractice(b); });
 
 function lessonView(code) {
@@ -526,22 +522,13 @@ function drawExam(id, status) {
   if (st.can_start) { box.innerHTML = `<h3>Ready?</h3><p>Starting uses attempt ${st.used + 1} of ${st.max}: a fresh company with your own variant of Halden Trading, open for 72 hours.</p><button class="btn primary" type="button" data-examstart="${esc(id)}">Start exam</button>`; return; }
   box.innerHTML = `<h3>Your exam</h3><p>${st.used >= st.max ? "All three attempts are used." : "Your next attempt opens on " + esc(when(st.next_at)) + "."}</p>`;
 }
-async function examOpen(id, start) {
-  if (!SESSION) return;
-  const w = window.open("", "_blank");
-  if (w) { try { w.document.body.innerHTML = '<p style="font:16px system-ui;padding:40px">Preparing your exam company…</p>'; } catch (e) {} }
-  try {
-    const r = await fetch(SESSION.api + "/api/academy/exam/" + id + "/start", { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: "{}" });
-    const d = await r.json().catch(() => ({}));
-    if (!r.ok || !d.open_url) { if (w) w.close(); FLASH = d.error || "The exam company could not be opened. Try again in a minute."; render(); return; }
-    if (w) { w.opener = null; w.location = d.open_url; } else location.href = d.open_url;
-    if (start) await loadExam(id);
-  } catch (e) { if (w) w.close(); FLASH = "Could not reach K-φ. Try again."; render(); }
-}
+function examOpen(id) { if (SESSION) openPrepared("prepare-exam-" + id); }
+/* back on the exam page after the other tab started the attempt */
+window.addEventListener("focus", () => { const h = location.hash || ""; if (h.startsWith("#exam-")) loadExam(h.slice(6)); });
 document.addEventListener("click", async e => {
   const s = e.target.closest("[data-examstart]"), o = e.target.closest("[data-examopen]"), f = e.target.closest("[data-examfile]");
-  if (s) { s.disabled = true; s.textContent = "Preparing…"; await examOpen(s.dataset.examstart, true); return; }
-  if (o) { await examOpen(o.dataset.examopen, false); return; }
+  if (s) { examOpen(s.dataset.examstart); setTimeout(() => loadExam(s.dataset.examstart), 1500); return; }
+  if (o) { examOpen(o.dataset.examopen); return; }
   if (f && SESSION) {
     const [id, name] = f.dataset.examfile.split("|");
     try {
@@ -732,6 +719,49 @@ document.addEventListener("click", async e => {
   } catch (err) { FLASH = "Could not reach K-φ. Try again."; render(); }
 });
 
+/* ── The waiting screen ───────────────────────────────────────────────────
+   Opened in its own tab; asks K-φ again every second while the worker prepares
+   the company (202 with its progress), then goes into it (the one-time link). */
+let PREP = null;
+function prepareView(kind, id) {
+  const exam = kind === "exam", c = exam ? course(id) : null;
+  return `<section class="prep" aria-live="polite">
+    <span class="aurora" aria-hidden="true"></span>
+    <div class="mark"><span class="kphi">K-φ</span></div>
+    <h1>${exam ? "Preparing your exam company" : "Preparing your practice company"}</h1>
+    <p class="lede">${exam ? esc(c ? c.exam.title : "Exam") + ". A fresh copy of Halden Trading with figures of its own, for this attempt only." : "Your own copy of Halden Trading: three companies in three currencies, ready for you to set up."}</p>
+    <div class="pbar"><i data-prep-bar style="width:4%"></i></div>
+    <p class="mono" data-prep-label>Starting</p>
+    <p class="note" data-prep-note>This takes from a few seconds to a minute. K&#8209;φ opens here when it is ready.</p>
+  </section>`;
+}
+async function runPrepare(kind, id) {
+  const token = PREP = {};
+  const path = kind === "exam" ? "/api/academy/exam/" + id + "/start" : "/api/academy/practice";
+  const bar = () => $("[data-prep-bar]"), lab = () => $("[data-prep-label]");
+  if (!SESSION) { if (lab()) lab().textContent = "Sign in to the academy first."; return; }
+  for (let i = 0; i < 600 && PREP === token; i++) {
+    let r, d;
+    try {
+      r = await fetch(SESSION.api + path, { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: "{}" });
+      d = await r.json().catch(() => ({}));
+    } catch (e) { if (lab()) lab().textContent = "Could not reach K-φ. Trying again…"; await new Promise(z => setTimeout(z, 2000)); continue; }
+    if (r.status === 202) {
+      const p = d.progress || {};
+      const pc = p.total ? Math.max(4, Math.round(100 * p.done / p.total)) : 4;
+      if (bar()) bar().style.width = pc + "%";
+      if (lab()) lab().textContent = (p.label || "Starting") + (p.total ? " · " + pc + "%" : "");
+      await new Promise(z => setTimeout(z, 900));
+      continue;
+    }
+    if (r.ok && d.open_url) { if (bar()) bar().style.width = "100%"; if (lab()) lab().textContent = "Ready. Opening K-φ…"; location.replace(d.open_url); return; }
+    if (r.status === 404 && kind === "practice") { if (lab()) lab().textContent = "Practice companies are not on this K-φ server yet. Opening the demo instead: choose Continue in Demo Mode."; setTimeout(() => location.replace(SESSION.api + "/login"), 2500); return; }
+    if (lab()) lab().textContent = d.error || "Something went wrong. Close this tab and try again.";
+    const n = $("[data-prep-note]"); if (n) n.innerHTML = `<a href="#${kind === "exam" ? "exam-" + esc(id) : "home"}">Back to the academy</a>`;
+    return;
+  }
+}
+
 function render() {
   const h = (location.hash || "#home").slice(1);
   let html, nav = "home";
@@ -739,6 +769,8 @@ function render() {
   else if (h.startsWith("lesson-")) { const code = h.slice(7).toUpperCase().replace(/-/, "."); html = lessonView(code); nav = "learn"; }
   else if (h.startsWith("exam-")) { html = examView(h.slice(5)); nav = "learn"; }
   else if (h === "certificate-sample") { html = certView(); nav = "cert"; }
+  else if (h === "prepare-practice") html = prepareView("practice");
+  else if (h.startsWith("prepare-exam-")) html = prepareView("exam", h.slice(13));
   else html = home();
   $("#view").innerHTML = (FLASH ? `<div class="banner" role="status">${esc(FLASH)}</div>` : "") + html;
   FLASH = "";
@@ -749,6 +781,7 @@ function render() {
   const learn = document.querySelector('[data-nav="learn"]'); if (learn) learn.href = "#course-" + current().id;
   setupWatch();
   if (h.startsWith("exam-")) loadExam(h.slice(5));
+  if (h === "prepare-practice") runPrepare("practice"); else if (h.startsWith("prepare-exam-")) runPrepare("exam", h.slice(13)); else PREP = null;
   window.scrollTo(0, 0);
 }
 
