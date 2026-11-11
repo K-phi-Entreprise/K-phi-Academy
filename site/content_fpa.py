@@ -35,7 +35,7 @@ The same selectors as everywhere else apply: entity, business unit, currency, un
 
 Before presenting a statement, check that the balance sheet balances for each entity and that net income, less distributions, matches the movement in retained earnings for the year. If either fails, look at the classification of accounts before anything else.
 """,
-              "In your practice company, open the P&L for Halden Trading Ltd, then switch the entity selector to the group and compare.",
+              "In your practice company, open the P&L for Halden Trading Ltd for March 2026 (Company view, Incremental), then switch the entity selector to the group and compare.",
               ["The P&L is year to date and restarts each fiscal year.", "The balance sheet is cumulative.", "Check balance and net income before presenting."]),
             L("P1.2", "Drilling down to ledger lines", 6,
               "Trace any figure to the lines that make it.",
@@ -52,7 +52,7 @@ Most surprises come from a few large lines: a reclassification booked in the wro
 
 When the cause is a classification, fix it once in the account setup. When it is a booking, the fix belongs in the accounting system, followed by a new import. Never adjust the statement itself.
 """,
-              "In your practice company, drill from the group's operating expenses down to the five largest ledger lines.",
+              "In your practice company, drill from the group's operating expenses for September 2026 down to the ledger lines, then do the same for Halden Trading Inc. alone.",
               ["Every statement figure opens to its ledger lines.", "Sort by amount; large lines explain most surprises.", "Fix classifications in setup and bookings at the source."]),
             L("P1.3", "Distributions and retained earnings", 6,
               "Show dividends and distributions correctly, past and future.",
@@ -66,7 +66,7 @@ Getting this right matters for two reasons. Cash forecasts need the outflow on t
 
 If a client books distributions to an expense account, the P&L margin is understated. Raise it, and agree on the fix in the accounting system.
 """,
-              "In your practice company, find the line below net income in the P&L and see what feeds it.",
+              "In your practice company, find the lines between profit before tax and net income in the P&L for September 2026, and see what feeds them.",
               ["Distributions sit below net income.", "Past from confirmed equity accounts; future as a yearly input.", "Distributions booked as expenses distort margins."]),
         ], "check": [
             Q("A user opens the P&L for April. What period does it cover, for a calendar fiscal year?", ["April only", "January to April", "The last twelve months"], 1, "The P&L is year to date and restarts each fiscal year."),
@@ -312,7 +312,7 @@ Valuation sits in FP&A, under **Xplore, Valuation**. Its main difference from a 
 
 The earnings base always covers twelve months: trailing, or annualised from several months. A single month is never a basis for value.
 """,
-              "In your practice company, open a valuation case and find which inputs were measured from the books.",
+              "In your practice company, create a valuation case for the group and find which inputs were measured from the books.",
               ["Valuation is under FP&A, Xplore, Valuation.", "Operating inputs are measured from the tenant.", "Market data defaults; risk-free rate and peers entered."]),
             L("P6.2", "Projection and extrapolation", 7,
               "Know where projected cash flows come from and where they become guesses.",
@@ -336,7 +336,7 @@ The printable **report** opens in its own window. It includes an assumptions and
 
 A valuation is advice to the client's management, not a fairness opinion. Never present it as one.
 """,
-              "In your practice company, change the weights in the football field and open the report.",
+              "In your practice company, change the weights in the football field of your valuation case, save, and open the report.",
               ["Methods reconcile in a football field with editable weights.", "Present a range, not a point.", "Read the assumptions section before sending."]),
         ], "check": [
             Q("Where does DSO used in the valuation come from?", ["Management's estimate", "Measured from the tenant's data", "A public dataset"], 1, "Operating inputs are measured from the ledger, invoices and banks."),
@@ -367,7 +367,7 @@ Write down what you tied and the difference found, even when it is zero. A one-p
 
 If a difference stays unexplained, say so in the pack. An unexplained difference that is disclosed is a question; one that is found later is a credibility problem.
 """,
-              "In your practice company, tie the group's cash at a month end to the bank balances on the same date.",
+              "In your practice company, tie the ledger's cash on 31 December 2025 to the bank balances on the same date, company by company.",
               ["Tie revenue, cash and balances to independent sources.", "Write down what you tied, even zero differences.", "Disclose differences you cannot explain."]),
         ], "check": [
             Q("The board pack shows the wrong EBITDA. Where do you fix it?", ["In the board pack", "Upstream: import, classification or rule", "In a spreadsheet"], 1, "The board pack calculates nothing; the cause is upstream."),

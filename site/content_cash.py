@@ -41,7 +41,7 @@ Set the header so that:
 
 Ask the treasurer how the pool works in practice: zero-balancing at day end, target balances, or manual transfers. The setup should follow what the bank actually does.
 """,
-              "In your practice company, look at how accounts are grouped, and decide which one you would make the header of a pool.",
+              "In your practice company, create a pool for Halden Trading Ltd's two GBP accounts, with the Operating account as its header.",
               ["A header account holds the pool's reserve.", "Transfers inside a pool are not income or spending.", "Follow how the bank actually sweeps."]),
             L("C1.3", "Daily balances and history", 5,
               "Use stored balances to answer questions about the past.",
@@ -77,7 +77,7 @@ Write rules from the largest flows down:
 
 A good set of rules categorises most lines. The rest goes to review.
 """,
-              "In your practice company, open the transactions and find three that a payroll or tax rule would catch.",
+              "In your practice company, write a forecast category rule that puts the payroll payments in Payroll. It must catch every payroll payment and nothing else: careful, the transfers to the payroll account mention payroll too.",
               ["Categories make the position readable.", "Rules match counterparty, reference or pattern.", "Start with the largest, most regular flows."]),
             L("C2.2", "Reviewing what remains", 5,
               "Keep uncategorised transactions at zero.",
@@ -106,7 +106,7 @@ So:
 - **Match them**: same amount (after conversion when the two accounts are in different currencies), close dates, the two group companies as counterparties.
 - **Check timing**: a transfer that leaves on the 30th and arrives on the 2nd sits in neither account at month end. Note it as cash in transit.
 """,
-              "In your practice company, find one transfer between two group companies and check how both sides are categorised.",
+              "In your practice company, find the management fee Halden Négoce SAS pays Halden Trading Inc. each month, and check how both sides are categorised.",
               ["For the group, intercompany is neither income nor spending.", "Categorise and match both sides.", "Note cash in transit at period end."]),
             L("C2.4", "Rule suggestions with an assistant", 6,
               "Use an assistant to propose categorisation rules, and review them before they run.",
@@ -179,7 +179,7 @@ One point needs care: **payer and payee swap** between receivables and payables.
 
 Because the third party is the same object in the ledger and in the invoices, you can go from a DSO to the customers behind it, and from a supplier's invoices to its ledger account.
 """,
-              "In your practice company, filter the receivables on one customer, then open that customer in FP&A.",
+              "In your practice company, filter Halden Trading Inc.'s receivables on the customer that buys from all three companies, then open that customer in FP&A.",
               ["Invoices use the same selectors as FP&A.", "Payer and payee swap between AR and AP.", "Third parties link invoices and ledger."]),
             L("C4.2", "Direction and intercompany rules", 7,
               "Know how K-φ decides whether a document is a receivable, a payable or intercompany.",

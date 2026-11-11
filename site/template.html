@@ -172,6 +172,13 @@ a.lrow:hover { background: var(--surface-2); }
 .prose th { font: 600 12px/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .try { display: grid; gap: 12px; padding: 18px; border-radius: 14px; border: 1px dashed var(--hi); }
 .try .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.verify { display: grid; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
+.verify .ask { font-weight: 600; }
+.verify form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.verify input[type=text] { flex: 1 1 220px; min-width: 0; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.verify .out { margin: 0; padding: 10px 12px; border-radius: 10px; }
+.verify .out.pass { color: var(--ok); background: var(--ok-bg); }
+.verify .out.fail { color: var(--bad); background: var(--bad-bg); }
 .keys { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .keys li { display: grid; grid-template-columns: 24px minmax(0,1fr); gap: 8px; }
 .keys li::before { content: "→"; color: var(--hi); font-family: var(--f-mono); }
@@ -425,7 +432,7 @@ function lessonView(code) {
         <div class="watch" data-watch="${esc(l.code)}"><div class="wbar"><canvas width="760" height="8" aria-hidden="true"></canvas></div><span class="wtxt mono">Watched 0%</span></div>` : ""}
       <div class="prose">${l.read.replace(/<table>/g, '<div class="tablewrap"><table>').replace(/<\/table>/g, "</table></div>")}</div>
       <section class="try"><div class="eyebrow">Try it</div><div>${esc(l.try)}</div>
-        ${/\bIn your practice company\b/.test(l.try) ? practiceLink("practice") : /K-φ account/.test(l.try) ? practiceLink("account") : ""}</section>
+        ${/\bIn your practice company\b/.test(l.try) ? practiceLink("practice") : /K-φ account/.test(l.try) ? practiceLink("account") : ""}${verifyBox(l)}</section>
       <section><div class="eyebrow" style="margin-bottom:10px">Key points</div><ul class="keys">${l.points.map(k => `<li>${esc(k)}</li>`).join("")}</ul></section>
       ${l.resources ? `<section><div class="eyebrow" style="margin-bottom:10px">Resources</div><div class="res">${l.resources.map(r => `<span class="chip">${esc(r)} · pilot</span>`).join("")}</div></section>` : ""}
       ${check}
@@ -516,9 +523,10 @@ function checkAnswered(l) {
   const a = (WATCH._checks || {})[l.ch.code] || [];
   return l.ch.check.every((_, i) => a.includes(i));
 }
-function gateOpen(l) { return done.has(l.code) || ((!l.video || coverage(l.code) >= NEED) && checkAnswered(l)); }
+function gateOpen(l) { return done.has(l.code) || ((!l.video || coverage(l.code) >= NEED) && checkAnswered(l) && practicePassed(l)); }
 function gateLabel(l) {
   if (l.video && coverage(l.code) < NEED) return `Watch the video to continue · ${Math.round(coverage(l.code) * 100)}%`;
+  if (!practicePassed(l)) return "Pass the check in Try it to continue";
   return "Answer the self-check to continue";
 }
 function refreshGate(code) {
@@ -550,6 +558,57 @@ function setupWatch() {
   drawWatch(code);
 }
 document.addEventListener("visibilitychange", () => { if (document.hidden) { const v = $("video.video"); if (v && !v.paused) v.pause(); } });
+
+/* ── Check my work (K-phi-engine, blocks/academy/checks.js) ──────────────
+   The engine says which lessons have a check and what to type; it runs the
+   check on the learner's practice company and keeps the passes. A lesson with
+   a check completes only once it passed. No catalogue (offline, or a K-φ
+   server without checks yet): nothing is gated on it. */
+let CHECKCAT = null, PASSED = {};
+function practicePassed(l) { return !CHECKCAT || !CHECKCAT[l.code] || !!PASSED[l.code]; }
+async function loadChecks() {
+  const api = (SESSION && SESSION.api) || apiBase() || AUTH_HOSTS.prod;
+  try {
+    const r = await fetch(api + "/api/academy/checks", { headers: SESSION ? { Authorization: "Bearer " + SESSION.token } : {} });
+    if (!r.ok) { CHECKCAT = null; return; }
+    const d = await r.json(); CHECKCAT = d.checks || null; PASSED = d.passed || {};
+  } catch (e) { CHECKCAT = null; }
+}
+function verifyBox(l) {
+  const c = CHECKCAT && CHECKCAT[l.code]; if (!c) return "";
+  const passed = PASSED[l.code];
+  const head = `<div class="eyebrow">Check my work${passed ? " · passed" : ""}</div>`;
+  if (!SESSION) return `<div class="verify">${head}<p class="note">Sign in (top right) to have K-φ check this step in your practice company.</p></div>`;
+  const file = c.file ? `<div class="row"><button class="btn" type="button" data-file="${esc(c.file)}">Download ${esc(c.file)}</button><span class="note">Your own variant of the file: import it in your practice company.</span></div>` : "";
+  const input = c.kind === "answer" ? `<input type="text" name="answer" autocomplete="off" inputmode="${c.unit ? "decimal" : "text"}" placeholder="${c.unit ? "Amount in " + esc(c.unit) : "Your answer"}" aria-label="${esc(c.prompt)}">` : "";
+  return `<div class="verify" data-verify="${esc(l.code)}">${head}${file}<div class="ask">${esc(c.prompt)}</div>
+    <form data-checkform="${esc(l.code)}">${input}<button class="btn primary" type="submit">${c.kind === "answer" ? "Check" : "Check my company"}</button></form>
+    ${passed ? `<p class="out pass" role="status">Passed. K-φ checked this step in your practice company.</p>` : `<p class="out" role="status" hidden></p>`}</div>`;
+}
+document.addEventListener("submit", async e => {
+  const f = e.target.closest("[data-checkform]"); if (!f) return;
+  e.preventDefault(); if (!SESSION) return;
+  const code = f.dataset.checkform, out = f.parentElement.querySelector(".out"), b = f.querySelector("button");
+  const answer = f.answer ? f.answer.value : undefined;
+  b.disabled = true; const label = b.textContent; b.textContent = "Checking…";
+  try {
+    const r = await fetch(SESSION.api + "/api/academy/check", { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: JSON.stringify({ lesson: code, answer }) });
+    const d = await r.json().catch(() => ({}));
+    out.hidden = false;
+    if (r.ok && d.ok) { PASSED[code] = new Date().toISOString(); out.className = "out pass"; out.textContent = "Passed. " + (d.detail || ""); refreshGate(code); }
+    else { out.className = "out fail"; out.textContent = d.detail || d.error || "Not yet."; }
+  } catch (err) { out.hidden = false; out.className = "out fail"; out.textContent = "Could not reach K-φ. Try again."; }
+  finally { b.disabled = false; b.textContent = label; }
+});
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-file]"); if (!b || !SESSION) return;
+  try {
+    const r = await fetch(SESSION.api + "/api/academy/practice/file/" + encodeURIComponent(b.dataset.file), { headers: { Authorization: "Bearer " + SESSION.token } });
+    if (!r.ok) { FLASH = "The file could not be downloaded. Try again."; render(); return; }
+    const url = URL.createObjectURL(await r.blob()), a = document.createElement("a");
+    a.href = url; a.download = "halden-trading-" + b.dataset.file; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+  } catch (err) { FLASH = "Could not reach K-φ. Try again."; render(); }
+});
 
 function render() {
   const h = (location.hash || "#home").slice(1);
@@ -683,6 +742,10 @@ async function boot() {
   }
   render();
   checkSession();
+  /* the checks arrive after the first paint; redraw only a lesson that has one */
+  await loadChecks();
+  const h = location.hash || "";
+  if (CHECKCAT && h.startsWith("#lesson-") && CHECKCAT[h.slice(8).toUpperCase().replace(/-/, ".")]) render();
 }
 boot();
 </script>

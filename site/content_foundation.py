@@ -139,7 +139,7 @@ Three habits keep a tenant clean:
 
 An LLM never gets an admin's credentials. When a builder works with an assistant, the assistant acts through the builder pass, with the builder's rights, never through someone else's account.
 """,
-                    "try": "On paper: list five people of a client team you know and give each one of the four roles. Who would be admin, and why?",
+                    "try": "In your practice company, invite a made-up colleague as a viewer (any address ending in @example.com; no mail is sent) and read what a viewer cannot change. Then, on paper, give five people of a client team you know one of the four roles each.",
                     "points": [
                         "Roles follow the job, not seniority.",
                         "One login per person, removed the day they leave.",
@@ -235,7 +235,7 @@ Before you import, open the file and look:
 
 Large files are fine. What matters is that the file is complete and consistent.
 """,
-                    "try": "In your practice company, open the P&L and drill into one line until you reach the ledger lines behind it.",
+                    "try": "In your practice company, download the October 2026 ledger below and import it with File import. Then open the P&L for October and drill into one line until you reach the ledger lines behind it.",
                     "points": [
                         "The ledger is the base of everything in FP&A.",
                         "Check completeness and balance before importing.",
@@ -330,7 +330,7 @@ When you find a problem, **fix it at its source**: correct the file or the mappi
 
 Keep a short note for each import: what was loaded, what you checked, what you fixed. It takes two minutes and saves an hour at the first review.
 """,
-                    "try": "Take a ledger export you have and run the three checks on it: coverage, totals, and what would not land.",
+                    "try": "In your practice company, run the three checks on the October import from F3.1: coverage, totals, and what would not land. Then take a ledger export of your own and do the same.",
                     "points": [
                         "Check coverage, totals, and what did not land.",
                         "Compare with a figure the client trusts.",
