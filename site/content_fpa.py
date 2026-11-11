@@ -18,7 +18,7 @@ COURSE = {
         "Build a scenario and present what moves in profit, cash and covenant headroom.",
         "Produce a valuation whose inputs are measured from the client's own books.",
     ],
-    "lab": "Practise in the K-φ demo: sample companies with a ledger, a budget and forecasts. It needs no account and nothing you do is saved.",
+    "lab": "Practise in your own practice company, a copy of Halden Trading: three companies, 23 months of ledger, and the budget and forecasts you build from it.",
     "chapters": [
         {"code": "P1", "title": "From ledger to statements", "lessons": [
             L("P1.1", "P&L year to date, cumulative balance sheet", 7,
@@ -35,7 +35,7 @@ The same selectors as everywhere else apply: entity, business unit, currency, un
 
 Before presenting a statement, check that the balance sheet balances for each entity and that net income, less distributions, matches the movement in retained earnings for the year. If either fails, look at the classification of accounts before anything else.
 """,
-              "In the demo, open the P&L for one entity, then switch the entity selector to the group and compare.",
+              "In your practice company, open the P&L for Halden Trading Ltd, then switch the entity selector to the group and compare.",
               ["The P&L is year to date and restarts each fiscal year.", "The balance sheet is cumulative.", "Check balance and net income before presenting."]),
             L("P1.2", "Drilling down to ledger lines", 6,
               "Trace any figure to the lines that make it.",
@@ -52,7 +52,7 @@ Most surprises come from a few large lines: a reclassification booked in the wro
 
 When the cause is a classification, fix it once in the account setup. When it is a booking, the fix belongs in the accounting system, followed by a new import. Never adjust the statement itself.
 """,
-              "In the demo, drill from the group's operating expenses down to the five largest ledger lines.",
+              "In your practice company, drill from the group's operating expenses down to the five largest ledger lines.",
               ["Every statement figure opens to its ledger lines.", "Sort by amount; large lines explain most surprises.", "Fix classifications in setup and bookings at the source."]),
             L("P1.3", "Distributions and retained earnings", 6,
               "Show dividends and distributions correctly, past and future.",
@@ -66,7 +66,7 @@ Getting this right matters for two reasons. Cash forecasts need the outflow on t
 
 If a client books distributions to an expense account, the P&L margin is understated. Raise it, and agree on the fix in the accounting system.
 """,
-              "In the demo, find the line below net income in the P&L and see what feeds it.",
+              "In your practice company, find the line below net income in the P&L and see what feeds it.",
               ["Distributions sit below net income.", "Past from confirmed equity accounts; future as a yearly input.", "Distributions booked as expenses distort margins."]),
         ], "check": [
             Q("A user opens the P&L for April. What period does it cover, for a calendar fiscal year?", ["April only", "January to April", "The last twelve months"], 1, "The P&L is year to date and restarts each fiscal year."),
@@ -90,7 +90,7 @@ Each KPI shows its formula. Read it before you present the figure, because names
 
 When a client uses a different definition, write it down and agree whether to adopt K-φ's or document the gap. Two definitions of the same KPI in one meeting cost more than either definition.
 """,
-              "In the demo, open the KPI page and read the formula behind EBITDA margin and the current ratio.",
+              "In your practice company, open the KPI page and read the formula behind EBITDA margin and the current ratio.",
               ["About thirty KPIs, each with its formula and thresholds.", "Names are not standard; read the formula.", "Agree on one definition per KPI with the client."]),
             L("P2.2", "Working capital: DSO, DPO, DIO and trailing windows", 8,
               "Read working capital KPIs without being fooled by seasonality.",
@@ -107,7 +107,7 @@ Three things to check before quoting a DSO:
 
 DSO is a pointer, not a measure of any one customer. When it moves, open the receivables by third party and look at who moved it.
 """,
-              "In the demo, find DSO for one entity and compare it with the group's.",
+              "In your practice company, find DSO for Halden Trading Inc. and compare it with the group's.",
               ["Cash conversion cycle = DSO + DIO − DPO.", "Three-month trailing window by default.", "Check intercompany and large invoices before quoting."]),
             L("P2.3", "Covenants and headroom", 7,
               "Test bank covenants and show how close the client is to a breach.",
@@ -121,7 +121,7 @@ Two habits:
 - **Use the agreement's definitions.** Covenant EBITDA often adds back items the accounting EBITDA does not. Record the definition with the covenant.
 - **Test the forecast, not only the past.** Run the ratio on the forecast version to see the next test dates. A breach you can see coming three months ahead can be negotiated.
 """,
-              "In the demo, open the covenants page and find the covenant with the least headroom.",
+              "In your practice company, open the covenants page, set a debt to EBITDA covenant of 3.0 for the group and read the headroom.",
               ["Headroom matters more than the ratio.", "Use the loan agreement's definitions.", "Test covenants on the forecast as well as on actuals."]),
         ], "check": [
             Q("Why does K-φ use a three-month trailing window for DSO?", ["To make DSO look better", "To smooth seasonality", "Because banks require it"], 1, "A single month swings with seasonal sales; a trailing window is more stable."),
@@ -141,7 +141,7 @@ Name versions so that anyone can read them a year later: "Budget 2027", "Reforec
 
 Keep the number of live versions small. Each one is a set of rules someone has to maintain.
 """,
-              "In the demo, create a version from the budget, change one figure in it, and check the budget is unchanged.",
+              "In your practice company, create a budget from actuals for the group, then a version from it. Change one figure in the version and check the budget is unchanged.",
               ["A version holds figures and its own rules.", "Editing one version never changes another.", "Closing a period freezes a copy."]),
             L("P3.2", "Creating a budget from actuals", 5,
               "Give a client without a budget a starting point in one step.",
@@ -155,7 +155,7 @@ The second is usually the better start. It gives the client figures they recogni
 
 Walk through the result with the client line by line for the largest items: revenue, payroll, rent, major suppliers. The smaller lines can follow the pattern.
 """,
-              "In the demo, look at how the budget compares with actuals for one entity, and note the line you would adjust first.",
+              "In your practice company, look at how the budget compares with actuals for one entity, and note the line you would adjust first.",
               ["No budget: run-rate forecast, flagged as an assumption.", "Better start: create a budget from actuals.", "Review the largest lines with the client."]),
             L("P3.3", "Budget versus actuals", 6,
               "Explain variances, not just show them.",
@@ -173,7 +173,7 @@ A variance report is only useful if it says why. For each material variance, fin
 
 Timing and error variances need no business action (errors need an accounting correction), but they must be named so nobody acts on them. Set a threshold for "material" with the client, for example 5% and a fixed amount, and comment only above it.
 """,
-              "In the demo, run budget versus actuals for the group and find the largest variance.",
+              "In your practice company, run budget versus actuals for the group and find the largest variance.",
               ["Compare any version with actuals.", "Name the cause: volume, price, timing or error.", "Agree a materiality threshold with the client."]),
             L("P3.4", "Variance commentary with an assistant", 7,
               "Let an assistant draft the commentary, and check it before it goes out.",
@@ -212,7 +212,7 @@ Practical consequences:
 - **Keep rules simple.** A rule the client cannot explain will not be maintained.
 - **Document unusual rules** in the line's comment.
 """,
-              "In the demo, open the forecast and change the growth rule on one revenue line. Note which other lines move.",
+              "In your practice company, open the forecast and change the growth rule on one revenue line. Note which other lines move.",
               ["Rules are saved with the version and replayed.", "Same inputs, same forecast.", "Change rules, never results."]),
             L("P4.2", "Collections and disbursements: ledger or open invoices", 7,
               "Choose the right source for cash coming in and going out.",
@@ -226,7 +226,7 @@ An invoice matched to a bank receipt or payment leaves the open list and the for
 
 Use open invoices when the client's invoices are complete and up to date in K-φ. If they are not, the ledger is the safer source.
 """,
-              "In the demo, find the switch between GL to cash and open invoices, and compare the next eight weeks.",
+              "In your practice company, find the switch between GL to cash and open invoices, and compare the next eight weeks.",
               ["Two sources: ledger (GL to cash, the default) or open invoices.", "Open invoices is more precise for the near term.", "Use it only when the invoices in K-φ are complete."]),
             L("P4.3", "Run-rate assumptions, opt-in", 5,
               "Use run-rate sales without hiding the assumption.",
@@ -237,7 +237,7 @@ In K-φ, this is **opt-in and off by default**. Turning it on is a decision some
 
 When you turn it on, say so in the forecast's notes: "New sales projected at the run rate of the last three months." A reader who does not know will mistake an assumption for an order book.
 """,
-              "In the demo, find where projected new sales are turned on, and write the note you would add.",
+              "In your practice company, find where projected new sales are turned on, and write the note you would add.",
               ["Run-rate new sales are opt-in and off by default.", "Turning it on is a decision to explain.", "Write the assumption in the forecast's notes."]),
             L("P4.4", "Stating assumptions", 5,
               "Make every forecast readable by someone who did not build it.",
@@ -275,7 +275,7 @@ Good scenarios are few and specific:
 
 Build the scenario on the version management actually uses, usually the latest reforecast.
 """,
-              "In the demo, build a scenario where the largest customer pays 30 days later.",
+              "In your practice company, build a scenario where the largest customer pays 30 days later.",
               ["A scenario changes a few drivers on a version.", "One question per scenario.", "Use realistic, explainable moves."]),
             L("P5.2", "Presenting the difference: profit, cash, headroom", 6,
               "Show what a scenario changes, not two full sets of figures.",
@@ -312,7 +312,7 @@ Valuation sits in FP&A, under **Xplore, Valuation**. Its main difference from a 
 
 The earnings base always covers twelve months: trailing, or annualised from several months. A single month is never a basis for value.
 """,
-              "In the demo, open a valuation case and find which inputs were measured from the books.",
+              "In your practice company, open a valuation case and find which inputs were measured from the books.",
               ["Valuation is under FP&A, Xplore, Valuation.", "Operating inputs are measured from the tenant.", "Market data defaults; risk-free rate and peers entered."]),
             L("P6.2", "Projection and extrapolation", 7,
               "Know where projected cash flows come from and where they become guesses.",
@@ -323,7 +323,7 @@ The extrapolated years are an assumption. Say so when you present, and test how 
 
 For groups, the **entity filter drives the valuation**. Multi-country groups are valued bottom-up by default, each company with its own risk; other groups are valued on the consolidated figures. A company that cannot be valued on its own stays in the filter: it cannot be unchecked.
 """,
-              "In the demo, find which projection years are labelled extrapolated, and change one entity in the filter.",
+              "In your practice company, find which projection years are labelled extrapolated, and change one entity in the filter.",
               ["Cash flows come from the budget, per company.", "Years after the budget are extrapolated and labelled.", "The entity filter drives the valuation."]),
             L("P6.3", "Football field and the report", 6,
               "Reconcile methods into one range and present it carefully.",
@@ -336,7 +336,7 @@ The printable **report** opens in its own window. It includes an assumptions and
 
 A valuation is advice to the client's management, not a fairness opinion. Never present it as one.
 """,
-              "In the demo, change the weights in the football field and open the report.",
+              "In your practice company, change the weights in the football field and open the report.",
               ["Methods reconcile in a football field with editable weights.", "Present a range, not a point.", "Read the assumptions section before sending."]),
         ], "check": [
             Q("Where does DSO used in the valuation come from?", ["Management's estimate", "Measured from the tenant's data", "A public dataset"], 1, "Operating inputs are measured from the ledger, invoices and banks."),
@@ -352,7 +352,7 @@ That is deliberate. If the board pack computed its own figures, they would drift
 
 So when a board pack number looks wrong, the fix is never in the board pack. It is upstream: an import, a classification, a forecast rule. Fix it there, and the board pack follows.
 """,
-              "In the demo, open the board pack and check that its EBITDA matches the KPI page.",
+              "In your practice company, open the board pack and check that its EBITDA matches the KPI page.",
               ["The board pack only picks figures from the app.", "It always reconciles with the screens.", "Fix wrong figures upstream, never in the pack."]),
             L("P7.2", "Reconciling what you present", 5,
               "Make sure every figure you present ties to a source.",
@@ -367,7 +367,7 @@ Write down what you tied and the difference found, even when it is zero. A one-p
 
 If a difference stays unexplained, say so in the pack. An unexplained difference that is disclosed is a question; one that is found later is a credibility problem.
 """,
-              "In the demo, tie the group's cash at a month end to the bank balances on the same date.",
+              "In your practice company, tie the group's cash at a month end to the bank balances on the same date.",
               ["Tie revenue, cash and balances to independent sources.", "Write down what you tied, even zero differences.", "Disclose differences you cannot explain."]),
         ], "check": [
             Q("The board pack shows the wrong EBITDA. Where do you fix it?", ["In the board pack", "Upstream: import, classification or rule", "In a spreadsheet"], 1, "The board pack calculates nothing; the cause is upstream."),

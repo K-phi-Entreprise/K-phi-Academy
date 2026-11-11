@@ -318,7 +318,7 @@ function home() {
   <section class="block"><header><h2>How certification works</h2></header>
     <ol class="steps">
       <li><b>Learn</b><span>Short lessons on K-φ and on working with AI agents, each with a short captioned video and one thing to try in K-φ.</span></li>
-      <li><b>Practise</b><span>Try each step in the K-φ demo, which needs no account, or in your own K-φ account once you sign in.</span></li>
+      <li><b>Practise</b><span>Sign in and you get your own practice company, a copy of Halden Trading: three companies, two years of books, six bank accounts. Try each step there.</span></li>
       <li><b>Take the exam</b><span>A fresh tenant, a brief, any tools you like, including any LLM. 72 hours.</span></li>
       <li><b>Get verified</b><span>The checker grades what is in the tenant. Pass, and your certificate gets a public verify page.</span></li>
     </ol>
@@ -352,7 +352,7 @@ function courseView(id) {
     </div>
     <aside class="side">
       ${open ? `<div class="panel"><h3>Your progress</h3><div class="bar"><i style="width:${p}%"></i></div><p class="mono">${p}% · next: ${esc(n.code)}</p><a class="btn primary" href="#${slug(n.code)}">${p ? "Resume" : "Start course"}</a></div>
-      <div class="panel"><h3>Practise</h3><p>${esc(c.lab)}</p>${practiceLink("demo")}</div>
+      <div class="panel"><h3>Practise</h3><p>${esc(c.lab)}</p>${practiceLink("practice")}</div>
       <div class="panel"><h3>Exam</h3><p>One task on a fresh tenant, graded by the checker. Three attempts, 24 hours apart.</p><a class="btn" href="#exam-${c.id}">See the exam</a></div>`
       : `<div class="panel"><h3>In preparation</h3><p>The chapters are set; lessons are being written and recorded. Foundation is open now and is the prerequisite.</p><a class="btn primary" href="#course-foundation">Go to Foundation</a></div>`}
     </aside>
@@ -365,13 +365,39 @@ function railItems(c) {
     `<div class="rfoot"><a class="ri" href="#exam-${c.id}"><span class="tick"></span><span>${esc(c.exam.title)}</span></a></div>`;
 }
 
-/* Practice happens in K-φ itself: the demo (no account, nothing saved) or the learner's own account.
-   Lab tenants with Halden Trading come with the exams. */
+/* Practice happens in K-φ itself: each signed-in learner has their own practice company,
+   a copy of Halden Trading (K-phi-engine, blocks/academy/practice.js); AI lessons use the
+   learner's own K-φ account. */
 function practiceLink(kind) {
   const host = (SESSION && SESSION.api) || apiBase() || AUTH_HOSTS.prod;
   if (kind === "account") return `<div class="row"><a class="btn" href="${esc(host)}/app" target="_blank" rel="noopener">Open K-φ</a><span class="note">${SESSION ? "Your account opens in a new tab." : "Sign in first (top right) to get your account."}</span></div>`;
-  return `<div class="row"><a class="btn" href="${esc(host)}/login" target="_blank" rel="noopener">Open the K-φ demo</a><span class="note">On the sign-in page, choose <b>Continue in Demo Mode</b>. Nothing you do there is saved.</span></div>`;
+  if (!SESSION) return `<div class="row"><a class="btn" href="${esc(host)}/academy/signin">Sign in to practise</a><span class="note">Signing in gives you your own practice company, a copy of Halden Trading.</span></div>`;
+  return `<div class="row"><button class="btn" type="button" data-practice>Open my practice company</button><span class="note">Your own copy of Halden Trading, in a new tab. That tab is signed into the practice company; sign in again there to get back to your own K-φ account.</span></div>`;
 }
+
+/* Open (and, the first time, create) the learner's practice company. The tab is opened
+   inside the click so no pop-up blocker stops it, then sent to the one-time link. */
+async function openPractice(btn) {
+  if (!SESSION) return;
+  const w = window.open("", "_blank");
+  if (w) { try { w.document.title = "K-φ practice company"; w.document.body.innerHTML = '<p style="font:16px system-ui;padding:40px">Preparing your practice company…</p>'; } catch (e) { /* cross-origin later */ } }
+  const label = btn.textContent; btn.disabled = true; btn.textContent = "Preparing…";
+  try {
+    const r = await fetch(SESSION.api + "/api/academy/practice", { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: "{}" });
+    if (r.status === 404) {
+      /* this K-φ server does not have practice companies yet: the demo instead */
+      if (w) w.location = SESSION.api + "/login"; else window.open(SESSION.api + "/login", "_blank");
+      FLASH = "Practice companies are not on this K-φ server yet, so the demo opened instead: choose Continue in Demo Mode. Nothing you do there is saved.";
+      return;
+    }
+    const d = await r.json().catch(() => ({}));
+    if (r.status === 401) { SESSION = null; store.set("kphi-academy-session", null); if (w) w.close(); FLASH = "Your academy session ended. Sign in again."; return; }
+    if (!r.ok || !d.open_url) { if (w) w.close(); FLASH = d.error || "Your practice company could not be opened. Try again in a minute."; return; }
+    if (w) { w.opener = null; w.location = d.open_url; } else location.href = d.open_url;
+  } catch (e) { if (w) w.close(); FLASH = "Could not reach K-φ. Check your connection and try again."; }
+  finally { btn.disabled = false; btn.textContent = label; if (FLASH) render(); }
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-practice]"); if (b) openPractice(b); });
 
 function lessonView(code) {
   const hit = ALL.find(l => l.code === code);
@@ -399,7 +425,7 @@ function lessonView(code) {
         <div class="watch" data-watch="${esc(l.code)}"><div class="wbar"><canvas width="760" height="8" aria-hidden="true"></canvas></div><span class="wtxt mono">Watched 0%</span></div>` : ""}
       <div class="prose">${l.read.replace(/<table>/g, '<div class="tablewrap"><table>').replace(/<\/table>/g, "</table></div>")}</div>
       <section class="try"><div class="eyebrow">Try it</div><div>${esc(l.try)}</div>
-        ${/\bIn the demo\b/.test(l.try) ? practiceLink("demo") : /K-φ account/.test(l.try) ? practiceLink("account") : ""}</section>
+        ${/\bIn your practice company\b/.test(l.try) ? practiceLink("practice") : /K-φ account/.test(l.try) ? practiceLink("account") : ""}</section>
       <section><div class="eyebrow" style="margin-bottom:10px">Key points</div><ul class="keys">${l.points.map(k => `<li>${esc(k)}</li>`).join("")}</ul></section>
       ${l.resources ? `<section><div class="eyebrow" style="margin-bottom:10px">Resources</div><div class="res">${l.resources.map(r => `<span class="chip">${esc(r)} · pilot</span>`).join("")}</div></section>` : ""}
       ${check}
@@ -645,6 +671,10 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = 
 
 window.addEventListener("hashchange", () => { if (!/^#signin-/.test(location.hash)) render(); else boot(); });
 async function boot() {
+  if (location.hash === "#practice-expired") {
+    FLASH = "That practice link has expired or was already used. Click Open my practice company again.";
+    try { history.replaceState(null, "", location.pathname + "#home"); } catch (e) { location.hash = "home"; }
+  }
   const m = /^#signin-(.+)$/.exec(location.hash || "");
   if (m) {
     if (m[1] === "failed") FLASH = "Sign-in did not complete. Try again.";

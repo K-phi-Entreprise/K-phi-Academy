@@ -36,7 +36,7 @@ The three share one data model. A figure is imported once and reused everywhere,
 
 As an implementer, this is the idea to keep in mind: **custom logic belongs inside the system that holds the data**, not in a file next to it.
 """,
-                    "try": "In the demo, switch between the workspaces with the tabs at the top of the left panel.",
+                    "try": "In your practice company, switch between the workspaces with the tabs at the top of the left panel.",
                     "points": [
                         "K-φ is one system of record for FP&A, Cash and Build.",
                         "Data comes in once and is reused across workspaces.",
@@ -60,7 +60,7 @@ Every page has a back button. Every dialog is a K-φ dialog, never a browser pop
 
 K-φ works in light and dark themes. Everything should stay readable in both; if something doesn't, that is a bug worth reporting.
 """,
-                    "try": "In the demo, change the entity selector in the top bar, then open a page in FP&A and one in Cash and check that the filter follows you.",
+                    "try": "In your practice company, change the entity selector in the top bar, then open a page in FP&A and one in Cash and check that the filter follows you.",
                     "points": [
                         "Click a workspace tab to switch; the left panel follows it.",
                         "Top-bar selectors filter FP&A and Cash the same way.",
@@ -91,7 +91,7 @@ Two setup decisions are hard to change later, so take them early with the client
 
 A wrong entity list shows up everywhere downstream: consolidated totals, intercompany, cash pools.
 """,
-                    "try": "In the demo, open the entity selector and note the entities and their currencies. Then find one customer that appears both in FP&A and in Cash.",
+                    "try": "In your practice company, open the entity selector and note the three companies and their currencies. Then find the customer that buys from all three, in FP&A and in Cash.",
                     "points": [
                         "A tenant is one client, fully isolated.",
                         "Entities are legal companies, each with a currency.",
@@ -187,7 +187,7 @@ A short checklist for a new client:
 2. Every approver has two-factor authentication on.
 3. No user holds both preparer and approver duties for the same action.
 """,
-                    "try": "In the demo, open Cash, Payments, Payment rights and read who can prepare, approve and sign, and each signer's limit.",
+                    "try": "In your practice company, open Cash, Payments, Payment rights and read who can prepare, approve and sign, and each signer's limit.",
                     "points": [
                         "Two signers for payments is the default; keep it.",
                         "Admins and approvers should use two-factor authentication.",
@@ -235,7 +235,7 @@ Before you import, open the file and look:
 
 Large files are fine. What matters is that the file is complete and consistent.
 """,
-                    "try": "In the demo, open the P&L and drill into one line until you reach the ledger lines behind it.",
+                    "try": "In your practice company, open the P&L and drill into one line until you reach the ledger lines behind it.",
                     "points": [
                         "The ledger is the base of everything in FP&A.",
                         "Check completeness and balance before importing.",
@@ -259,7 +259,7 @@ Invoices imported this way follow the direction rule: when a group company is pa
 
 If the client's system has no connector, a ledger export (lesson F3.1) and an invoice file work the same way.
 """,
-                    "try": "In the demo, open Cash, Φ Setup, Data sources and note what is connected and which entity each source feeds.",
+                    "try": "In your practice company, open Cash, Φ Setup, Data sources and note what is connected and which entity each source feeds.",
                     "points": [
                         "QuickBooks and Xero connect directly; others use files.",
                         "Map each connected company to the right entity.",
@@ -283,7 +283,7 @@ Agree with the treasurer on the account names before go-live. Names are what peo
 
 Bank connections expire after a period set by the bank, after which the client has to authorise again. Put a reminder in the client's calendar; an expired connection is the most common reason for a "missing" balance.
 """,
-                    "try": "In the demo, open the bank accounts and note which entity each belongs to and how they are grouped.",
+                    "try": "In your practice company, open the bank accounts and note which entity each belongs to and how they are grouped.",
                     "points": [
                         "Balances are stored daily, so past positions can be rebuilt.",
                         "Organise accounts by entity and by pool.",
@@ -306,7 +306,7 @@ Good practice with a sheet as a source:
 
 Anything that has an API can also come in through the developer portal. That route belongs to Build and is covered in the Build course.
 """,
-                    "try": "In the demo, open Data sources and look at the Google Sheets section. Think of one sheet a client of yours could connect.",
+                    "try": "In your practice company, open Data sources and look at the Google Sheets section. Think of one sheet a client of yours could connect.",
                     "points": [
                         "Sheets and variables connect under Φ Setup, Data sources; files use their own imports.",
                         "One sheet per purpose, with fixed column names.",
@@ -368,7 +368,7 @@ Use the audit trail to:
 
 Read it like a ledger: filter by user, by period or by object, then read down in time order. If a change has no explanation, ask the person who made it the same day; memories fade fast.
 """,
-                    "try": "In the demo, find the audit trail and filter it by user and by period.",
+                    "try": "In your practice company, find the audit trail and filter it by user and by period.",
                     "points": [
                         "Every change and every approval is recorded.",
                         "Filter by user, period or object, then read in order.",
@@ -403,12 +403,12 @@ When in doubt, stop and ask the client's approver. A delay of an hour is always 
                  "options": ["Do it, the client asked", "Ask for the decision in writing from the client's approver, and advise against it", "Refuse to work with the client"],
                  "answer": 1, "why": "Controls change only on a written decision. Advise, record, and let the client decide."},
                 {"q": "You need to test an import format. Where do you do it?",
-                 "options": ["In the client's live tenant, then delete the data", "In the demo or a test tenant", "In the client's tenant on a weekend"],
+                 "options": ["In the client's live tenant, then delete the data", "In your practice company or a test tenant", "In the client's tenant on a weekend"],
                  "answer": 1, "why": "Test data never goes into a live tenant."},
             ],
         },
     ],
-    "lab": "Practise in the K-φ demo: sample companies with FP&A and Cash data. It needs no account and nothing you do is saved.",
+    "lab": "Practise in your own practice company, a copy of Halden Trading: three companies in three currencies, two years of books, banks and invoices.",
     "exam": {
         "title": "Exam: set up Halden Trading",
         "report": [

@@ -11,7 +11,7 @@ COURSE = {
         "Design a finance workflow with an agent, with approvals at the right points.",
         "Keep data and credentials safe, and verify an AI's output before anyone relies on it.",
     ],
-    "lab": "Practise in your own K-φ account (the one you signed in with), connected to your AI assistant, and in the K-φ demo, which needs no account.",
+    "lab": "Practise in your own K-φ account (the one you signed in with), connected to your AI assistant, and in your practice company, a copy of Halden Trading.",
     "chapters": [
         {"code": "A1", "title": "What a model is", "lessons": [
             L("A1.1", "What a language model does", 7,
