@@ -411,27 +411,47 @@ When in doubt, stop and ask the client's approver. A delay of an hour is always 
     "lab": "Practise in your own practice company, a copy of Halden Trading: three companies in three currencies, two years of books, banks and invoices.",
     "exam": {
         "title": "Exam: set up Halden Trading",
-        "report": [
-            ["pass", "Entities and currencies", "3 of 3 entities, currencies match"],
-            ["pass", "Roles and approver", "Preparer cannot approve; Tom Ashby is approver"],
-            ["fail", "Ledger totals by entity and month", "Halden Négoce SAS, March: 412,300.00 EUR expected, 824,600.00 found. A period appears twice; see lesson F3.5"],
-            ["fail", "Seeded problem resolved at source", "Not resolved: the duplicate period is still in the imported file"],
-            ["pass", "Audit trail", "Changes by the candidate, in a plausible order"],
-        ],
-        "situation": "Halden Trading is starting on K-φ. Your exam tenant is empty apart from the company profile.",
+        "situation": "Halden Trading is starting on K-φ. Your exam company is empty: no entities, no users, no ledger.",
         "tasks": [
-            "Create the three entities with their currencies: Halden Trading Inc. (USD), Halden Trading Ltd (GBP), Halden Négoce SAS (EUR).",
-            "Create two users: Maya Chen, Group Controller, who prepares changes; and Tom Ashby, CFO, who approves them. Name the right person as governance approver.",
-            "Import the general ledger file provided (24 months, three entities).",
-            "Find the one problem in the import and resolve it at its source.",
-            "In the submission form, say in five lines at most what the problem was and how you resolved it.",
+            "Create the three entities with these codes and currencies: HTUS, Halden Trading Inc. (USD); HTUK, Halden Trading Ltd (GBP); HTFR, Halden Négoce SAS (EUR).",
+            "Invite two users. Maya Chen, Group Controller, prepares changes: an editor, with an address that starts with maya (for example maya.chen@example.com). Tom Ashby, CFO, approves them: an admin, with an address that starts with tom. No mail is sent.",
+            "Name the right person as governance approver, and only that person.",
+            "Download the general ledger file (24 months, three entities) and import it.",
+            "Find the one problem in the import and resolve it at its source, then submit: in five lines at most, what the problem was and how you resolved it.",
         ],
         "checks": [
             "Entities exist with the right currencies",
             "Preparer cannot approve; approver is set; no user holds both duties",
             "Ledger totals by entity and month match the answer key",
             "Seeded problem resolved at its source",
-            "Audit trail shows the candidate's changes in a plausible order",
+            "The audit trail shows the import and the invitations made by you",
+        ],
+        "report": [
+            [
+                "pass",
+                "Entities and currencies",
+                "3 of 3 entities, currencies match",
+            ],
+            [
+                "pass",
+                "Roles and approver",
+                "Maya prepares, cannot approve; Tom Ashby is approver",
+            ],
+            [
+                "fail",
+                "Ledger totals by entity and month",
+                "Halden Négoce SAS, 2026-03: too much (2,604,118.40 debits for 1,302,059.20)",
+            ],
+            [
+                "fail",
+                "Seeded problem resolved at source",
+                "Not resolved: Halden Négoce SAS's March 2026 is still in the books twice",
+            ],
+            [
+                "pass",
+                "Audit trail",
+                "Changes by the candidate: 1 import(s), 2 invitation(s)",
+            ],
         ],
     },
 }

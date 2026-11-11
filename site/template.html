@@ -179,6 +179,13 @@ a.lrow:hover { background: var(--surface-2); }
 .verify .out { margin: 0; padding: 10px 12px; border-radius: 10px; }
 .verify .out.pass { color: var(--ok); background: var(--ok-bg); }
 .verify .out.fail { color: var(--bad); background: var(--bad-bg); }
+[data-exam-live] { display: grid; gap: 12px; align-content: start; }
+[data-exam-live] .files { display: grid; gap: 8px; }
+.examform { display: grid; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.examform .field { display: grid; gap: 6px; font-size: 14px; }
+.examform input, .examform textarea { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-width: 0; width: 100%; box-sizing: border-box; }
+[data-exam-live] .out { margin: 0; padding: 10px 12px; border-radius: 10px; }
+[data-exam-live] .out.fail { color: var(--bad); background: var(--bad-bg); }
 .keys { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .keys li { display: grid; grid-template-columns: 24px minmax(0,1fr); gap: 8px; }
 .keys li::before { content: "→"; color: var(--hi); font-family: var(--f-mono); }
@@ -448,7 +455,8 @@ function examView(id) {
   const c = course(id);
   if (!c || !c.exam) return courseView(id);
   const e = c.exam;
-  const report = e.report.map(([s, t, d]) => `<div class="rline"><span class="st ${s}">${s.toUpperCase()}</span><div>${esc(t)}<small>${esc(d)}</small></div></div>`).join("");
+  const TRAP = { foundation: "One problem is planted in the data. Finding it is part of the exam.", fpa: "One problem is planted in the data. Finding it is part of the exam.",
+    cash: "The trap: movements that look like payroll or payments but are transfers between the group's own accounts.", ai: "The trap: an assistant that gets the sign of a change wrong. Check every figure." };
   return `
   <div class="course-head">
     <div class="crumb note"><a href="#home">Catalogue</a> / <a href="#course-${c.id}">${esc(c.title)}</a> / Exam</div>
@@ -459,22 +467,105 @@ function examView(id) {
     <div class="chapters">
       <div class="panel"><h3>Your task</h3><ol class="tasks">${e.tasks.map(t => `<li>${esc(t)}</li>`).join("")}</ol></div>
       <div class="panel"><h3>What the checker verifies</h3><ul class="outcomes">${e.checks.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
-        <p>One problem is hidden in the data. Finding it is part of the exam.</p></div>
-      <section class="block" style="margin-top:12px"><header><h2>What your report looks like</h2><span class="sample">Example, failed attempt</span></header>
-        <div class="report"><div class="rh"><span>Attempt 1 of 3 · ${esc(c.title)}</span><span>${e.report.filter(r => r[0] === "pass").length} of ${e.report.length} checks passed · next attempt in 24 h</span></div>${report}</div>
-      </section>
+        <p>${esc(TRAP[c.id] || "")}</p></div>
+      <div data-exam-report>${exampleReport(c)}</div>
     </div>
     <aside class="side">
       <div class="rules">
-        <div class="rule"><b>72 h</b><span>tenant stays open</span></div>
+        <div class="rule"><b>72 h</b><span>your exam company stays open</span></div>
         <div class="rule"><b>3</b><span>attempts, 24 h apart</span></div>
         <div class="rule"><b>Any LLM</b><span>only the result is graded</span></div>
       </div>
-      <div class="panel"><h3>Ready?</h3><p>Starting creates a fresh tenant with your own variant of the dataset.</p>
-        <button class="btn primary" data-start>Start exam</button><p class="flash" hidden data-startmsg>Exams open with the pilot invitation.</p></div>
+      <div class="panel" data-exam-live="${esc(c.id)}"><h3>Your exam</h3><p class="note">Loading…</p></div>
     </aside>
   </div>`;
 }
+
+function reportHtml(rows, head) {
+  return `<div class="report"><div class="rh">${head}</div>${rows.map(r => `<div class="rline"><span class="st ${r.ok ? "pass" : "fail"}">${r.ok ? "PASS" : "FAIL"}</span><div>${esc(r.label)}<small>${esc(r.detail)}</small></div></div>`).join("")}</div>`;
+}
+function exampleReport(c) {
+  const e = c.exam, rows = e.report.map(([st, t, d]) => ({ ok: st === "pass", label: t, detail: d }));
+  return `<section class="block" style="margin-top:12px"><header><h2>What your report looks like</h2><span class="sample">Example, failed attempt</span></header>
+    ${reportHtml(rows, `<span>Attempt 1 of 3 · ${esc(c.title)}</span><span>${rows.filter(r => r.ok).length} of ${rows.length} checks passed · next attempt in 24 h</span>`)}</section>`;
+}
+
+/* ── Exams (K-phi-engine, blocks/academy/exams.js) ───────────────────────
+   Start creates a fresh exam company with this attempt's own variant of Halden
+   Trading and one planted problem; Submit runs the checker on the company and
+   the form, and the report comes back line by line. */
+const EXAMSTATE = {};
+const when = (iso) => { try { return new Date(String(iso).replace(" ", "T") + (/Z$|[+-]\d\d:?\d\d$/.test(iso) ? "" : "Z")).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }); } catch (e) { return iso; } };
+async function loadExam(id) {
+  const box = $(`[data-exam-live="${id}"]`); if (!box) return;
+  const api = (SESSION && SESSION.api) || apiBase() || AUTH_HOSTS.prod;
+  let d = null, status = 0;
+  try { const r = await fetch(api + "/api/academy/exam/" + id, { headers: SESSION ? { Authorization: "Bearer " + SESSION.token } : {} }); status = r.status; d = r.ok ? await r.json() : null; } catch (e) { status = -1; }
+  EXAMSTATE[id] = d;
+  drawExam(id, status);
+}
+function drawExam(id, status) {
+  const box = $(`[data-exam-live="${id}"]`); if (!box) return;
+  const d = EXAMSTATE[id], c = course(id);
+  if (!d) { box.innerHTML = `<h3>Your exam</h3><p>${status === 404 ? "Exams open with the next K-φ release." : "Could not reach K-φ. Reload the page to try again."}</p>`; return; }
+  if (!SESSION) { box.innerHTML = `<h3>Ready?</h3><p>Sign in to take the exam: you get a fresh company of your own for each attempt.</p><a class="btn primary" href="${esc(apiBase() || AUTH_HOSTS.prod)}/academy/signin">Sign in</a>`; return; }
+  const st = d.state, last = st.attempts[st.attempts.length - 1];
+  const rep = $("[data-exam-report]");
+  if (rep && last && last.report) rep.innerHTML = `<section class="block" style="margin-top:12px"><header><h2>Your report</h2></header>${reportHtml(last.report, `<span>Attempt ${last.attempt} of ${st.max} · ${esc(c.title)}</span><span>${last.report.filter(r => r.ok).length} of ${last.report.length} checks passed${last.passed ? " · passed" : st.next_at ? " · next attempt " + esc(when(st.next_at)) : ""}</span>`)}</section>`;
+  if (st.passed) { box.innerHTML = `<h3>Passed</h3><p>You passed this exam on attempt ${last.attempt}.</p>`; return; }
+  if (st.open) {
+    const files = d.exam.files.map(f => `<button class="btn" type="button" data-examfile="${esc(id)}|${esc(f)}">Download ${esc(f)}</button>`).join("");
+    const fields = d.exam.form.map(f => `<label class="field"><span>${esc(f.label)}</span>${f.type === "text" ? `<textarea name="${esc(f.id)}" rows="5"></textarea>` : `<input type="text" name="${esc(f.id)}" autocomplete="off" inputmode="${f.unit ? "decimal" : "text"}">`}</label>`).join("");
+    box.innerHTML = `<h3>Attempt ${st.open.attempt} of ${st.max}</h3><p class="note">Your exam company is open until ${esc(when(st.open.expires_at))}.</p>
+      <button class="btn primary" type="button" data-examopen="${esc(id)}">Open my exam company</button>
+      ${files ? `<div class="files">${files}</div>` : ""}
+      <form class="examform" data-examsubmit="${esc(id)}"><h3>Submit</h3>${fields}<button class="btn primary" type="submit">Submit for checking</button><p class="note">Submitting closes the attempt: the checker reads your company and this form.</p></form>
+      <p class="out" role="status" hidden></p>`;
+    return;
+  }
+  if (st.can_start) { box.innerHTML = `<h3>Ready?</h3><p>Starting uses attempt ${st.used + 1} of ${st.max}: a fresh company with your own variant of Halden Trading, open for 72 hours.</p><button class="btn primary" type="button" data-examstart="${esc(id)}">Start exam</button>`; return; }
+  box.innerHTML = `<h3>Your exam</h3><p>${st.used >= st.max ? "All three attempts are used." : "Your next attempt opens on " + esc(when(st.next_at)) + "."}</p>`;
+}
+async function examOpen(id, start) {
+  if (!SESSION) return;
+  const w = window.open("", "_blank");
+  if (w) { try { w.document.body.innerHTML = '<p style="font:16px system-ui;padding:40px">Preparing your exam company…</p>'; } catch (e) {} }
+  try {
+    const r = await fetch(SESSION.api + "/api/academy/exam/" + id + "/start", { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: "{}" });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok || !d.open_url) { if (w) w.close(); FLASH = d.error || "The exam company could not be opened. Try again in a minute."; render(); return; }
+    if (w) { w.opener = null; w.location = d.open_url; } else location.href = d.open_url;
+    if (start) await loadExam(id);
+  } catch (e) { if (w) w.close(); FLASH = "Could not reach K-φ. Try again."; render(); }
+}
+document.addEventListener("click", async e => {
+  const s = e.target.closest("[data-examstart]"), o = e.target.closest("[data-examopen]"), f = e.target.closest("[data-examfile]");
+  if (s) { s.disabled = true; s.textContent = "Preparing…"; await examOpen(s.dataset.examstart, true); return; }
+  if (o) { await examOpen(o.dataset.examopen, false); return; }
+  if (f && SESSION) {
+    const [id, name] = f.dataset.examfile.split("|");
+    try {
+      const r = await fetch(SESSION.api + "/api/academy/exam/" + id + "/file/" + encodeURIComponent(name), { headers: { Authorization: "Bearer " + SESSION.token } });
+      if (!r.ok) { FLASH = "The file could not be downloaded. Try again."; render(); return; }
+      const url = URL.createObjectURL(await r.blob()), a = document.createElement("a");
+      a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+    } catch (err) { FLASH = "Could not reach K-φ. Try again."; render(); }
+  }
+});
+document.addEventListener("submit", async e => {
+  const f = e.target.closest("[data-examsubmit]"); if (!f) return;
+  e.preventDefault(); if (!SESSION) return;
+  const id = f.dataset.examsubmit, b = f.querySelector("button[type=submit]"), out = f.parentElement.querySelector(".out");
+  if (!confirm("Submit this attempt for checking? It closes the attempt.")) return;
+  const form = {}; for (const el of f.querySelectorAll("input, textarea")) form[el.name] = el.value;
+  b.disabled = true; b.textContent = "Checking…";
+  try {
+    const r = await fetch(SESSION.api + "/api/academy/exam/" + id + "/submit", { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: JSON.stringify({ form }) });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { out.hidden = false; out.className = "out fail"; out.textContent = d.error || "The checker could not run. Try again."; b.disabled = false; b.textContent = "Submit for checking"; return; }
+    await loadExam(id); window.scrollTo(0, 0);
+  } catch (err) { out.hidden = false; out.className = "out fail"; out.textContent = "Could not reach K-φ. Try again."; b.disabled = false; b.textContent = "Submit for checking"; }
+});
 
 function certView() {
   return `
@@ -626,6 +717,7 @@ function render() {
   document.querySelectorAll(".ri[data-code]").forEach(a => { if (a.dataset.code === cur) a.setAttribute("aria-current", "page"); });
   const learn = document.querySelector('[data-nav="learn"]'); if (learn) learn.href = "#course-" + current().id;
   setupWatch();
+  if (h.startsWith("exam-")) loadExam(h.slice(5));
   window.scrollTo(0, 0);
 }
 
@@ -633,7 +725,6 @@ document.addEventListener("click", e => {
   const t = e.target.closest("button, input[type=radio]");
   if (!t) return;
   if (t.matches("[data-complete]")) { if (t.disabled) return; done.add(t.dataset.complete); save(); location.hash = t.dataset.next; }
-  else if (t.matches("[data-start]")) $("[data-startmsg]").hidden = false;
   else if (t.matches("[data-li]")) { const m = $("[data-certmsg]"); m.textContent = "In the live version, this opens LinkedIn with the certificate pre-filled."; m.hidden = false; }
   else if (t.matches("[data-copy]")) {
     const m = $("[data-certmsg]"), url = "https://academy.k-phi.com/verify/KPA-26-0007";
