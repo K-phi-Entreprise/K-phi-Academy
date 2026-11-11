@@ -31,7 +31,7 @@ Two rules hold everywhere:
 - **The P&L restarts at zero at the start of each fiscal year.** A P&L for May shows January to May (for a calendar fiscal year). This is the rule, not a setting.
 - **The balance sheet is cumulative.** It shows balances at a date, built from everything booked up to that date.
 
-The same selectors as everywhere else apply: entity, business unit, currency, units. A group view brings the entities together in the reporting currency chosen in the top bar; each entity's own view stays in its own currency.
+The same selectors as everywhere else apply: entity, business unit and third party (both optional), currency, units. A group view brings the entities together in the reporting currency chosen in the top bar; each entity's own view stays in its own currency.
 
 Before presenting a statement, check that the balance sheet balances for each entity and that net income, less distributions, matches the movement in retained earnings for the year. If either fails, look at the classification of accounts before anything else.
 """,

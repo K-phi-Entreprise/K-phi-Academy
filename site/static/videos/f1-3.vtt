@@ -33,14 +33,18 @@ The same customer is the same third party in the ledger and in the invoices.
 The axes are the selectors in the top bar.
 
 9
-00:00:42.922 --> 00:00:46.766
-Settle the entity list and the business units with the client first.
+00:00:38.733 --> 00:00:44.702
+Business unit and third party are optional: use them when the client reads the business that way.
 
 10
-00:00:46.816 --> 00:00:49.999
-A wrong entity list shows up everywhere downstream.
+00:00:45.852 --> 00:00:49.695
+Settle the entity list and the business units with the client first.
 
 11
-00:00:52.222 --> 00:00:55.082
+00:00:49.745 --> 00:00:52.929
+A wrong entity list shows up everywhere downstream.
+
+12
+00:00:55.152 --> 00:00:58.012
 Next: F2.1  Users and roles
 

@@ -142,26 +142,52 @@ As an implementer, this is the idea to keep in mind: **custom logic belongs insi
                 },
                 {
                     "code": "F1.2", "title": "A tour of the interface", "minutes": 7,
-                    "objective": "Find your way around: workspace tabs, left panel, top bar, notifications.",
+                    "objective": "Find your way around: workspace tabs, left panel, and both sides of the top bar.",
                     "read": """
 The interface has four fixed areas.
 
 1. **The workspace tabs** at the top of the left panel: FP&A and CASH, plus BUILD once Build is turned on for the account. You switch by clicking. Pointing at a tab does nothing.
 2. **The left panel** lists the pages of the selected workspace, and only those.
-3. **The top bar** holds the selectors that filter what you see: entity, business unit, third party, currency, units. They apply in FP&A and Cash alike.
-4. **The bell** collects notifications: finished imports, sync results, approvals waiting for you.
+3. **The left of the top bar** says what you are looking at.
+4. **The right of the top bar** says who you are, and holds the tools.
 
-The top bar also carries **Sync all**, which refreshes every connected data source in turn. Its progress shows in the button itself; the detail of what was refreshed goes to the bell.
+**The left of the top bar**, from left to right:
 
-Every page has a back button. Every dialog is a K-φ dialog, never a browser pop-up, so if you see a raw browser box, report it.
+| Item | What it does |
+|---|---|
+| Page name and **?** | the page you are on; **?** opens its help |
+| **All clear** | the financial checks on your data pass; it turns amber or red with a count when they do not, and a click lists them |
+| **Period** | the month you are reading |
+| **Entities** | one company, several, or all of them |
+| **BU** and **TP** | business unit and third party. **Optional**: a client that does not report by them leaves them on All |
+| **Group** or **Company** | Group reads everything in the group currency; Company reads each company in its own currency |
+| **Currency** and **1 · K · M** | the display currency, and units, thousands or millions |
 
-K-φ works in light and dark themes. Everything should stay readable in both; if something doesn't, that is a bug worth reporting.
+These selectors apply in FP&A and Cash alike: change the entity on one page and the next page follows.
+
+**The right of the top bar**, from left to right:
+
+| Item | What it does |
+|---|---|
+| **Company badge** | the company you are signed into, in pink. In the academy it reads ACAD-… Halden Trading. Check it before you change anything |
+| **Role** | your role in that company: OWNER, ADMIN, EDITOR or VIEWER |
+| **The bell** | notifications: finished imports, sync results, approvals waiting for you |
+| **Sync all** | refreshes every connected data source in turn; its progress shows in the button, the detail goes to the bell |
+| **New window** | opens K-φ in a second window with the same session, to see two pages side by side |
+| **Auto-scroll** | when on, the page scrolls as the pointer reaches its edge |
+| **Full screen** | hides the browser around K-φ |
+| **Light or dark** | switches the theme |
+| **Sign out** | the red arrow, last on the right |
+
+On a narrow screen, the buttons fold into **More actions** (⋯).
+
+Every dialog is a K-φ dialog, never a browser pop-up, so if you see a raw browser box, report it. Everything should stay readable in both themes; if something doesn't, that is a bug worth reporting.
 """,
-                    "try": "In your practice company, change the entity selector in the top bar, then open a page in FP&A and one in Cash and check that the filter follows you.",
+                    "try": "In your practice company, read the company badge and your role, set the entity selector to Halden Trading Ltd, then open a page in FP&A and one in Cash and check that the filter follows you.",
                     "points": [
-                        "Click a workspace tab to switch; the left panel follows it.",
-                        "Top-bar selectors filter FP&A and Cash the same way.",
-                        "Sync all refreshes every source; details go to the bell.",
+                        "Left of the top bar: what you are looking at. Period, entities, view, currency, units.",
+                        "Business unit and third party are optional selectors.",
+                        "Right of the top bar: the company you are in, your role, the bell and the tools.",
                     ],
                 },
                 {
@@ -172,10 +198,12 @@ K-φ works in light and dark themes. Everything should stay readable in both; if
 
 **Entities.** The legal companies of the group. Each entity has its own currency. A group with a US, a UK and a French company has three entities in USD, GBP and EUR.
 
-**Reporting axes.** Beside entities, K-φ reports by:
+**Reporting axes.** Beside entities, K-φ can report by two optional axes:
 
 - **Business unit**, for brands, divisions or product lines;
 - **Third party**, for customers and suppliers.
+
+Both are optional. A client that does not read its business by unit, or does not book its customers and suppliers on the ledger lines, leaves the BU and TP selectors on All, and nothing is lost.
 
 The same axes run through FP&A and Cash. A customer is the same third party in the ledger and in the open receivables, so a DSO can be traced to the invoices behind it.
 

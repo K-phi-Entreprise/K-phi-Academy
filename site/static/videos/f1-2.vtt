@@ -9,8 +9,8 @@ F1.2 · A tour of the interface
 The interface has four fixed areas.
 
 3
-00:00:07.893 --> 00:00:10.757
-Tabs, left panel, top bar, and the bell.
+00:00:07.893 --> 00:00:12.065
+The workspace tabs, the left panel, and the two sides of the top bar.
 
 4
 00:00:14.450 --> 00:00:16.581
@@ -21,30 +21,66 @@ Click a tab to switch workspace.
 Pointing at it does nothing; the left panel follows the tab.
 
 6
-00:00:22.450 --> 00:00:24.647
-The top bar filters what you see.
+00:00:22.450 --> 00:00:25.547
+The left of the top bar sets what you are looking at.
 
 7
-00:00:24.697 --> 00:00:28.340
+00:00:25.597 --> 00:00:29.241
 The same selectors apply in FP&A and in Cash.
 
 8
-00:00:30.450 --> 00:00:34.701
-Sync all refreshes every connected source, one after the other.
+00:00:30.450 --> 00:00:32.604
+Period and entities come first.
 
 9
-00:00:34.751 --> 00:00:38.477
-Its progress shows in the button; the detail goes to the bell.
+00:00:32.654 --> 00:00:38.195
+Business unit and third party are optional: left on All when a client does not use them.
 
 10
-00:00:39.627 --> 00:00:44.333
-Every page has a back button, and every dialog is a K-φ dialog.
+00:00:38.245 --> 00:00:42.551
+Group reads in the group currency; Company, in each company's own.
 
 11
-00:00:44.383 --> 00:00:47.768
-If something is unreadable in either theme, report it.
+00:00:43.701 --> 00:00:47.991
+The right of the top bar says which company you are in, and with which role.
 
 12
-00:00:49.218 --> 00:00:53.481
+00:00:48.041 --> 00:00:50.602
+Check the company before you change anything.
+
+13
+00:00:51.752 --> 00:00:55.245
+Then the bell, Sync all, a second window, and auto-scroll.
+
+14
+00:00:55.295 --> 00:00:58.449
+Full screen, light or dark, and sign out, in red.
+
+15
+00:00:58.499 --> 00:01:01.398
+On a small screen they fold into More actions.
+
+16
+00:01:04.752 --> 00:01:09.003
+Sync all refreshes every connected source, one after the other.
+
+17
+00:01:09.053 --> 00:01:12.779
+Its progress shows in the button; the detail goes to the bell.
+
+18
+00:01:13.929 --> 00:01:17.898
+All clear, by the page name, means the financial checks pass.
+
+19
+00:01:17.948 --> 00:01:20.225
+Click it when it turns amber or red.
+
+20
+00:01:20.275 --> 00:01:24.690
+Every dialog is a K-φ dialog, readable in both themes.
+
+21
+00:01:26.140 --> 00:01:30.403
 Next: F1.3  Tenants, entities and reporting axes
 
