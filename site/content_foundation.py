@@ -26,11 +26,11 @@ COURSE = {
                     "read": """
 Every lesson in this academy happens in **your practice company**: your own copy of Halden Trading, a distribution group that is moving to K-φ. It is a K-φ company of its own, separate from the account you signed in with, so nothing you do here touches real books.
 
-It starts the way a client's company starts on day one: **empty**. Only the six bank accounts are there, because banks are connected, not typed in. Everything else you bring in yourself, from the files the academy gives you, in four steps:
+It starts the way a client's company starts on day one: **empty**. Only the six bank accounts are there, because banks are connected, not typed in, and five of them already carry their statements. Everything else you bring in yourself, from the files the academy gives you, in four steps:
 
 1. **The entities**, in this lesson.
 2. **The ledger**, 23 months of it (S0.2).
-3. **The bank statements**, one per account (S0.3).
+3. **A bank statement**, for the one account still without its history (S0.3).
 4. **The open receivables and payables** (S0.4).
 
 Halden Trading has three legal companies. Each keeps its books in its own currency:
@@ -73,8 +73,8 @@ October 2026 is not in this file. It arrives later, in lesson F3.1, the way a ne
                     ],
                 },
                 {
-                    "code": "S0.3", "title": "Import the bank statements", "minutes": 8,
-                    "objective": "Load eleven months of statements into the six bank accounts, each into its own account.",
+                    "code": "S0.3", "title": "Import a bank statement", "minutes": 5,
+                    "objective": "Load eleven months of movements into the one account that has none yet: Barclays Operating.",
                     "read": """
 The six accounts are already there, with their balance on 31 October 2026, the way a bank connection would show them:
 
@@ -84,14 +84,20 @@ The six accounts are already there, with their balance on 31 October 2026, the w
 | Barclays | Operating, Reserve | Halden Trading Ltd |
 | BNP Paribas | Operating, Payroll | Halden Négoce SAS |
 
-What they lack is history. Each statement file holds one account's movements from **December 2025 to October 2026**: customer receipts, supplier payments, payroll, tax, the loan, and the transfers between the group's own accounts.
+Five of them already hold their history, from **December 2025 to October 2026**: customer receipts, supplier payments, payroll, tax, the loan, and the transfers between the group's own accounts. **Barclays Operating** has none yet. Its statement is the file below.
 
-Import each file from **Import a statement** in Cash, and choose its account by name. A statement in the wrong account is the mistake to avoid: the balances would still add up, but each company's cash would be wrong.
+1. In Cash, press **Import a statement** and choose the file.
+2. A CSV carries no IBAN, so K-φ asks which account it is for. Choose **Barclays · Halden Trading Ltd · Operating**.
+3. K-φ says how many movements it imported. Press Check below.
+
+A statement in the wrong account is the mistake to avoid: the balances would still add up, but each company's cash would be wrong. Import the file twice and nothing doubles: movements already there are recognised and skipped.
+
+Pick the statement, not the ledger: a ledger file in Import a statement is refused, with a message saying it is a ledger.
 """,
-                    "try": "In your practice company, download the six statement files below and import each one into its own account from Import a statement in Cash.",
+                    "try": "In your practice company, download the Barclays Operating statement below and import it from Import a statement in Cash, into Barclays Operating.",
                     "points": [
                         "Accounts come from the bank; history comes from the statements.",
-                        "One file per account, into that account.",
+                        "A CSV statement has no IBAN: you choose its account.",
                         "The ledger's cash on each month end equals the bank balance that day.",
                     ],
                 },
