@@ -84,20 +84,28 @@ The six accounts are already there, with their balance on 31 October 2026, the w
 | Barclays | Operating, Reserve | Halden Trading Ltd |
 | BNP Paribas | Operating, Payroll | Halden Négoce SAS |
 
-Five of them already hold their history, from **December 2025 to October 2026**: customer receipts, supplier payments, payroll, tax, the loan, and the transfers between the group's own accounts. **Barclays Operating** has none yet. Its statement is the file below.
+Five of them already hold their history, from **December 2025 to October 2026**: customer receipts, supplier payments, payroll, tax, the loan, and the transfers between the group's own accounts. **Barclays Operating** has none yet. Its statement is the file below, in the format banks send: **camt.053**, the ISO 20022 end-of-day statement.
+
+A camt.053 carries three things a spreadsheet does not:
+
+| In the file | What K-φ does with it |
+|---|---|
+| The account's **IBAN** | files the statement in its account, without asking |
+| The **opening and closing balances** | checks that opening plus the movements equals closing, and says so |
+| The bank's **reference** for each movement | recognises a movement already imported, so a second import doubles nothing |
 
 1. In Cash, press **Import a statement** and choose the file.
-2. A CSV carries no IBAN, so K-φ asks which account it is for. Choose **Barclays · Halden Trading Ltd · Operating**.
-3. K-φ says how many movements it imported. Press Check below.
+2. K-φ says how many movements it imported, into which account, and that the balances reconcile.
+3. Press Check below.
 
-A statement in the wrong account is the mistake to avoid: the balances would still add up, but each company's cash would be wrong. Import the file twice and nothing doubles: movements already there are recognised and skipped.
+A CSV statement works too, but it names no account: K-φ then asks which one it is for, and a statement in the wrong account is the mistake to avoid. The balances would still add up, but each company's cash would be wrong.
 
 Pick the statement, not the ledger: a ledger file in Import a statement is refused, with a message saying it is a ledger.
 """,
-                    "try": "In your practice company, download the Barclays Operating statement below and import it from Import a statement in Cash, into Barclays Operating.",
+                    "try": "In your practice company, download the Barclays Operating camt.053 below and import it from Import a statement in Cash.",
                     "points": [
                         "Accounts come from the bank; history comes from the statements.",
-                        "A CSV statement has no IBAN: you choose its account.",
+                        "A camt.053 names its IBAN and its balances: it files and reconciles itself. A CSV does neither.",
                         "The ledger's cash on each month end equals the bank balance that day.",
                     ],
                 },
@@ -188,12 +196,15 @@ These selectors apply in FP&A and Cash alike: change the entity on one page and 
 On a narrow screen, the buttons fold into **More actions** (⋯).
 
 Every dialog is a K-φ dialog, never a browser pop-up, so if you see a raw browser box, report it. Everything should stay readable in both themes; if something doesn't, that is a bug worth reporting.
+
+The theme is a choice of yours, kept in your browser: switching it changes nothing for your colleagues and nothing in the data. The exercise below asks you to switch to light mode, so you have seen every screen of the lesson in both.
 """,
-                    "try": "In your practice company, read the company badge and your role, set the entity selector to Halden Trading Ltd, then open a page in FP&A and one in Cash and check that the filter follows you.",
+                    "try": "In your practice company, switch to light mode with the \u263C button at the top right. Read the company badge and your role, set the entity selector to Halden Trading Ltd, then open a page in FP&A and one in Cash and check that the filter follows you. Switch back to dark afterwards if you prefer it: the check only needs to see you switch once.",
                     "points": [
                         "Left of the top bar: what you are looking at. Period, entities, view, currency, units.",
                         "Business unit and third party are optional selectors.",
                         "Right of the top bar: the company you are in, your role, the bell and the tools.",
+                        "Light or dark is yours alone, kept in your browser.",
                     ],
                 },
                 {
