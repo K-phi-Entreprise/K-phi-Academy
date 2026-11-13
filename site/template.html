@@ -228,6 +228,9 @@ a.lrow:hover { background: var(--surface-2); }
 .st.pass { color: var(--ok); background: var(--ok-bg); }
 .st.fail { color: var(--bad); background: var(--bad-bg); }
 .rline small { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
+.rline .rlesson { font-size: 12px; margin-left: 8px; color: var(--accent, #c8ff00); text-decoration: none; }
+.rline .rlesson:hover { text-decoration: underline; }
+.precheck { margin: 14px 0; display: grid; gap: 6px; }
 
 /* certificate */
 .cert { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); padding: clamp(22px, 5vw, 44px); display: grid; gap: 18px; max-width: 760px; }
@@ -453,7 +456,7 @@ function examView(id) {
   const c = course(id);
   if (!c || !c.exam) return courseView(id);
   const e = c.exam;
-  const TRAP = { foundation: "One problem is planted in the data. Finding it is part of the exam.", fpa: "One problem is planted in the data. Finding it is part of the exam.",
+  const TRAP = { foundation: "Nothing is hidden: every task is one you did in the course, and Check my exam company tells you what is left.", fpa: "One problem is planted in the data. Finding it is part of the exam.",
     cash: "The trap: movements that look like payroll or payments but are transfers between the group's own accounts.", ai: "The trap: an assistant that gets the sign of a change wrong. Check every figure." };
   return `
   <div class="course-head">
@@ -480,17 +483,19 @@ function examView(id) {
 }
 
 function reportHtml(rows, head) {
-  return `<div class="report"><div class="rh">${head}</div>${rows.map(r => `<div class="rline"><span class="st ${r.ok ? "pass" : "fail"}">${r.ok ? "PASS" : "FAIL"}</span><div>${esc(r.label)}<small>${esc(r.detail)}</small></div></div>`).join("")}</div>`;
+  /* each line names the lesson that covers it, so a FAIL says where to go (owner, 2026-11-13) */
+  const lessonLink = (l) => l ? ` <a class="rlesson" href="#lesson-${esc(String(l).toLowerCase().replace(/\./g, "-"))}">Lesson ${esc(l)}</a>` : "";
+  return `<div class="report"><div class="rh">${head}</div>${rows.map(r => `<div class="rline"><span class="st ${r.ok ? "pass" : "fail"}">${r.ok ? "PASS" : "FAIL"}</span><div>${esc(r.label)}${lessonLink(r.lesson)}<small>${esc(r.detail)}</small></div></div>`).join("")}</div>`;
 }
 function exampleReport(c) {
-  const e = c.exam, rows = e.report.map(([st, t, d]) => ({ ok: st === "pass", label: t, detail: d }));
+  const e = c.exam, L = { foundation: ["S0.1", "F2.1", "F2.2", "F3.1", "S0.3", "F3.5", "F4.1"] }[c.id] || [], rows = e.report.map(([st, t, d], i) => ({ ok: st === "pass", label: t, detail: d, lesson: L[i] || null }));
   return `<section class="block" style="margin-top:12px"><header><h2>What your report looks like</h2><span class="sample">Example, failed attempt</span></header>
     ${reportHtml(rows, `<span>Attempt 1 of 3 · ${esc(c.title)}</span><span>${rows.filter(r => r.ok).length} of ${rows.length} checks passed · next attempt in 24 h</span>`)}</section>`;
 }
 
 /* ── Exams (K-phi-engine, blocks/academy/exams.js) ───────────────────────
    Start creates a fresh exam company with this attempt's own variant of Halden
-   Trading and one planted problem; Submit runs the checker on the company and
+   Trading (and, for most courses, one planted problem; Foundation has none since 2026-11-13); Submit runs the checker on the company and
    the form, and the report comes back line by line. */
 const EXAMSTATE = {};
 const when = (iso) => { try { return new Date(String(iso).replace(" ", "T") + (/Z$|[+-]\d\d:?\d\d$/.test(iso) ? "" : "Z")).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }); } catch (e) { return iso; } };
@@ -517,6 +522,7 @@ function drawExam(id, status) {
     box.innerHTML = `<h3>Attempt ${st.open.attempt} of ${st.max}</h3><p class="note">Your exam company is open until ${esc(when(st.open.expires_at))}.</p>
       <button class="btn primary" type="button" data-examopen="${esc(id)}">Open my exam company</button>
       ${files ? `<div class="files">${files}</div>` : ""}
+      ${d.exam.precheck ? `<div class="precheck"><button class="btn" type="button" data-examcheck="${esc(id)}">Check my exam company</button><p class="note">As often as you like: it shows what is done and what is missing, uses no attempt and grades nothing. The figures are only checked when you submit.</p></div>` : ""}
       <form class="examform" data-examsubmit="${esc(id)}"><h3>Submit</h3>${fields}<button class="btn primary" type="submit">Submit for checking</button><p class="note">Submitting closes the attempt: the checker reads your company and this form.</p></form>
       <p class="out" role="status" hidden></p>`;
     return;
@@ -540,6 +546,21 @@ document.addEventListener("click", async e => {
       a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
     } catch (err) { FLASH = "Could not reach K-φ. Try again."; render(); }
   }
+});
+/* Check my exam company: the checks that read the company, nothing recorded */
+document.addEventListener("click", async e => {
+  const k = e.target.closest("[data-examcheck]"); if (!k || !SESSION) return;
+  const id = k.dataset.examcheck, rep = $("[data-exam-report]");
+  k.disabled = true; k.textContent = "Checking…";
+  try {
+    const r = await fetch(SESSION.api + "/api/academy/exam/" + id + "/check", { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: "{}" });
+    const d = await r.json().catch(() => ({}));
+    if (rep) rep.innerHTML = r.ok
+      ? `<section class="block" style="margin-top:12px"><header><h2>Where you are</h2><span class="sample">Not graded</span></header>${reportHtml(d.report, `<span>${esc(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }))} · your exam company now</span><span>${d.checked} of ${d.of} done · the figures are checked on submit</span>`)}</section>`
+      : `<p class="out fail">${esc(d.error || "The check could not run. Try again.")}</p>`;
+    if (rep) rep.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (err) { if (rep) rep.innerHTML = `<p class="out fail">Could not reach K-φ. Try again.</p>`; }
+  k.disabled = false; k.textContent = "Check my exam company";
 });
 document.addEventListener("submit", async e => {
   const f = e.target.closest("[data-examsubmit]"); if (!f) return;

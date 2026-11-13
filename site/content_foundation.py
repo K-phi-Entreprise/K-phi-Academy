@@ -553,47 +553,33 @@ When in doubt, stop and ask the client's approver. A delay of an hour is always 
     "lab": "Practise in your own practice company, a copy of Halden Trading. It starts empty: in chapter S0 you set it up from the academy's files, the entities, the ledger, the bank statements and the invoices.",
     "exam": {
         "title": "Exam: set up Halden Trading",
-        "situation": "Halden Trading is starting on K-φ. Your exam company is empty: no entities, no users, no ledger.",
+        "situation": "Halden Trading is starting on K-φ, and you set it up, as in the course. Your exam company has its six bank accounts, five of them with their statements, and nothing else: no entities, no users, no ledger. Each task is one you did in a lesson; the lesson is named next to it.",
         "tasks": [
-            "Create the three entities with these codes and currencies: HTUS, Halden Trading Inc. (USD); HTUK, Halden Trading Ltd (GBP); HTFR, Halden Négoce SAS (EUR).",
-            "Invite two users. Maya Chen, Group Controller, prepares changes: an editor, with an address that starts with maya (for example maya.chen@example.com). Tom Ashby, CFO, approves them: an admin, with an address that starts with tom. No mail is sent.",
-            "Name the right person as governance approver, and only that person.",
-            "Download the general ledger file (24 months, three entities) and import it.",
-            "Find the one problem in the import and resolve it at its source, then submit: in five lines at most, what the problem was and how you resolved it.",
+            "In Configuration, from the FP&A home, create the three entities with these codes and currencies: HTUS, Halden Trading Inc. (USD); HTUK, Halden Trading Ltd (GBP); HTFR, Halden Négoce SAS (EUR). (S0.1)",
+            "Invite Maya Chen, Group Controller, who prepares changes, as an editor, with an address that starts with maya (for example maya.chen@example.com). Invite Tom Ashby, CFO, who approves them, as an admin, with an address that starts with tom. Both in Admin, Users; no mail is sent. (F2.1)",
+            "In Admin, Governance, make Tom Ashby the approver, and only him, and turn on Dual Admin Approval: Maya prepares, Tom approves, nobody does both. (F2.2, F2.3)",
+            "Download the general ledger (24 months, three entities) and import it, once. (F3.1)",
+            "Download the Barclays Operating statement, a camt.053, and import it in Cash. (S0.3, F3.3)",
+            "Check your imports by reading two figures in K-φ, and type them in the form: Halden Négoce SAS's total debits in October 2026, and the money in on Barclays Operating in October 2026. (F3.5)",
+            "Press Check my exam company whenever you like: it shows what is done and what is missing, line by line, and uses no attempt. Submit when everything but the figures shows PASS."
         ],
         "checks": [
-            "Entities exist with the right currencies",
-            "Preparer cannot approve; approver is set; no user holds both duties",
-            "Ledger totals by entity and month match the answer key",
-            "Seeded problem resolved at its source",
-            "The audit trail shows the import and the invitations made by you",
+            "The three entities, with their currencies",
+            "Maya Chen an editor, Tom Ashby an admin",
+            "Tom the only approver, Maya not one, dual control on",
+            "The ledger in the books once: every company-month matches the file",
+            "The statement in Barclays Operating, every movement once",
+            "Your two figures match the books",
+            "The audit trail shows your imports and your invitations, under your name"
         ],
         "report": [
-            [
-                "pass",
-                "Entities and currencies",
-                "3 of 3 entities, currencies match",
-            ],
-            [
-                "pass",
-                "Roles and approver",
-                "Maya prepares, cannot approve; Tom Ashby is approver",
-            ],
-            [
-                "fail",
-                "Ledger totals by entity and month",
-                "Halden Négoce SAS, 2026-03: too much (2,604,118.40 debits for 1,302,059.20)",
-            ],
-            [
-                "fail",
-                "Seeded problem resolved at source",
-                "Not resolved: Halden Négoce SAS's March 2026 is still in the books twice",
-            ],
-            [
-                "pass",
-                "Audit trail",
-                "Changes by the candidate: 1 import(s), 2 invitation(s)",
-            ],
-        ],
+            ["pass", "Entities and currencies", "HTUS in USD, HTUK in GBP, HTFR in EUR."],
+            ["pass", "Users and roles", "Maya Chen is an editor, Tom Ashby an admin."],
+            ["fail", "Approver, dual control, segregation of duties", "Expected Tom as the only approver, with dual control on. Found: dual control (Dual Admin Approval) is off. Both are in Admin, Governance."],
+            ["fail", "The ledger, imported once", "Some months are in the books twice (24 company-months): the file was imported more than once, or appended to an earlier import. Import it again in Replace mode."],
+            ["pass", "The bank statement, in its account", "341 movements, December 2025 to October 2026, in Barclays Operating."],
+            ["fail", "Your figures, read in K-φ", "Halden Négoce SAS October debits: you typed 1,302,059. Read it in FP&A with the company set to Halden Négoce SAS and the period October 2026."],
+            ["pass", "Audit trail", "By you: 2 ledger import(s), 2 invitations, 1 statement import(s)."]
+        ]
     },
 }
