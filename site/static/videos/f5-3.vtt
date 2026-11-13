@@ -1,0 +1,42 @@
+WEBVTT
+
+1
+00:00:00.750 --> 00:00:04.351
+F5.3 · A Google Sheet that loads itself
+
+2
+00:00:05.501 --> 00:00:11.323
+Some data is kept by people, in a spreadsheet: the budget, a forecast, the FX rates.
+
+3
+00:00:11.373 --> 00:00:15.113
+Keep it there. K-φ reads the sheet, and never writes to it.
+
+4
+00:00:16.263 --> 00:00:18.572
+Name each tab after what it holds.
+
+5
+00:00:18.622 --> 00:00:22.826
+The columns are the contract's fields, listed on the developers page.
+
+6
+00:00:27.263 --> 00:00:31.152
+Share the sheet by link, then paste the link into the sheet assistant.
+
+7
+00:00:31.202 --> 00:00:33.547
+It shows each tab and what it becomes.
+
+8
+00:00:36.263 --> 00:00:39.847
+Tick: load into K-φ each time the sheet changes.
+
+9
+00:00:39.897 --> 00:00:47.337
+A row that fails is named with its tab, its line and its field, and nothing of that tab is stored until it passes.
+
+10
+00:00:48.787 --> 00:00:52.357
+Next: F5.4  An API key and Postman
+

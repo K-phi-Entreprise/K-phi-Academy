@@ -1,0 +1,46 @@
+WEBVTT
+
+1
+00:00:00.750 --> 00:00:04.540
+F5.2 · The Copilot's connection assistant
+
+2
+00:00:05.690 --> 00:00:09.932
+The Copilot is the φ button at the bottom right of every page.
+
+3
+00:00:09.982 --> 00:00:12.822
+It holds two assistants that set up connections.
+
+4
+00:00:13.972 --> 00:00:16.594
+Type /connect and the system's name.
+
+5
+00:00:16.644 --> 00:00:21.736
+The assistant follows the system's recipe, step by step. No model is called.
+
+6
+00:00:22.972 --> 00:00:29.309
+First the address and the key. The key goes into its own field, straight to the vault, never into the chat.
+
+7
+00:00:29.359 --> 00:00:33.346
+Then the test, then the mapping: read the sample before you approve.
+
+8
+00:00:33.396 --> 00:00:36.007
+An approved mapping runs on its schedule.
+
+9
+00:00:37.157 --> 00:00:41.827
+Your practice company has its own Halden ERP: connect it and test it.
+
+10
+00:00:41.877 --> 00:00:46.955
+Approve the mappings in the exam, not here: this company already has its ledger.
+
+11
+00:00:48.405 --> 00:00:52.453
+Next: F5.3  A Google Sheet that loads itself
+
