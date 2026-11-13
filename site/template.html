@@ -231,6 +231,9 @@ a.lrow:hover { background: var(--surface-2); }
 .rline .rlesson { font-size: 12px; margin-left: 8px; color: var(--accent, #c8ff00); text-decoration: none; }
 .rline .rlesson:hover { text-decoration: underline; }
 .precheck { margin: 14px 0; display: grid; gap: 6px; }
+.erpbox, .day2 { margin: 14px 0; padding: 12px; border: 1px solid var(--line, rgba(255,255,255,.12)); border-radius: 10px; display: grid; gap: 8px; }
+.erprow { display: grid; grid-template-columns: 64px 1fr auto; gap: 8px; align-items: center; font-size: 13px; }
+.erprow code { overflow-wrap: anywhere; font-size: 12px; }
 
 /* certificate */
 .cert { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); padding: clamp(22px, 5vw, 44px); display: grid; gap: 18px; max-width: 760px; }
@@ -456,7 +459,7 @@ function examView(id) {
   const c = course(id);
   if (!c || !c.exam) return courseView(id);
   const e = c.exam;
-  const TRAP = { foundation: "Nothing is hidden: every task is one you did in the course, and Check my exam company tells you what is left.", fpa: "One problem is planted in the data. Finding it is part of the exam.",
+  const TRAP = { foundation: "Nothing is hidden: the test is that November comes in without you, and that you can answer the CFO from it. Check my exam company tells you what is left.", fpa: "One problem is planted in the data. Finding it is part of the exam.",
     cash: "The trap: movements that look like payroll or payments but are transfers between the group's own accounts.", ai: "The trap: an assistant that gets the sign of a change wrong. Check every figure." };
   return `
   <div class="course-head">
@@ -482,13 +485,32 @@ function examView(id) {
   </div>`;
 }
 
+/* the exam's ERP address and key, each with a copy button (owner, 2026-11-13) */
+function erpRow(label, value) { return `<div class="erprow"><span>${esc(label)}</span><code>${esc(value)}</code><button class="btn" type="button" data-copy="${esc(value)}">Copy</button></div>`; }
+document.addEventListener("click", e => { const b = e.target.closest("[data-copy]"); if (!b) return; try { navigator.clipboard.writeText(b.dataset.copy); b.textContent = "Copied"; setTimeout(() => { b.textContent = "Copy"; }, 1500); } catch (_e) { /* select it by hand */ } });
+/* month end: close November, or run another night; the result says what ran */
+document.addEventListener("click", async e => {
+  const k = e.target.closest("[data-examclose],[data-examnight]"); if (!k || !SESSION) return;
+  const id = k.dataset.examclose || k.dataset.examnight, close = !!k.dataset.examclose;
+  k.disabled = true; const was = k.textContent; k.textContent = close ? "Closing November…" : "Running the night…";
+  let msg = "";
+  try {
+    const r = await fetch(SESSION.api + "/api/academy/exam/" + id + (close ? "/close-month" : "/night"), { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: "{}" });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) msg = d.error || "It could not run. Try again.";
+    else { const n = d.night || {}; msg = n.connections ? n.ok + " of " + n.connections + " scheduled sync(s) ran" + (n.sheets ? "; your sheets were read again." : ".") : "Nothing is scheduled: no connection ran." + (n.sheets ? " Your sheets were read again." : ""); }
+  } catch (err) { msg = "Could not reach K-φ. Try again."; }
+  if (close) { await loadExam(id); }
+  const box = $(".day2"); if (box) { const p = document.createElement("p"); p.className = "out"; p.textContent = msg; box.appendChild(p); }
+  if (!close) { k.disabled = false; k.textContent = was; }
+});
 function reportHtml(rows, head) {
   /* each line names the lesson that covers it, so a FAIL says where to go (owner, 2026-11-13) */
   const lessonLink = (l) => l ? ` <a class="rlesson" href="#lesson-${esc(String(l).toLowerCase().replace(/\./g, "-"))}">Lesson ${esc(l)}</a>` : "";
   return `<div class="report"><div class="rh">${head}</div>${rows.map(r => `<div class="rline"><span class="st ${r.ok ? "pass" : "fail"}">${r.ok ? "PASS" : "FAIL"}</span><div>${esc(r.label)}${lessonLink(r.lesson)}<small>${esc(r.detail)}</small></div></div>`).join("")}</div>`;
 }
 function exampleReport(c) {
-  const e = c.exam, L = { foundation: ["S0.1", "F2.1", "F2.2", "F3.1", "S0.3", "F3.5", "F4.1"] }[c.id] || [], rows = e.report.map(([st, t, d], i) => ({ ok: st === "pass", label: t, detail: d, lesson: L[i] || null }));
+  const e = c.exam, L = { foundation: ["F2.1", "F5.2", "F5.3", "F5.5", "F5.3", "F5.5", "F5.5"] }[c.id] || [], rows = e.report.map(([st, t, d], i) => ({ ok: st === "pass", label: t, detail: d, lesson: L[i] || null }));
   return `<section class="block" style="margin-top:12px"><header><h2>What your report looks like</h2><span class="sample">Example, failed attempt</span></header>
     ${reportHtml(rows, `<span>Attempt 1 of 3 · ${esc(c.title)}</span><span>${rows.filter(r => r.ok).length} of ${rows.length} checks passed · next attempt in 24 h</span>`)}</section>`;
 }
@@ -522,6 +544,10 @@ function drawExam(id, status) {
     box.innerHTML = `<h3>Attempt ${st.open.attempt} of ${st.max}</h3><p class="note">Your exam company is open until ${esc(when(st.open.expires_at))}.</p>
       <button class="btn primary" type="button" data-examopen="${esc(id)}">Open my exam company</button>
       ${files ? `<div class="files">${files}</div>` : ""}
+      ${st.open.erp ? `<div class="erpbox"><div class="eyebrow">Halden ERP</div><p class="note">Connect it from the Copilot in your exam company: <code>/connect halden-erp</code>. Type the key into the key field it shows you, never into the chat.</p>${erpRow("Address", st.open.erp.url)}${erpRow("Key", st.open.erp.key)}</div>` : ""}
+      ${d.exam.day2 ? (st.open.day2
+        ? `<div class="day2"><div class="eyebrow">November is closed</div><p>${esc(st.open.day2.cfo)}</p><button class="btn" type="button" data-examnight="${esc(id)}">Run tonight's schedules</button><p class="note">Runs only what you scheduled: your connections, and your sheets read again. It imports nothing for you.</p></div>`
+        : `<div class="day2"><div class="eyebrow">Month end</div><p class="note">When Check my exam company shows your set-up done, close November: the ERP publishes it and the night runs your own schedules. You import nothing.</p><button class="btn" type="button" data-examclose="${esc(id)}">Close November</button></div>`) : ""}
       ${d.exam.precheck ? `<div class="precheck"><button class="btn" type="button" data-examcheck="${esc(id)}">Check my exam company</button><p class="note">As often as you like: it shows what is done and what is missing, uses no attempt and grades nothing. The figures are only checked when you submit.</p></div>` : ""}
       <form class="examform" data-examsubmit="${esc(id)}"><h3>Submit</h3>${fields}<button class="btn primary" type="submit">Submit for checking</button><p class="note">Submitting closes the attempt: the checker reads your company and this form.</p></form>
       <p class="out" role="status" hidden></p>`;
@@ -707,6 +733,14 @@ async function loadChecks() {
     const d = await r.json(); CHECKCAT = d.checks || null; PASSED = d.passed || {};
   } catch (e) { CHECKCAT = null; }
 }
+async function loadPracticeErp(code) {
+  const box = $(`[data-erpfor="${code}"]`); if (!box || !SESSION) return;
+  try {
+    const r = await fetch(SESSION.api + "/api/academy/practice/erp", { headers: { Authorization: "Bearer " + SESSION.token } });
+    const d = await r.json().catch(() => ({}));
+    box.innerHTML = r.ok ? `<div class="eyebrow">Your practice company's Halden ERP</div>${erpRow("Address", d.url)}${erpRow("Key", d.key)}<p class="note">Type the key into the key field the assistant shows you, never into the chat.</p>` : `<div class="eyebrow">Halden ERP</div><p class="note">${esc(d.error || "Open your practice company first.")}</p>`;
+  } catch (_e) { box.innerHTML = `<p class="note">Could not reach K-φ. Reload the page.</p>`; }
+}
 function verifyBox(l) {
   const c = CHECKCAT && CHECKCAT[l.code]; if (!c) return "";
   const passed = PASSED[l.code];
@@ -715,7 +749,9 @@ function verifyBox(l) {
   const fl = (c.files && c.files.length) ? c.files : (c.file ? [c.file] : []);
   const file = fl.length ? `<div class="files">${fl.map(f => `<button class="btn" type="button" data-file="${esc(f)}">Download ${esc(f)}</button>`).join("")}</div><span class="note">Your own variant of ${fl.length > 1 ? "these files" : "the file"}: import ${fl.length > 1 ? "them" : "it"} in your practice company.</span>` : "";
   const input = c.kind === "answer" ? `<input type="text" name="answer" autocomplete="off" inputmode="${c.unit ? "decimal" : "text"}" placeholder="${c.unit ? "Amount in " + esc(c.unit) : "Your answer"}" aria-label="${esc(c.prompt)}">` : "";
-  return `<div class="verify" data-verify="${esc(l.code)}">${head}${file}<div class="ask">${esc(c.prompt)}</div>
+  const erp = c.erp ? `<div class="erpbox" data-erpfor="${esc(l.code)}"><div class="eyebrow">Your practice company's Halden ERP</div><p class="note">Loading its address and key…</p></div>` : "";
+  if (c.erp) setTimeout(() => loadPracticeErp(l.code), 0);
+  return `<div class="verify" data-verify="${esc(l.code)}">${head}${file}${erp}<div class="ask">${esc(c.prompt)}</div>
     <form data-checkform="${esc(l.code)}">${input}<button class="btn primary" type="submit">${c.kind === "answer" ? "Check" : "Check my company"}</button></form>
     ${passed ? `<p class="out pass" role="status">Passed. K-φ checked this step in your practice company.</p>` : `<p class="out" role="status" hidden></p>`}</div>`;
 }

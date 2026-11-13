@@ -13,6 +13,51 @@ COURSE = {
     ],
     "lab": "Practise in your own K-φ account (the one you signed in with), connected to your AI assistant, and in your practice company, a copy of Halden Trading.",
     "chapters": [
+        {"code": "A0", "title": "The Copilot in K-\u03c6", "lessons": [
+            L("A0.1", "Turning it on, and what it sees", 6,
+              "Switch the Copilot on for a company and know what it can and cannot reach.",
+              """
+The **K-\u03c6 Copilot** is the assistant inside K-\u03c6: the \u03c6 button at the bottom right of every page. It answers questions about the company you are in, and it holds the assistants that set up connections.
+
+- **It is off until an owner turns it on**, in Admin, AI: one tick records the company's consent. Untick it and it is off again for everyone.
+- **It works in the company you are in, with your rights.** The Copilot chat is for owners and admins; it never reaches another company.
+- **It never sees a secret.** Keys and passwords go to the vault through their own fields; the Copilot and the chat history never hold them.
+- **The figures are K-\u03c6's.** When it gives you a DSO or an EBITDA, it asked the engine for it; it does not compute it in its head (lesson A5.1).
+""",
+              "In your practice company, as its owner, turn the Copilot on in Admin, AI, open it, and ask: \u201cWhat was Halden Trading Ltd's revenue in October 2026?\u201d",
+              ["Off until an owner turns it on.", "It sees what you see, never a secret.", "Its figures come from the engine."]),
+            L("A0.2", "Asking for a figure, and checking its source", 6,
+              "Get an answer you can rely on, and know where it came from.",
+              """
+Ask the Copilot as you would ask a colleague who has the books open: the company, the period, the measure. \u201cHalden Trading Ltd, November 2026, EBITDA\u201d beats \u201chow are we doing\u201d.
+
+Then check the answer the way you check any figure:
+
+1. **Which company and which period did it use?** It says so; if it does not, ask.
+2. **Which version?** Actuals or a budget version: \u201cBudget 2026\u201d and the actuals are different answers to the same question.
+3. **Open the page it points to** (the P&L, AR aging, Cash) and read the same figure there. If they differ, the page is right: report the Copilot's answer.
+
+The Copilot is a fast way to the right page and a good explainer of what moved. It is not a reason to skip the page.
+""",
+              "Ask the Copilot for Halden Trading Ltd's cash at the banks on 31 October 2026, then read the same figure in Cash.",
+              ["Company, period, measure, version.", "Check the answer on the page it points to.", "If they differ, the page is right."]),
+            L("A0.3", "What it can change, and how", 6,
+              "Know which Copilot actions change data, and how each is controlled.",
+              """
+Most of what the Copilot does is read. A few things it can change, and each works its own way:
+
+- **Budget versions.** Ask it to create a budget version, or to fill one from a file, and it does: the version appears in Plan, Budget, and the audit trail records it under "copilot" and your name. Ask for a change only when you mean it, and read the audit trail after.
+- **Connections and sheets.** `/connect <system>` and the sheet assistant do not call a model at all: they follow the system's recipe, and every step (a key, a mapping, a schedule) is your click.
+- **BUILD functions** a company built (course Build) appear as Copilot tools when an admin switches them on. A function that reads runs when asked; **one that changes data comes back as a card with a Confirm button** and runs only when you press it, once, under your name.
+- **Dual control still applies.** A change that needs a second admin waits for one, whoever prepared it.
+""",
+              "In your practice company, type /connect in the Copilot and read the choices it gives you. Do not confirm anything.",
+              ["Budget versions: created when asked, recorded under copilot.", "Connections and sheets: recipes, every step your click.", "A BUILD function that writes waits for Confirm."]),
+        ], "check": [
+            Q("Who can turn the Copilot on for a company?", ["Any user", "An owner, in Admin, AI", "Only K-\u03c6 support"], 1, "An owner records the company's consent; unticking turns it off for everyone."),
+            Q("The Copilot gives an EBITDA that differs from the P&L page. Which is right?", ["The Copilot", "The P&L page", "Whichever is larger"], 1, "The page reads the engine directly; report the Copilot's answer."),
+            Q("A BUILD function that changes data is called from the Copilot. When does it run?", ["Straight away", "When you press its Confirm button", "At the next night"], 1, "A function that writes waits for your Confirm and runs once, under your name."),
+        ]},
         {"code": "A1", "title": "What a model is", "lessons": [
             L("A1.1", "What a language model does", 7,
               "Understand what is happening when an assistant answers you.",

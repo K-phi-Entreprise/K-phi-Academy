@@ -26,7 +26,7 @@ COURSE = {
                     "read": """
 Every lesson in this academy happens in **your practice company**: your own copy of Halden Trading, a distribution group that is moving to K-φ. It is a K-φ company of its own, separate from the account you signed in with, so nothing you do here touches real books.
 
-It starts the way a client's company starts on day one: **empty**. Only the six bank accounts are there, because banks are connected, not typed in, and five of them already carry their statements. Everything else you bring in yourself, from the files the academy gives you, in four steps:
+It starts the way a client's company starts on day one: **empty**. Only the six bank accounts are there, because banks are connected, not typed in, and five of them already carry their statements. Everything else you bring in yourself, from the files the academy gives you, in four steps. Files imported by hand are the quick way to start and to learn what each import does; chapter F5 shows how a client runs, with nobody importing anything:
 
 1. **The entities**, in this lesson.
 2. **The ledger**, 23 months of it (S0.2).
@@ -549,37 +549,164 @@ When in doubt, stop and ask the client's approver. A delay of an hour is always 
                  "answer": 1, "why": "Test data never goes into a live tenant."},
             ],
         },
+        {
+            "code": "F5", "title": "Connect it for good",
+            "lessons": [
+                {
+                    "code": "F5.1", "title": "From a file to a feed", "minutes": 6,
+                    "objective": "Choose how each kind of data should reach K-φ, and know why a file imported by hand is only the start.",
+                    "read": """
+You set up your practice company with files, by hand. That is the quick way to start, and the right way to learn what each import does. It is not how a client runs: nobody imports twelve files every month end, and nobody can say afterwards which file it was.
+
+Data reaches K-φ four ways. Use the first that fits:
+
+| Route | When | Who keeps it running |
+|---|---|---|
+| **A connector** | The bank, QuickBooks, Xero, Sage: K-φ has a built-in connection | Nobody: it runs on its schedule |
+| **An endpoint** | Another system with an API: an ERP, a TMS, a CRM. The Copilot's connection assistant connects it from a recipe, or the system pushes to K-φ's API | Nobody: it runs on its schedule |
+| **A synced Google Sheet** | Data people keep by hand: the budget, a forecast, FX rates, a list of mappings | The team that edits the sheet; K-φ loads each change |
+| **A file, by hand** | A one-off: the history at go-live, a correction | You, every time: avoid it for anything that repeats |
+
+Whatever the route, the data lands in the same places through the same checks: the ingest contract. A ledger line from an ERP, from a sheet or from a file is checked the same way, and the same line sent twice is replaced, never added twice.
+
+The test of a good set-up is simple: **at the next month end, does anyone have to do anything?** If the answer is yes, write down who, and why.
+""",
+                    "try": "For your practice company, write down which route each source should take at a real client: the ledger, the bank, the invoices, the budget, the FX rates.",
+                    "points": [
+                        "A file by hand is for the start and for one-offs.",
+                        "Connector first, then endpoint, then a synced sheet.",
+                        "The test: the next month end needs nobody.",
+                    ],
+                },
+                {
+                    "code": "F5.2", "title": "The Copilot's connection assistant", "minutes": 8,
+                    "objective": "Connect a system from its recipe, with its key in the vault, and put it on a schedule.",
+                    "read": """
+The K-φ Copilot (the φ button at the bottom right) holds two assistants that set up connections. Neither calls a model: they follow a recipe, step by step, so what they do is the same every time.
+
+**The connection assistant** (type `/connect` and the system's name) walks a recipe:
+
+1. **The address and the secrets.** A secret goes into a password field that sends it straight to the vault. It is never in the chat, never in the history, never shown again. Never paste a key into the chat itself.
+2. **The test.** The assistant calls the system and says what it found: which objects it can read.
+3. **The mapping.** For each object, the assistant proposes which field becomes which K-φ field (the contract), shows a sample mapped and checked, and waits for you to approve. Read the sample: the date, the amount and its sign, the company.
+4. **The schedule.** An approved mapping runs on its recipe's schedule (Halden ERP: every night at 02:00 UTC). Each run reads from where the last one stopped.
+
+Every step is recorded in the audit trail under your name; every scheduled run under "schedule". A run that fails twice in a row e-mails the owners and admins.
+
+Your practice company has its own Halden ERP, a test system the academy hosts: its address and key are below. Connect it and run its test. **Do not approve a mapping in the practice company**: it already has this ledger, from your files. You will approve them in the exam.
+""",
+                    "try": "In your practice company, open the Copilot, type /connect halden-erp, give it the address and the key below, and let it test the connection.",
+                    "points": [
+                        "/connect <system>: a recipe, step by step, no model.",
+                        "Secrets go to the vault, never into the chat.",
+                        "Approve the mapping only after reading the sample.",
+                    ],
+                },
+                {
+                    "code": "F5.3", "title": "A Google Sheet that loads itself", "minutes": 8,
+                    "objective": "Register a sheet in the contract's layout and let K-φ load each change.",
+                    "read": """
+Some data is kept by people, in a spreadsheet: the budget, a forecast, the FX rates the treasurer agrees with the bank. Keep it there. K-φ reads the sheet; it never writes to it.
+
+1. **Name each tab after what it holds**: `FX`, `GL - Budget 2026`, `TRA - Main bank`, `INV`. The columns are the contract's fields (the developers page lists them).
+2. **Share the sheet** as "Anyone with the link can view". K-φ needs no Google account.
+3. **Register it** in the Copilot: `/connect`, then Google Sheets, then the link. The sheet assistant shows each tab and what it becomes.
+4. **Tick "Load into K-φ each time the sheet changes."** K-φ reads the sheet every few minutes; when it has changed, it checks every row and loads it. A row that fails is reported with its tab, its line and its field, and nothing of that tab is stored until it passes.
+
+A budget in a sheet lands as a **Budget version** of the ledger (version type Budget), next to the actuals, so the P&L and the variance read it like any version.
+""",
+                    "try": "Download the FX rates file below. In Google Sheets, import it into a new sheet, name the tab FX, share it by link, then register it with the sheet assistant, with “Load into K-φ each time the sheet changes” ticked.",
+                    "points": [
+                        "Tabs named after the contract objects; columns are its fields.",
+                        "Shared by link, read only; K-φ never writes to it.",
+                        "Each change loads itself; a bad row is named, nothing half-stored.",
+                    ],
+                },
+                {
+                    "code": "F5.4", "title": "The developers page, an API key and Postman", "minutes": 8,
+                    "objective": "Call K-φ from outside with a key that holds only what the job needs.",
+                    "read": """
+When a system has no recipe yet, it talks to K-φ directly: its developers push data to K-φ's API, or read from it.
+
+- **The developers page** (k-phi.com/developers) describes every call, and `/api/v1/openapi.json` describes them for tools. **Postman** imports it: File, Import, paste the link. Every call is then ready, with its parameters.
+- **An API key** is made in Admin, API keys. Give it the **scopes the job needs and nothing more**: a dashboard that reads the P&L needs `read:gl`; an ERP that pushes the ledger needs `write:data`. Never an owner's session, never one key for everything.
+- **The key is shown once.** Keep it in the system that uses it, or in a password manager; never in an e-mail, a ticket or a chat.
+- **Every call is recorded** under the key's label, and the key's last use shows in Admin, API keys. A key nobody uses any more is revoked.
+
+To push data, the same contract applies: `POST /api/v1/contract_ingest` with the object (GL, INV, BAL, TRA, FX) and its rows, the same checks and the same "same id, replaced" rule as a connection or a sheet.
+""",
+                    "try": "Create an API key with read:gl only. In Postman, import k-phi.com/api/v1/openapi.json, set the key as the bearer token, and call GET /api/v1/me.",
+                    "points": [
+                        "openapi.json into Postman: every call ready.",
+                        "One key per job, only the scopes it needs.",
+                        "Shown once, kept in the system, revoked when unused.",
+                    ],
+                },
+                {
+                    "code": "F5.5", "title": "Month end, without you", "minutes": 6,
+                    "objective": "Know what a set-up that runs by itself looks like, and how you prove it to the client.",
+                    "read": """
+The set-up is done when the client's month end needs nobody. Before you hand over, check:
+
+- **Every source is on a schedule** (connections) or loads on change (sheets), and you know when it runs.
+- **Nothing is imported by hand** in the last month: the audit trail shows the runs under "schedule", not under a person.
+- **Failures reach someone.** The owners and admins are e-mailed when a run fails twice; tell the client who they are.
+- **The duties hold.** The person who prepares changes is not the one who approves them, and dual control is on: a connection or a mapping is a change like any other.
+
+Then answer the client's questions from what arrived: the month's EBITDA, the cash, the customers who pay late, the budget gap. If you can answer them without touching a file, the set-up works.
+
+Write the client a short note: where each figure comes from, how often it is refreshed, and who to call when a run fails. That note is part of the hand-over.
+""",
+                    "try": "Write the three-line note you would give Halden's CFO about your practice company: where each figure comes from, and what happens at the next month end.",
+                    "points": [
+                        "Scheduled, loads on change, no import by hand.",
+                        "Failures reach a named person.",
+                        "A short note to the client is part of the hand-over.",
+                    ],
+                },
+            ],
+            "check": [
+                {"q": "The FP&A team keeps the budget in a Google Sheet they edit every week. How should it reach K-φ?",
+                 "options": ["Exported to a file and imported each week", "A synced Google Sheet that loads each change", "Typed into K-φ by the controller"],
+                 "answer": 1, "why": "Data people keep by hand stays where they keep it; K-φ loads each change."},
+                {"q": "The connection assistant asks for the ERP's key. Where does it go?",
+                 "options": ["Into the chat, so the Copilot can use it", "Into the key field, which sends it to the vault", "Into the CFO note"],
+                 "answer": 1, "why": "A secret goes to the vault and is never shown again; never into the chat."},
+                {"q": "A dashboard only reads the P&L. Which API key does it get?",
+                 "options": ["An owner key", "A key with read:gl only", "A key with every scope, to be safe"],
+                 "answer": 1, "why": "One key per job, with only the scopes it needs."},
+            ],
+        },
     ],
     "lab": "Practise in your own practice company, a copy of Halden Trading. It starts empty: in chapter S0 you set it up from the academy's files, the entities, the ledger, the bank statements and the invoices.",
     "exam": {
-        "title": "Exam: set up Halden Trading",
-        "situation": "Halden Trading is starting on K-φ, and you set it up, as in the course. Your exam company has its six bank accounts, five of them with their statements, and nothing else: no entities, no users, no ledger. Each task is one you did in a lesson; the lesson is named next to it.",
+        "title": "Exam: answer the CFO, with data that arrived by itself",
+        "situation": "Halden's CFO: \u201cNobody here should import a file again. The ledger and the invoices come from our ERP, the budget lives in a Google Sheet the FP&A team edits. Set it up so that month end needs nobody, then answer my questions about November.\u201d Your exam company has its three entities and nothing else. Its Halden ERP holds the books to 31 October; you close November when your set-up is ready.",
         "tasks": [
-            "In Configuration, from the FP&A home, create the three entities with these codes and currencies: HTUS, Halden Trading Inc. (USD); HTUK, Halden Trading Ltd (GBP); HTFR, Halden Négoce SAS (EUR). (S0.1)",
-            "Invite Maya Chen, Group Controller, who prepares changes, as an editor, with an address that starts with maya (for example maya.chen@example.com). Invite Tom Ashby, CFO, who approves them, as an admin, with an address that starts with tom. Both in Admin, Users; no mail is sent. (F2.1)",
-            "In Admin, Governance, make Tom Ashby the approver, and only him, and turn on Dual Admin Approval: Maya prepares, Tom approves, nobody does both. (F2.2, F2.3)",
-            "Download the general ledger (24 months, three entities) and import it, once. (F3.1)",
-            "Download the Barclays Operating statement, a camt.053, and import it in Cash. (S0.3, F3.3)",
-            "Check your imports by reading two figures in K-φ, and type them in the form: Halden Négoce SAS's total debits in October 2026, and the money in on Barclays Operating in October 2026. (F3.5)",
-            "Press Check my exam company whenever you like: it shows what is done and what is missing, line by line, and uses no attempt. Submit when everything but the figures shows PASS."
+            "Put the duties in place: invite Maya Chen as an editor and Tom Ashby as an admin (Admin, Users; no mail is sent), make Tom the only approver and turn on Dual Admin Approval (Admin, Governance). (F2)",
+            "Connect the Halden ERP with the Copilot: /connect halden-erp, then the address and the key shown on this page. Approve a mapping of JournalLines to the ledger (GL) and of OpenItems to AR/AP (INV). Let the first sync bring October in. (F5.2)",
+            "Put the budget in a Google Sheet: import budget-2026.csv, name the tab \u201cGL - Budget 2026\u201d, share it by link, register it with the sheet assistant and tick \u201cLoad into K-\u03c6 each time the sheet changes\u201d. (F5.3)",
+            "Press Check my exam company until the set-up shows PASS. Then press Close November: the ERP publishes November and the night runs your own schedules. You import nothing.",
+            "Read the CFO's message: FP&A cuts December's revenue budget of Halden Trading Ltd by 10%. Change it in your sheet, as FP&A would, then press Run tonight's schedules. (F5.5)",
+            "Answer the CFO's questions from K-\u03c6, and write the note: where each figure comes from, and what happens at the next month end. Then submit."
         ],
         "checks": [
-            "The three entities, with their currencies",
-            "Maya Chen an editor, Tom Ashby an admin",
-            "Tom the only approver, Maya not one, dual control on",
-            "The ledger in the books once: every company-month matches the file",
-            "The statement in Barclays Operating, every movement once",
-            "Your two figures match the books",
-            "The audit trail shows your imports and your invitations, under your name"
+            "Maya prepares, Tom approves, dual control is on",
+            "The ERP is connected, mapped and on its schedule; October is in the books",
+            "The budget sheet is registered, loads itself, and is a Budget version",
+            "November arrived through the schedule, with no import by anyone",
+            "FP&A's change to December arrived from the sheet",
+            "At least 4 of the CFO's 6 questions are right: EBITDA, the budget gap, the ledger cash, the dividend, the customer most overdue, December's budget",
+            "The note names the sources and how often they run"
         ],
         "report": [
-            ["pass", "Entities and currencies", "HTUS in USD, HTUK in GBP, HTFR in EUR."],
-            ["pass", "Users and roles", "Maya Chen is an editor, Tom Ashby an admin."],
-            ["fail", "Approver, dual control, segregation of duties", "Expected Tom as the only approver, with dual control on. Found: dual control (Dual Admin Approval) is off. Both are in Admin, Governance."],
-            ["fail", "The ledger, imported once", "Some months are in the books twice (24 company-months): the file was imported more than once, or appended to an earlier import. Import it again in Replace mode."],
-            ["pass", "The bank statement, in its account", "341 movements, December 2025 to October 2026, in Barclays Operating."],
-            ["fail", "Your figures, read in K-φ", "Halden Négoce SAS October debits: you typed 1,302,059. Read it in FP&A with the company set to Halden Négoce SAS and the period October 2026."],
-            ["pass", "Audit trail", "By you: 2 ledger import(s), 2 invitations, 1 statement import(s)."]
+            ["pass", "Users and duties", "Maya prepares, Tom approves, dual control is on."],
+            ["pass", "The ERP, connected and on schedule", "Connected, mapped, scheduled daily; October is in the books."],
+            ["pass", "The budget, a sheet that loads itself", "The sheet is registered, loads itself, and \u201cBudget 2026\u201d is a budget version."],
+            ["fail", "November arrived by itself", "November is in K-\u03c6, but not through the schedule: a sync started by hand is still you. The test is that the month comes in without anyone."],
+            ["pass", "FP&A's change arrived by itself", "The cut is in K-\u03c6, loaded by the sheet itself."],
+            ["pass", "The CFO's questions", "5 of 6 right; not right: the dividend."],
+            ["pass", "Your note to the CFO", "Sources and schedule named."]
         ]
     },
 }
