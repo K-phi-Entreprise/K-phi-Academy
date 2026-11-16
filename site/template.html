@@ -751,7 +751,10 @@ function verifyBox(l) {
   const input = c.kind === "answer" ? `<input type="text" name="answer" autocomplete="off" inputmode="${c.unit ? "decimal" : "text"}" placeholder="${c.unit ? "Amount in " + esc(c.unit) : "Your answer"}" aria-label="${esc(c.prompt)}">` : "";
   const erp = c.erp ? `<div class="erpbox" data-erpfor="${esc(l.code)}"><div class="eyebrow">Your practice company's Halden ERP</div><p class="note">Loading its address and key…</p></div>` : "";
   if (c.erp) setTimeout(() => loadPracticeErp(l.code), 0);
-  return `<div class="verify" data-verify="${esc(l.code)}">${head}${file}${erp}<div class="ask">${esc(c.prompt)}</div>
+  /* lesson F5.4: the link Postman imports is the practice company's own server (staging for the academy), never
+     k-phi.com: a key made in the practice company is unknown there, and the call answers 401 */
+  const apibox = c.api ? `<div class="erpbox"><div class="eyebrow">Your practice company's API</div>${erpRow("Import link", SESSION.api + "/api/v1/openapi.json")}<p class="note">In Postman: Import, paste this link. The key goes in the collection's <code>bearerToken</code> variable, never in Params or in the URL.</p></div>` : "";
+  return `<div class="verify" data-verify="${esc(l.code)}">${head}${file}${erp}${apibox}<div class="ask">${esc(c.prompt)}</div>
     <form data-checkform="${esc(l.code)}">${input}<button class="btn primary" type="submit">${c.kind === "answer" ? "Check" : "Check my company"}</button></form>
     ${passed ? `<p class="out pass" role="status">Passed. K-φ checked this step in your practice company.</p>` : `<p class="out" role="status" hidden></p>`}</div>`;
 }

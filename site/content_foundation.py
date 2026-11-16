@@ -629,13 +629,22 @@ A budget in a sheet lands as a **Budget version** of the ledger (version type Bu
 When a system has no recipe yet, it talks to K-φ directly: its developers push data to K-φ's API, or read from it.
 
 - **The developers page** (k-phi.com/developers) describes every call, and `/api/v1/openapi.json` describes them for tools. **Postman** imports it: File, Import, paste the link. Every call is then ready, with its parameters.
-- **An API key** is made in Admin, API keys. Give it the **scopes the job needs and nothing more**: a dashboard that reads the P&L needs `read:gl`; an ERP that pushes the ledger needs `write:data`. Never an owner's session, never one key for everything.
+- **An API key** is made in Admin, the AI tab, API keys. Give it the **scopes the job needs and nothing more**: a dashboard that reads the P&L needs `read:gl`; an ERP that pushes the ledger needs `write:data`. Never an owner's session, never one key for everything.
 - **The key is shown once.** Keep it in the system that uses it, or in a password manager; never in an e-mail, a ticket or a chat.
 - **Every call is recorded** under the key's label, and the key's last use shows in Admin, API keys. A key nobody uses any more is revoked.
 
 To push data, the same contract applies: `POST /api/v1/contract_ingest` with the object (GL, INV, BAL, TRA, FX) and its rows, the same checks and the same "same id, replaced" rule as a connection or a sheet.
+
+**Step by step, in Postman**
+
+1. **Make the key.** In your practice company: Admin, the AI tab, API keys. Label it `Postman`, pick *Choose scopes…*, tick `read:gl` and nothing else, press Create. Copy the key now: it is shown once.
+2. **Import the API.** In Postman: Import, then paste the import link shown under *Check my work* below. It is your practice company's server, not k-phi.com: a key made in the practice company is unknown anywhere else. Postman makes a collection named *K-φ API*, every call in it, `baseUrl` already filled in.
+3. **Give Postman the key.** Click the collection's name, open its *Variables* tab, add a variable named `bearerToken` and paste the key as its value. Save. Every call already sends it as a bearer token, so nothing goes in *Params*, *Headers* or the URL.
+4. **Make the call.** Open *Who this credential is* (`GET /api/v1/me`) and press Send. **200** shows your practice company and the key's scopes. **401**: the key is not in `bearerToken`, or the collection points to another server. **403**: the key lacks the scope.
+
+The ERP connector page also offers a Postman download for the older GL push (`/api/gl/ingest`, key in an `X-API-Key` header). It is a different door: this lesson uses the import link above.
 """,
-                    "try": "Create an API key with read:gl only. In Postman, import k-phi.com/api/v1/openapi.json, set the key as the bearer token, and call GET /api/v1/me.",
+"try": "In your practice company, create a key with read:gl only. In Postman, import the link shown below, put the key in the collection's bearerToken variable, and send GET /api/v1/me.",
                     "points": [
                         "openapi.json into Postman: every call ready.",
                         "One key per job, only the scopes it needs.",
