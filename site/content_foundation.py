@@ -685,28 +685,34 @@ Write the client a short note: where each figure comes from, how often it is ref
     "lab": "Practise in your own practice company, a copy of Halden Trading. It starts empty: in chapter S0 you set it up from the academy's files, the entities, the ledger, the bank statements and the invoices.",
     "exam": {
         "title": "Exam: set Halden up from nothing, then answer from it",
-        "situation": "Halden's CFO: \u201cOur books live in an ERP that only speaks API. Get them into K-\u03c6, set up our calendars and our customers and suppliers so the cash forecast is right, and tell me where we stand.\u201d You get an exam company with Halden's three companies and chart of accounts, nothing else. You fill it from three files, then answer two questions. Allow about an hour.",
+        "situation": "Halden's CFO: \u201cOur ledger comes out of the ERP as a file. Load it, then connect the ERP so the entries posted after the export come in by themselves. Set up our calendars and our customers and suppliers so the cash forecast is right, and tell me where we stand.\u201d You get an exam company with Halden's three companies and chart of accounts, nothing else. You fill it from four files, then answer two questions. Allow about an hour.",
         "tasks": [
-            "Start: press Start exam on the right, then Open my exam company. The three files appear on this page once the exam has started.",
-            "Push the ledger: in the exam company, Admin, AI tab, API keys: create a key with write:data only and copy it. In Postman, import postman-ledger.json, open the collection's Variables, paste the key as api_key, Save, then Send \u201cPush the ledger\u201d. K-\u03c6 answers 200 with \u201cstored\u201d: 1301. (F5.4)",
+            "Start: press Start exam on the right, then Open my exam company. The four files appear on this page once the exam has started.",
+            "Import the ledger: in the exam company, import halden-ledger-2026.csv, January to October 2026, as in lesson F3.1 (one version per month, as the import proposes). (F3.1)",
+            "Make the connector: ERP Connect, Add Connector: push mode, template \u201cGeneric CSV \u2014 K-\u03c6 layout\u201d (the layout of the ledger file), Save Connector. In the window that shows the key, press Postman: it downloads the connector's collection, key included. (F5.4)",
+            "Post the two late entries: in Postman, import that collection and open \u201c4. Production Ingest\u201d. In its body set \u201cver\u201d to 2026-10, \u201cvdate\u201d to 2026-10-31, \u201cperiod_num\u201d to 10, keep \u201cmode\u201d: \u201cappend\u201d, and replace \u201cdata\u201d with the one in late-entries.json. Send: K-\u03c6 answers 200. With \u201creplace\u201d instead, October would be emptied first. (F5.4)",
             "Add the closing days: Settings, Organization, each company's holiday calendar. Add the six days of company-calendar.csv, two per company. (F1.3)",
             "Bring in the third parties: turn the Copilot on (Admin, AI), attach third-parties.csv, send /tp /import and apply. Then open Trading Partners: 22 customers and suppliers, customers with their terms as DSO, suppliers as DPO. (F3.2)",
-            "Check: press Check my exam company. The three set-up checks must show PASS; if one fails, it says what is missing.",
-            "Answer and submit: read Halden Trading Ltd's net result, January to October 2026, in GBP, from the P&L. Ask the Copilot \u201cSummarise Halden's financial situation\u201d and paste its answer. Submit.",
+            "Check: press Check my exam company until every set-up check shows PASS; one that fails says what is missing.",
+            "Answer and submit: read Halden Trading Ltd's net result, January to October 2026, in GBP, from the P&L, the late entries included. Ask the Copilot \u201cSummarise Halden's financial situation\u201d and paste its answer. Submit."
         ],
         "checks": [
-            "The ledger came in through the API, every line once, every company and month balanced",
+            "The ledger file is in once, every company and month balanced",
+            "A push connector exists and was used",
+            "The two late entries came through it, into October, without emptying the month",
             "The six closing days are in the three company calendars",
             "Every customer and supplier is in, with the payment terms of the file",
             "Halden Trading Ltd's net result, January to October 2026, is right",
             "The Copilot was asked in the exam company, and its summary quotes your books"
         ],
         "report": [
-            ["pass", "The ledger, through the API", "1,301 lines, January to October 2026, pushed through the API; every company and month balances."],
+            ["pass", "The ledger, imported", "1,301 lines, January to October 2026; every company and month balances."],
+            ["pass", "The connector", "Connector \u201cHalden ERP\u201d, used from Postman."],
+            ["fail", "The late entries, through the connector", "October holds 2 lines for 134: the push replaced the month instead of adding to it (\u201cmode\u201d: \u201creplace\u201d). Import the ledger file again, then send the two entries with \u201cmode\u201d: \u201cappend\u201d."],
             ["pass", "The calendars", "The 6 closing days are in the three calendars: payments due on those days move to the next working day."],
-            ["fail", "The third parties", "Payment terms not as in the file: Atlas Steelworks (30 days, the file says 45). Customers carry them as DSO, suppliers as DPO."],
-            ["pass", "The net result", "Right: 312,904 GBP."],
-            ["pass", "The Copilot's summary", "The summary comes from your books: its figures match the ledger you pushed."]
+            ["pass", "The third parties", "22 customers and suppliers, each with its payment terms: the cash forecast now times their payments."],
+            ["fail", "The net result", "Not right. It reads from the P&L of Halden Trading Ltd, January to October 2026, after tax, in GBP, with the two late entries in."],
+            ["pass", "The Copilot's summary", "The summary comes from your books: its figures match the ledger."]
         ]
     },
 }
