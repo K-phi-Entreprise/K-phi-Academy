@@ -249,6 +249,23 @@ a.lrow:hover { background: var(--surface-2); }
 .valid::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
 .sample { font: 600 11px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border: 1px dashed var(--line); padding: 6px 8px; border-radius: 6px; width: fit-content; }
 .flash { font-size: 14px; color: var(--hi); }
+/* support: "Stuck? Ask for help" */
+.stuck { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; justify-content: space-between; padding: 14px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.stuck span { font-size: 14px; color: var(--muted); }
+.stuck b { color: var(--fg); }
+dialog.help { width: min(560px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); color: var(--fg); box-shadow: var(--shadow); }
+dialog.help::backdrop { background: rgba(5, 7, 12, .62); }
+.help form { display: grid; gap: 14px; padding: 22px; }
+.help h2 { font-size: 20px; }
+.help p { margin: 0; }
+.help .about { font: 500 13px/1.4 var(--f-mono); color: var(--muted); overflow-wrap: anywhere; }
+.help textarea { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; width: 100%; min-height: 150px; resize: vertical; box-sizing: border-box; }
+.help .acts { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+.help .out { padding: 10px 12px; border-radius: 10px; font-size: 14px; background: var(--surface-2); overflow-wrap: anywhere; }
+.help .out.pass { color: var(--ok); background: var(--ok-bg); }
+.help .out.fail { color: var(--bad); background: var(--bad-bg); }
+.help .out .btn { font-size: 13px; padding: 7px 10px; margin-left: 6px; vertical-align: baseline; }
+.linkish { font: inherit; color: var(--hi); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .watch { display: flex; align-items: center; gap: 12px; margin-top: -10px; }
 .watch .wbar { flex: 1; height: 8px; border-radius: 99px; overflow: hidden; background: var(--surface-2); }
 .watch canvas { display: block; width: 100%; height: 8px; }
@@ -293,8 +310,10 @@ a.lrow:hover { background: var(--surface-2); }
 <footer class="foot gut"><div class="wrap">
   <span><b>K-φ</b> Academy · FP&amp;A · Cash · Build</span>
   <span>Certified builders are independent of K-φ. They hold no stake in it and receive no referral fees.</span>
+  <span>Stuck? <button class="linkish" type="button" data-help>Ask for help</button></span>
   <a href="https://k-phi.com" rel="noopener">k-phi.com</a>
 </div></footer>
+<dialog class="help" id="help" aria-labelledby="help-h"></dialog>
 
 <script>
 const DATA = /*__DATA__*/null;
@@ -447,6 +466,7 @@ function lessonView(code) {
       <section><div class="eyebrow" style="margin-bottom:10px">Key points</div><ul class="keys">${l.points.map(k => `<li>${esc(k)}</li>`).join("")}</ul></section>
       ${l.resources ? `<section><div class="eyebrow" style="margin-bottom:10px">Resources</div><div class="res">${l.resources.map(r => `<span class="chip">${esc(r)} · pilot</span>`).join("")}</div></section>` : ""}
       ${check}
+      ${stuckBox(l.code, l.title)}
       <div class="pager">
         ${prev ? `<a class="btn" href="#${slug(prev.code)}">← ${esc(prev.code)}</a>` : `<a class="btn" href="#course-${c.id}">← Course</a>`}
         <button class="btn primary" data-complete="${esc(l.code)}" data-next="${next ? slug(next.code) : "exam-" + c.id}" ${gateOpen(l) ? "" : "disabled"}>${done.has(l.code) ? "Completed · next" : gateOpen(l) ? "Mark complete · next" : gateLabel(l)} →</button>
@@ -481,6 +501,7 @@ function examView(id) {
         <div class="rule"><b>Any LLM</b><span>only the result is graded</span></div>
       </div>
       <div class="panel" data-exam-live="${esc(c.id)}"><h3>Your exam</h3><p class="note">Loading…</p></div>
+      <div class="panel"><h3>Stuck?</h3><p>If something does not work as the lessons say, send us your question. We reply by email. We do not give exam answers.</p>${helpButton("the " + c.title + " exam", e.title)}</div>
     </aside>
   </div>`;
 }
@@ -854,7 +875,7 @@ document.addEventListener("click", e => {
   if (!t) return;
   if (t.matches("[data-complete]")) { if (t.disabled) return; done.add(t.dataset.complete); save(); location.hash = t.dataset.next; }
   else if (t.matches("[data-li]")) { const m = $("[data-certmsg]"); m.textContent = "In the live version, this opens LinkedIn with the certificate pre-filled."; m.hidden = false; }
-  else if (t.matches("[data-copy]")) {
+  else if (t.matches(".cert [data-copy]")) { /* the sample certificate's own button; the other copy buttons carry their value (erpRow) */
     const m = $("[data-certmsg]"), url = "https://academy.k-phi.com/verify/KPA-26-0007";
     const ok = () => { m.textContent = "Link copied."; m.hidden = false; };
     try { navigator.clipboard.writeText(url).then(ok, () => { m.textContent = url; m.hidden = false; }); } catch (err) { m.textContent = url; m.hidden = false; }
@@ -869,6 +890,100 @@ document.addEventListener("click", e => {
     const lastCode = ch.lessons[ch.lessons.length - 1].code; refreshGate(lastCode);
   }
 });
+/* ── Stuck? Ask for help (K-phi-engine, blocks/academy/support.js; owner, 2026-11-17) ──
+   A signed-in learner's question goes to K-φ's support hotline with where they
+   are and their practice company; the reply comes by email. Signed out, or when
+   the K-φ server does not take the message, the same text opens in the learner's
+   own email app, addressed to support. What was typed is never lost: it stays in
+   the box until it has been sent. */
+const SUPPORT_EMAIL = "support@k-phi.com";
+const HELP = { where: "", title: "", draft: "" };
+function helpButton(where, title, label) { return `<button class="btn" type="button" data-help data-where="${esc(where || "")}" data-title="${esc(title || "")}">${esc(label || "Ask for help")}</button>`; }
+function stuckBox(where, title) { return `<section class="stuck" aria-label="Support"><span><b>Stuck?</b> Send us your question. We reply by email.</span>${helpButton(where, title)}</section>`; }
+const helpAbout = () => [HELP.where, HELP.title].filter(Boolean).join(" · ");
+function helpMailto(message) {
+  const u = SESSION && SESSION.user, about = helpAbout();
+  const subject = "Academy: stuck" + (HELP.where ? " on " + HELP.where : "");
+  const foot = "\n\n--\n" + (about ? "About: " + about + "\n" : "") + (u && u.email ? "Account: " + u.email + "\n" : "") + "Page: " + location.href;
+  const make = body => "mailto:" + SUPPORT_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  const full = make(message + foot);
+  /* some mail apps cut a long link: then the message travels on the clipboard */
+  return full.length <= 1900 ? { url: full, whole: true } : { url: make("(Paste your message here.)" + foot), whole: false };
+}
+function drawHelp() {
+  const d = $("#help"), u = SESSION && SESSION.user, about = helpAbout();
+  d.innerHTML = `<form data-helpform novalidate>
+    <h2 id="help-h">Ask for help</h2>
+    ${about ? `<div class="about">About: ${esc(about)}</div>` : ""}
+    <label class="note" for="help-msg">Say where you are stuck and what you see on screen.</label>
+    <textarea id="help-msg" name="message" maxlength="2000"></textarea>
+    <p class="note">${u && u.email
+      ? `We reply by email to <b>${esc(u.email)}</b>. Your practice company is attached, so we can look at it.`
+      : `You are not signed in, so this opens your email app with a message to <b>${SUPPORT_EMAIL}</b>. <a href="${esc(apiBase() || AUTH_HOSTS.prod)}/academy/signin">Sign in</a> to send it from here, with your practice company attached.`}</p>
+    <p class="out" hidden data-helpout role="status"></p>
+    <div class="acts"><button class="btn" type="button" data-helpclose>Close</button><button class="btn primary" type="submit" data-helpsend>${u && u.email ? "Send" : "Write the email"}</button></div>
+  </form>`;
+  $("#help-msg").value = HELP.draft;
+}
+function openHelp(where, title) {
+  const d = $("#help"), m = $("#acct .menu"); if (!d) return;
+  if (m) m.hidden = true;
+  HELP.where = where || ""; HELP.title = title || "";
+  drawHelp();
+  if (!d.open) { if (typeof d.showModal === "function") d.showModal(); else d.setAttribute("open", ""); }
+  const ta = $("#help-msg"); if (ta) ta.focus();
+}
+function closeHelp() { const d = $("#help"); if (!d) return; if (typeof d.close === "function" && d.open) d.close(); else d.removeAttribute("open"); }
+function helpSay(cls, html) { const out = $("[data-helpout]"); if (!out) return; out.hidden = false; out.className = "out" + (cls ? " " + cls : ""); out.innerHTML = html; }
+/* the email route: the learner's own mail app, with the address shown in case no app opens */
+function helpByEmail(message, why) {
+  const m = helpMailto(message);
+  if (!m.whole) { try { navigator.clipboard.writeText(message); } catch (e) { /* the text is still in the box */ } }
+  helpSay("", `${why ? esc(why) + " " : ""}Send it by email instead: <a href="${esc(m.url)}" data-helpmail>open the email to ${SUPPORT_EMAIL}</a>${m.whole ? ", your message is already in it." : ". Your message is long, so it was copied: paste it into the email."}
+    No email app on this device? Write to <b>${SUPPORT_EMAIL}</b><button class="btn" type="button" data-copy="${SUPPORT_EMAIL}">Copy</button>`);
+  try { location.href = m.url; } catch (e) { /* the link above does the same */ }
+}
+async function sendHelp() {
+  const ta = $("#help-msg"), b = $("[data-helpsend]"); if (!ta || !b) return;
+  const message = ta.value.trim();
+  HELP.draft = ta.value;
+  if (!message) { helpSay("fail", "Write your question first."); ta.focus(); return; }
+  if (!SESSION) { helpByEmail(message, ""); return; }
+  b.disabled = true; b.textContent = "Sending…";
+  let r = null, d = null;
+  try {
+    r = await fetch(SESSION.api + "/api/academy/support", { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: JSON.stringify({ message, where: HELP.where, title: HELP.title }) });
+    d = await r.json().catch(() => null);
+  } catch (e) { r = null; }
+  if (!$("[data-helpsend]")) return; /* the dialog was redrawn meanwhile */
+  b.disabled = false; b.textContent = "Send";
+  /* sent means K-φ said so, with a reference: any other answer is not "sent" */
+  if (r && r.ok && d && d.ok === true && d.ref) {
+    HELP.draft = "";
+    const about = helpAbout();
+    $("#help").innerHTML = `<form data-helpform novalidate><h2 id="help-h">Message sent</h2>
+      <p>We have your question${about ? " about " + esc(about) : ""}. The reply comes by email to <b>${esc(d.reply_to || (SESSION.user && SESSION.user.email) || "your address")}</b>.</p>
+      <p class="note mono">Reference ${esc(d.ref)}</p>
+      <div class="acts"><button class="btn primary" type="button" data-helpclose>Close</button></div></form>`;
+    return;
+  }
+  if (r && r.status === 401) {
+    SESSION = null; store.set("kphi-academy-session", null); drawAccount();
+    helpByEmail(message, "Your academy session ended, so the message was not sent.");
+    return;
+  }
+  if (r && (r.status === 400 || r.status === 429) && d && d.error) { helpSay("fail", esc(d.error)); return; }
+  helpByEmail(message, r ? "This K-φ server could not take your message." : "K-φ could not be reached.");
+}
+document.addEventListener("click", e => {
+  const o = e.target.closest("[data-help]");
+  if (o) { e.preventDefault(); openHelp(o.dataset.where, o.dataset.title); return; }
+  if (e.target.closest("[data-helpclose]")) { closeHelp(); return; }
+  const d = $("#help"); if (d && e.target === d) closeHelp(); /* a click on the backdrop */
+});
+document.addEventListener("input", e => { if (e.target && e.target.id === "help-msg") HELP.draft = e.target.value; });
+document.addEventListener("submit", e => { if (e.target.closest("[data-helpform]")) { e.preventDefault(); sendHelp(); } });
+
 /* ── Sign in with a K-φ account (K-phi-engine, blocks/academy) ──────────────
    The academy is static; sign-in happens on K-φ, which sends the person back
    with a 2-minute code in the fragment (#signin-<code>). The code becomes an
@@ -904,6 +1019,7 @@ function drawAccount() {
       <div class="id"><b>${esc(u.email || "")}</b>${esc(u.company || "")}</div>
       <a role="menuitem" href="#course-${current().id}">My learning</a>
       <a role="menuitem" href="${esc(SESSION.api)}/app" rel="noopener">Open K-φ</a>
+      <button role="menuitem" type="button" data-help>Ask for help</button>
       <button role="menuitem" type="button" data-signout>Sign out</button>
     </div>`;
 }
