@@ -296,6 +296,12 @@ dialog.help::backdrop { background: rgba(5, 7, 12, .62); }
 .psteps li b{grid-column:1/-1;font-weight:600;color:var(--text,#e8e8f0)}
 .psteps li span{font-family:var(--mono,monospace);font-size:11px;color:var(--muted,#8a8aa8);white-space:nowrap}
 .psteps li span.ok{color:var(--accent,#e6ff00)}
+.quizq{border:0;margin:0 0 16px;padding:0}
+.quizq legend{font-weight:600;margin-bottom:8px;line-height:1.4}
+.quizq legend .mono{color:var(--accent,#e6ff00);margin-right:6px}
+.quizq label{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin:6px 0;cursor:pointer}
+.quizq label:hover{border-color:var(--muted,#8a8aa8)}
+.quizq input{margin-top:3px;width:auto}
 </style>
 
 <header class="top gut"><div class="wrap">
@@ -526,6 +532,7 @@ function examView(id) {
       <div class="panel"><h3>Your task</h3><ol class="tasks">${e.tasks.map(t => { const m = /^([^:]{2,40}): (.*)$/s.exec(t); return `<li>${m ? `<b>${esc(m[1])}.</b> ${esc(m[2].charAt(0).toUpperCase() + m[2].slice(1))}` : esc(t)}</li>`; }).join("")}</ol></div>
       <div class="panel"><h3>What the checker verifies</h3><ul class="outcomes">${e.checks.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
         <p>${esc(TRAP[c.id] || "")}</p></div>
+      <div data-exam-quiz></div>
       <div data-exam-report>${exampleReport(c)}</div>
     </div>
     <aside class="side">
@@ -596,11 +603,21 @@ function drawExam(id, status) {
   if (!d) { box.innerHTML = `<h3>Your exam</h3><p>${status === 404 ? "Exams open with the next K-φ release." : "K-φ did not answer (it may be restarting for a release). Reload the page in a minute."}</p>`; return; }
   if (!SESSION) { box.innerHTML = `<h3>Ready?</h3><p>Sign in to take the exam: you get a fresh company of your own for each attempt.</p><a class="btn primary" href="${esc(apiBase() || AUTH_HOSTS.prod)}/academy/signin">Sign in</a>`; return; }
   const st = d.state, last = st.attempts[st.attempts.length - 1];
+  if (!st.open) { const q0 = $("[data-exam-quiz]"); if (q0) q0.innerHTML = ""; }
   const rep = $("[data-exam-report]");
   if (rep && last && last.report) rep.innerHTML = `<section class="block" style="margin-top:12px"><header><h2>Your report</h2></header>${reportHtml(last.report, `<span>Attempt ${last.attempt} of ${st.max} · ${esc(c.title)}</span><span>${last.report.filter(r => r.ok).length} of ${last.report.length} checks passed${last.passed ? " · passed" : st.next_at ? " · next attempt " + esc(when(st.next_at)) : ""}</span>`)}</section>`;
   if (st.passed) { box.innerHTML = `<h3>Passed</h3><p>You passed this exam on attempt ${last.attempt}.</p>`; return; }
   if (st.open) {
     const files = d.exam.files.map(f => `<button class="btn" type="button" data-examfile="${esc(id)}|${esc(f)}">Download ${esc(f)}</button>`).join("");
+    /* a multiple-choice exam (course M): the questions in the main column, no company to open */
+    const qz = $("[data-exam-quiz]");
+    if (d.exam.quiz) {
+      const qs = d.exam.form.map((f, i) => `<fieldset class="quizq"><legend><span class="mono">${i + 1}</span> ${esc(f.label)}</legend>${(f.options || []).map((o, j) => `<label><input type="radio" name="${esc(f.id)}" value="${j}"> <span>${esc(o)}</span></label>`).join("")}</fieldset>`).join("");
+      if (qz) qz.innerHTML = `<form class="panel examform quiz" data-examsubmit="${esc(id)}"><h3>Your answers</h3>${qs}<button class="btn primary" type="submit">Submit for checking</button><p class="note">One choice per question. Submitting closes the attempt.</p><p class="out" role="status" hidden></p></form>`;
+      box.innerHTML = `<h3>Attempt ${st.open.attempt} of ${st.max}</h3><p class="note">Open until ${esc(when(st.open.expires_at))}. The questions are on the left.</p>`;
+      return;
+    }
+    if (qz) qz.innerHTML = "";
     const fields = d.exam.form.map(f => `<label class="field"><span>${esc(f.label)}</span>${f.type === "text" ? `<textarea name="${esc(f.id)}" rows="5"></textarea>` : `<input type="text" name="${esc(f.id)}" autocomplete="off" inputmode="${f.unit ? "decimal" : "text"}">`}</label>`).join("");
     box.innerHTML = `<h3>Attempt ${st.open.attempt} of ${st.max}</h3><p class="note">Your exam company is open until ${esc(when(st.open.expires_at))}.</p>
       <button class="btn primary" type="button" data-examopen="${esc(id)}">Open my exam company</button>
@@ -622,7 +639,15 @@ function examOpen(id) { if (SESSION) openPrepared("prepare-exam-" + id); }
 window.addEventListener("focus", () => { const h = location.hash || ""; if (h.startsWith("#exam-")) loadExam(h.slice(6)); });
 document.addEventListener("click", async e => {
   const s = e.target.closest("[data-examstart]"), o = e.target.closest("[data-examopen]"), f = e.target.closest("[data-examfile]");
-  if (s) { examOpen(s.dataset.examstart); setTimeout(() => loadExam(s.dataset.examstart), 1500); return; }
+  if (s) {
+    const id = s.dataset.examstart;
+    if (EXAMSTATE[id] && EXAMSTATE[id].exam && EXAMSTATE[id].exam.quiz) {   /* nothing to open: ask until the attempt is ready, then show the questions */
+      s.disabled = true; s.textContent = "Starting…";
+      for (let i = 0; i < 60; i++) { try { const r = await fetch(SESSION.api + "/api/academy/exam/" + id + "/start", { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: "{}" }); if (r.status !== 202) break; } catch (_e) { /* try again */ } await new Promise(z => setTimeout(z, 1500)); }
+      loadExam(id); return;
+    }
+    examOpen(id); setTimeout(() => loadExam(id), 1500); return;
+  }
   if (o) { examOpen(o.dataset.examopen); return; }
   if (f && SESSION) {
     const [id, name] = f.dataset.examfile.split("|");
@@ -654,7 +679,8 @@ document.addEventListener("submit", async e => {
   e.preventDefault(); if (!SESSION) return;
   const id = f.dataset.examsubmit, b = f.querySelector("button[type=submit]"), out = f.parentElement.querySelector(".out");
   if (!confirm("Submit this attempt for checking? It closes the attempt.")) return;
-  const form = {}; for (const el of f.querySelectorAll("input, textarea")) form[el.name] = el.value;
+  const form = {}; for (const el of f.querySelectorAll("input, textarea")) { if (el.type === "radio" && !el.checked) continue; form[el.name] = el.value; }
+  if (f.classList.contains("quiz")) { const left = [...new Set([...f.querySelectorAll("input[type=radio]")].map(x => x.name))].filter(n => !(n in form)); if (left.length && !confirm(left.length + " question(s) without an answer. Submit anyway?")) return; }
   b.disabled = true; b.textContent = "Checking…";
   try {
     const r = await fetch(SESSION.api + "/api/academy/exam/" + id + "/submit", { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: JSON.stringify({ form }) });
@@ -920,7 +946,7 @@ document.addEventListener("click", e => {
     const ok = () => { m.textContent = "Link copied."; m.hidden = false; };
     try { navigator.clipboard.writeText(url).then(ok, () => { m.textContent = url; m.hidden = false; }); } catch (err) { m.textContent = url; m.hidden = false; }
   }
-  else if (t.matches("input[type=radio]")) {
+  else if (t.matches("input[type=radio]") && t.closest(".q") && t.name.startsWith("q-")) {   /* a lesson self-check only: the exam's own questions are graded on submit */
     const qEl = t.closest(".q"), ch = ALL.find(l => t.name.startsWith("q-" + l.ch.code + "-")).ch;
     const q = ch.check[+qEl.dataset.q], pick = +t.value;
     qEl.querySelectorAll(".opt").forEach((o, oi) => { o.classList.remove("right", "wrong"); if (oi === q.answer) o.classList.add("right"); else if (oi === pick) o.classList.add("wrong"); });

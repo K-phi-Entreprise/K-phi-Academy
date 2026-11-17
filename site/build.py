@@ -9,6 +9,7 @@ from content_foundation import COURSE
 from content_fpa import COURSE as FPA
 from content_ai import COURSE as AI
 from content_cash import COURSE as CASH
+from content_mcp import COURSE as MCP
 from content_outlines import OUTLINES, PATHS
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -20,7 +21,7 @@ def md(text):
     return markdown.markdown(text, extensions=["tables"])
 
 
-OPEN = [COURSE, AI, FPA, CASH]
+OPEN = [COURSE, AI, MCP, FPA, CASH]
 
 
 def data():
@@ -35,7 +36,7 @@ def data():
                     l["video"] = v + ".mp4"
                     if os.path.exists(os.path.join(HERE, "static", v + ".vtt")): l["captions"] = v + ".vtt"
         out.append(f)
-    order = ["foundation", "ai", "fpa", "cash", "build", "implementation"]
+    order = ["foundation", "ai", "mcp", "fpa", "cash", "build", "implementation"]
     allc = {c["id"]: c for c in out + OUTLINES}
     return {"courses": [allc[i] for i in order], "paths": PATHS}
 
