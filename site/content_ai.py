@@ -1,9 +1,9 @@
-# Course A: AI for finance.
+# Course A: Agentic finance (called "AI for finance" until 17 Nov 2026).
 from content_fpa import L, Q
 
 COURSE = {
-    "id": "ai", "code": "A", "title": "AI for finance", "badge": "AI for finance", "duration": "About 2 hours", "status": "available",
-    "audience": "Everyone. Required on every path, right after Foundation.", "prereq": "Foundation",
+    "id": "ai", "code": "A", "title": "Agentic finance", "badge": "Agentic finance", "duration": "About 2 hours", "status": "available",
+    "audience": "Everyone. Required on every path, right after Data foundation.", "prereq": "Data foundation",
     "summary": "What a model is, what an agent is, how agentic workflows fit in finance, how to keep them safe, and how to prove their output right.",
     "outcomes": [
         "Explain what a language model does well and badly with financial work.",
@@ -189,7 +189,7 @@ They help least where a mistake is expensive and judgement is thin: releasing pa
 
 Approve at the **point of effect**, not at every step. Reviewing each of an agent's twenty tool calls is tiring and people stop looking. Reviewing the result before it is written, sent or paid is what protects you.
 
-In K-φ, the controls you learned in Foundation apply to agents too:
+In K-φ, the controls you learned in Data foundation apply to agents too:
 
 - An agent acts with the rights of the account it is connected with.
 - Sensitive changes need a governance approver, whoever prepared them, person or agent.

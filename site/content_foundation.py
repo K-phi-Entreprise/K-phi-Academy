@@ -3,8 +3,8 @@
 COURSE = {
     "id": "foundation",
     "code": "F",
-    "title": "Foundation",
-    "badge": "Foundation",
+    "title": "Data foundation",
+    "badge": "Data foundation",
     "duration": "About 2 hours",
     "status": "available",
     "audience": "Everyone. Required before any other course.",

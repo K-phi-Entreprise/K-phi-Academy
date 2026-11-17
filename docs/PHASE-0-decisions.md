@@ -6,6 +6,7 @@ K-φ Certified Builder. One page. Each line has a proposed default; reply with t
 
 1. **Programme name:** K-φ Academy. **Credentials (decided 8 Nov):** AI-Ready Finance Practitioner and AI-Ready Finance Consultant, certified by K-φ.
    **Renamed 11 Nov 2026 (owner chose option A):** K-φ Practitioner (Foundation + AI for finance), K-φ FP&A Specialist, K-φ Treasury Specialist, K-φ Builder, and K-φ Architect for the complete path (Foundation, AI for finance, FP&A, Cash, Build, Implementation). Each card and certificate carries "AI-ready · includes AI for finance". One name per path: the card title is the credential.
+   **Renamed 17 Nov 2026 (owner):** K-φ Practitioner, K-φ Agentic FP&A, K-φ Agentic Treasury, K-φ Builder, K-φ Agentic Architect ("Specialist" dropped to keep the names short). Courses: Foundation is now "Data foundation" and AI for finance is now "Agentic finance"; course letters (F, A), lesson codes and course ids are unchanged. The "AI-ready" tag stays on the cards.
 2. **Paths:** every path starts with Foundation and AI for finance. Practitioner = those two (4 h); Practitioner · FP&A, · Cash or · Build adds one course (8 h); **AI-Ready Finance Consultant** = all six courses, including Implementation (18 h).
 3. **Founding cohort:** the pilot group is numbered "Founding Builder #1 to #5". The title is permanent and carries no financial rights.
 
