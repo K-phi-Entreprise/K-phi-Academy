@@ -691,7 +691,7 @@ Write the client a short note: where each figure comes from, how often it is ref
             "The ledger, and your template: in the exam company, import halden-ledger-2026.csv. At the column step, press Save Template and name it (for example Halden ledger): that template is your ERP's layout, reused in the next step. Then finish the import as it proposes (one version per month). (F3.1)",
             "Your connector and its two test entries: ERP Connect, Add Connector, mode Push, template: the one you saved (under Saved templates), Save. Press Postman to download its collection. In Postman: Import that file, open \u201c3. Test Ingest (2 rows)\u201d, press Send. K-\u03c6 answers 200. Change nothing in the request. (F5.4)",
             "The closing days: Settings, Organization, the holiday calendar of each company. Add the six days of company-calendar.csv, two per company. (F1.3)",
-            "The third parties: turn the Copilot on (Admin, AI), attach third-parties.csv, send /tp /import and apply. (F3.2)",
+            "The third parties: turn the Copilot on (Admin, AI), open it and choose \u26a1 Consultant at its top. Attach third-parties.csv, send /tp /import and apply. The rules land in Settings, Organization, Third Party Rules. (F3.2)",
             "Check: press Check my exam company. Every step shows PASS, or says what is missing. Submit does not count, and uses no attempt, until steps 2 to 5 all pass.",
             "Answer and submit: the net result of Halden Trading Ltd, January to October 2026, in GBP (Statements, P&L, the last line). Then ask the Copilot \u201cSummarise Halden's financial situation\u201d, paste its answer, and submit."
         ],
