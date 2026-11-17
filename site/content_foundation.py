@@ -684,33 +684,28 @@ Write the client a short note: where each figure comes from, how often it is ref
     ],
     "lab": "Practise in your own practice company, a copy of Halden Trading. It starts empty: in chapter S0 you set it up from the academy's files, the entities, the ledger, the bank statements and the invoices.",
     "exam": {
-        "title": "Exam: answer the CFO, with data that arrived by itself",
-        "situation": "Halden's CFO: \u201cNobody here should import a file again. The ledger and the invoices come from our ERP, the budget lives in a Google Sheet the FP&A team edits. Set it up so that month end needs nobody, then answer my questions about November.\u201d Your exam company has its three entities and nothing else. Its Halden ERP holds the books to 31 October; you close November when your set-up is ready.",
+        "title": "Exam: set Halden up from nothing, then answer from it",
+        "situation": "Halden's CFO: \u201cOur books live in an ERP that only speaks API. Get them into K-\u03c6, set up our calendars and our customers and suppliers so the cash forecast is right, and tell me where we stand.\u201d Your exam company has its three entities and its chart of accounts, nothing else. Everything else comes from the three files on this page.",
         "tasks": [
-            "Put the duties in place: invite Maya Chen as an editor and Tom Ashby as an admin (Admin, Users; no mail is sent), make Tom the only approver and turn on Dual Admin Approval (Admin, Governance). (F2)",
-            "Connect the Halden ERP with the Copilot: /connect halden-erp, then the address and the key shown on this page. Approve a mapping of JournalLines to the ledger (GL) and of OpenItems to AR/AP (INV). Let the first sync bring October in. (F5.2)",
-            "Put the budget in a Google Sheet: import budget-2026.csv, name the tab \u201cGL - Budget 2026\u201d, share it by link, register it with the sheet assistant and tick \u201cLoad into K-\u03c6 each time the sheet changes\u201d. (F5.3)",
-            "Press Check my exam company until the set-up shows PASS. Then press Close November: the ERP publishes November and the night runs your own schedules. You import nothing.",
-            "Read the CFO's message: FP&A cuts December's revenue budget of Halden Trading Ltd by 10%. Change it in your sheet, as FP&A would, then press Run tonight's schedules. (F5.5)",
-            "Answer the CFO's questions from K-\u03c6, and write the note: where each figure comes from, and what happens at the next month end. Then submit."
+            "Push the ledger through the API: in the exam company make a key with write:data (Admin, AI tab, API keys), import postman-ledger.json into Postman, paste the key in the collection's api_key variable and Send. About 1,300 lines, January to October 2026, for the three companies. (F5.4)",
+            "Add the company's own closing days, in company-calendar.csv, to each company's holiday calendar (Settings, Organization): payments due on those days move to the next working day. (F1.3)",
+            "Bring in the customers and suppliers with their payment terms: attach third-parties.csv in the Copilot and send /tp /import, then check them in Trading Partners. Customers carry their terms as DSO, suppliers as DPO. (F3.2, A0)",
+            "Press Check my exam company until the set-up shows PASS.",
+            "Read Halden Trading Ltd's net result, January to October 2026, from K-\u03c6's P&L. Then ask the Copilot for a summary of Halden's financial situation and paste its answer. Submit."
         ],
         "checks": [
-            "Maya prepares, Tom approves, dual control is on",
-            "The ERP is connected, mapped and on its schedule; October is in the books",
-            "The budget sheet is registered, loads itself, and is a Budget version",
-            "November arrived through the schedule, with no import by anyone",
-            "FP&A's change to December arrived from the sheet",
-            "At least 4 of the CFO's 6 questions are right: EBITDA, the budget gap, the ledger cash, the dividend, the customer most overdue, December's budget",
-            "The note names the sources and how often they run"
+            "The ledger came in through the API, every line once, every company and month balanced",
+            "The six closing days are in the three company calendars",
+            "Every customer and supplier is in, with the payment terms of the file",
+            "Halden Trading Ltd's net result, January to October 2026, is right",
+            "The Copilot was asked in the exam company, and its summary quotes your books"
         ],
         "report": [
-            ["pass", "Users and duties", "Maya prepares, Tom approves, dual control is on."],
-            ["pass", "The ERP, connected and on schedule", "Connected, mapped, scheduled daily; October is in the books."],
-            ["pass", "The budget, a sheet that loads itself", "The sheet is registered, loads itself, and \u201cBudget 2026\u201d is a budget version."],
-            ["fail", "November arrived by itself", "November is in K-\u03c6, but not through the schedule: a sync started by hand is still you. The test is that the month comes in without anyone."],
-            ["pass", "FP&A's change arrived by itself", "The cut is in K-\u03c6, loaded by the sheet itself."],
-            ["pass", "The CFO's questions", "5 of 6 right; not right: the dividend."],
-            ["pass", "Your note to the CFO", "Sources and schedule named."]
+            ["pass", "The ledger, through the API", "1,301 lines, January to October 2026, pushed through the API; every company and month balances."],
+            ["pass", "The calendars", "The 6 closing days are in the three calendars: payments due on those days move to the next working day."],
+            ["fail", "The third parties", "Payment terms not as in the file: Atlas Steelworks (30 days, the file says 45). Customers carry them as DSO, suppliers as DPO."],
+            ["pass", "The net result", "Right: 312,904 GBP."],
+            ["pass", "The Copilot's summary", "The summary comes from your books: its figures match the ledger you pushed."]
         ]
     },
 }

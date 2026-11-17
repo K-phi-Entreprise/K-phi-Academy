@@ -479,7 +479,7 @@ function examView(id) {
   const c = course(id);
   if (!c || !c.exam) return courseView(id);
   const e = c.exam;
-  const TRAP = { foundation: "Nothing is hidden: the test is that November comes in without you, and that you can answer the CFO from it. Check my exam company tells you what is left.", fpa: "One problem is planted in the data. Finding it is part of the exam.",
+  const TRAP = { foundation: "Nothing is hidden: the checker reads what you put in the exam company. Check my exam company tells you what is left before you submit.", fpa: "One problem is planted in the data. Finding it is part of the exam.",
     cash: "The trap: movements that look like payroll or payments but are transfers between the group's own accounts.", ai: "The trap: an assistant that gets the sign of a change wrong. Check every figure." };
   return `
   <div class="course-head">
@@ -531,7 +531,7 @@ function reportHtml(rows, head) {
   return `<div class="report"><div class="rh">${head}</div>${rows.map(r => `<div class="rline"><span class="st ${r.ok ? "pass" : "fail"}">${r.ok ? "PASS" : "FAIL"}</span><div>${esc(r.label)}${lessonLink(r.lesson)}<small>${esc(r.detail)}</small></div></div>`).join("")}</div>`;
 }
 function exampleReport(c) {
-  const e = c.exam, L = { foundation: ["F2.1", "F5.2", "F5.3", "F5.5", "F5.3", "F5.5", "F5.5"] }[c.id] || [], rows = e.report.map(([st, t, d], i) => ({ ok: st === "pass", label: t, detail: d, lesson: L[i] || null }));
+  const e = c.exam, L = { foundation: ["F5.4", "F1.3", "F3.2", "F1.1", "A0.1"] }[c.id] || [], rows = e.report.map(([st, t, d], i) => ({ ok: st === "pass", label: t, detail: d, lesson: L[i] || null }));
   return `<section class="block" style="margin-top:12px"><header><h2>What your report looks like</h2><span class="sample">Example, failed attempt</span></header>
     ${reportHtml(rows, `<span>Attempt 1 of 3 · ${esc(c.title)}</span><span>${rows.filter(r => r.ok).length} of ${rows.length} checks passed · next attempt in 24 h</span>`)}</section>`;
 }
