@@ -40,7 +40,7 @@ def data():
     return {"courses": [allc[i] for i in order], "paths": PATHS}
 
 
-DESC = "Get certified on K-φ: Practitioner, Agentic FP&A, Agentic Treasury, Builder or Agentic Architect. Every exam is a real task on a live tenant, graded automatically."
+DESC = "Get certified on K-φ: AI Foundation, Agentic FP&A, Agentic Treasury, Builder or Agentic Architect. Every exam is a real task on a live tenant, graded automatically."
 HEAD = (f'<meta name="description" content="{DESC}">\n'
         '<link rel="icon" type="image/svg+xml" href="favicon.svg">\n'
         '<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">\n'

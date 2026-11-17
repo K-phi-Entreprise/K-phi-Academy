@@ -26,7 +26,7 @@ OUTLINES = [
 ]
 
 PATHS = [
-    {"id": "practitioner", "title": "K-φ Practitioner", "who": "Everyone starting on K-φ", "courses": ["foundation", "ai"], "credential": "K-φ Practitioner", "hours": "4 h"},
+    {"id": "practitioner", "title": "K-φ AI Foundation", "who": "Everyone starting on K-φ", "courses": ["foundation", "ai"], "credential": "K-φ AI Foundation", "hours": "4 h"},
     {"id": "fpa", "title": "K-φ Agentic FP&A", "who": "Controllers and FP&A teams", "courses": ["foundation", "ai", "fpa"], "credential": "K-φ Agentic FP&A", "hours": "8 h"},
     {"id": "cash", "title": "K-φ Agentic Treasury", "who": "Treasurers and cash managers", "courses": ["foundation", "ai", "cash"], "credential": "K-φ Agentic Treasury", "hours": "8 h"},
     {"id": "builder", "title": "K-φ Builder", "who": "People who build on K-φ with an LLM", "courses": ["foundation", "ai", "build"], "credential": "K-φ Builder", "hours": "8 h"},
