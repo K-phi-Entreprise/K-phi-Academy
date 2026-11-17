@@ -685,13 +685,14 @@ Write the client a short note: where each figure comes from, how often it is ref
     "lab": "Practise in your own practice company, a copy of Halden Trading. It starts empty: in chapter S0 you set it up from the academy's files, the entities, the ledger, the bank statements and the invoices.",
     "exam": {
         "title": "Exam: set Halden up from nothing, then answer from it",
-        "situation": "Halden's CFO: \u201cOur books live in an ERP that only speaks API. Get them into K-\u03c6, set up our calendars and our customers and suppliers so the cash forecast is right, and tell me where we stand.\u201d Your exam company has its three entities and its chart of accounts, nothing else. Everything else comes from the three files on this page.",
+        "situation": "Halden's CFO: \u201cOur books live in an ERP that only speaks API. Get them into K-\u03c6, set up our calendars and our customers and suppliers so the cash forecast is right, and tell me where we stand.\u201d You get an exam company with Halden's three companies and chart of accounts, nothing else. You fill it from three files, then answer two questions. Allow about an hour.",
         "tasks": [
-            "Push the ledger through the API: in the exam company make a key with write:data (Admin, AI tab, API keys), import postman-ledger.json into Postman, paste the key in the collection's api_key variable and Send. About 1,300 lines, January to October 2026, for the three companies. (F5.4)",
-            "Add the company's own closing days, in company-calendar.csv, to each company's holiday calendar (Settings, Organization): payments due on those days move to the next working day. (F1.3)",
-            "Bring in the customers and suppliers with their payment terms: attach third-parties.csv in the Copilot and send /tp /import, then check them in Trading Partners. Customers carry their terms as DSO, suppliers as DPO. (F3.2, A0)",
-            "Press Check my exam company until the set-up shows PASS.",
-            "Read Halden Trading Ltd's net result, January to October 2026, from K-\u03c6's P&L. Then ask the Copilot for a summary of Halden's financial situation and paste its answer. Submit."
+            "Start: press Start exam on the right, then Open my exam company. The three files appear on this page once the exam has started.",
+            "Push the ledger: in the exam company, Admin, AI tab, API keys: create a key with write:data only and copy it. In Postman, import postman-ledger.json, open the collection's Variables, paste the key as api_key, Save, then Send \u201cPush the ledger\u201d. K-\u03c6 answers 200 with \u201cstored\u201d: 1301. (F5.4)",
+            "Add the closing days: Settings, Organization, each company's holiday calendar. Add the six days of company-calendar.csv, two per company. (F1.3)",
+            "Bring in the third parties: turn the Copilot on (Admin, AI), attach third-parties.csv, send /tp /import and apply. Then open Trading Partners: 22 customers and suppliers, customers with their terms as DSO, suppliers as DPO. (F3.2)",
+            "Check: press Check my exam company. The three set-up checks must show PASS; if one fails, it says what is missing.",
+            "Answer and submit: read Halden Trading Ltd's net result, January to October 2026, in GBP, from the P&L. Ask the Copilot \u201cSummarise Halden's financial situation\u201d and paste its answer. Submit.",
         ],
         "checks": [
             "The ledger came in through the API, every line once, every company and month balanced",

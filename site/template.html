@@ -291,6 +291,11 @@ dialog.help::backdrop { background: rgba(5, 7, 12, .62); }
   .lrow { grid-template-columns: 22px 44px minmax(0,1fr); }
   .lrow .m { display: none; }
 }
+.psteps{list-style:none;margin:10px 0 6px;padding:0;display:grid;gap:6px}
+.psteps li{display:grid;grid-template-columns:auto auto 1fr;column-gap:10px;row-gap:1px;align-items:baseline;font-size:12px}
+.psteps li b{grid-column:1/-1;font-weight:600;color:var(--text,#e8e8f0)}
+.psteps li span{font-family:var(--mono,monospace);font-size:11px;color:var(--muted,#8a8aa8);white-space:nowrap}
+.psteps li span.ok{color:var(--accent,#e6ff00)}
 </style>
 
 <header class="top gut"><div class="wrap">
@@ -344,14 +349,15 @@ const courseState = c => {
   const p = pct(c);
   if (examPassed(c.id)) return { p, label: "Passed", cls: "ok" };
   if (p === 100) return { p, label: "Lessons done · exam to pass", cls: "todo" };
-  if (p > 0) return { p, label: p + "% done", cls: "todo" };
+  if (p > 0) { const lc = lessonCount(c); return { p, label: lc.n + " of " + lc.of + " lessons", cls: "todo" }; }
   return { p, label: "", cls: "" };
 };
-const pathState = pa => {
-  const cs = pa.courses.map(course).filter(c => c && c.status === "available");
-  const total = cs.length * 2;   /* each course: its lessons, then its exam */
-  const got = cs.reduce((a, c) => a + pct(c) / 100 + (examPassed(c.id) ? 1 : 0), 0);
-  return { pc: total ? Math.round(100 * got / total) : 0, open: cs.length };
+/* a path = for each of its courses, the lessons then the exam: counted in steps, never in percent */
+const lessonCount = c => { const ls = lessonsOf(c); return { n: ls.filter(l => done.has(l.code)).length, of: ls.length }; };
+const pathSteps = pa => {
+  const cs = pa.courses.map(course).filter(Boolean);
+  const steps = cs.flatMap(c => [{ c, kind: "lessons", ok: c.status === "available" && pct(c) === 100 }, { c, kind: "exam", ok: examPassed(c.id) }]);
+  return { steps, got: steps.filter(x => x.ok).length };
 };
 /* the exam still owed: lessons of a course all done, its exam not passed */
 const examOwed = () => OPEN.find(c => pct(c) === 100 && !examPassed(c.id)) || null;
@@ -372,8 +378,10 @@ function home() {
   const paths = DATA.paths.map(pa => `
     <article class="path ${pa.id === "architect" ? "star" : ""}">
       <div class="eyebrow">${esc(pa.hours)}</div><h3>${esc(pa.title)}</h3><p>${esc(pa.who)}</p>
-      <div class="seq">${pa.courses.map(c => { const st = courseState(course(c)); const tag = !st || !st.label ? "" : st.cls === "ok" ? " ✓" : st.p === 100 ? " · exam" : " · " + st.p + "%"; return `<span class="chip ${st && st.cls === "ok" ? "live" : ""}" title="${esc(st && st.label || "")}">${esc(course(c).code)} ${esc(course(c).title)}${tag}</span>`; }).join("")}</div>
-      ${(() => { const ps = pathState(pa); return ps.pc > 0 ? `<div class="bar" aria-label="${esc(pa.title)} progress ${ps.pc}%" style="margin:10px 0 4px;width:100%;min-width:0;flex:none"><i style="width:${ps.pc}%"></i></div><div class="mono note">${ps.pc}% of the path</div>` : ""; })()}
+      ${(() => { const ps = pathSteps(pa); if (!ps.got && !pa.courses.some(id => pct(course(id)) > 0)) return `<div class="seq">${pa.courses.map(c => `<span class="chip">${esc(course(c).code)} ${esc(course(c).title)}</span>`).join("")}</div>`;
+        return `<ul class="psteps">${pa.courses.map(id => { const c = course(id), lc = lessonCount(c), soon = c.status !== "available";
+          return `<li><b>${esc(c.code)} ${esc(c.title)}</b><span class="${!soon && lc.n === lc.of ? "ok" : ""}">${soon ? "lessons soon" : lc.n === lc.of ? "✓ lessons" : lc.n + " of " + lc.of + " lessons"}</span><span class="${examPassed(id) ? "ok" : ""}">${examPassed(id) ? "✓ exam passed" : "exam to pass"}</span></li>`; }).join("")}</ul>
+        <div class="mono note">${ps.got} of ${ps.steps.length} steps done</div>`; })()}
       <div class="cred">AI-ready</div>
     </article>`).join("");
   const rows = DATA.courses.map(c => `
@@ -515,7 +523,7 @@ function examView(id) {
   </div>
   <div class="two">
     <div class="chapters">
-      <div class="panel"><h3>Your task</h3><ol class="tasks">${e.tasks.map(t => `<li>${esc(t)}</li>`).join("")}</ol></div>
+      <div class="panel"><h3>Your task</h3><ol class="tasks">${e.tasks.map(t => { const m = /^([^:]{2,40}): (.*)$/s.exec(t); return `<li>${m ? `<b>${esc(m[1])}.</b> ${esc(m[2].charAt(0).toUpperCase() + m[2].slice(1))}` : esc(t)}</li>`; }).join("")}</ol></div>
       <div class="panel"><h3>What the checker verifies</h3><ul class="outcomes">${e.checks.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
         <p>${esc(TRAP[c.id] || "")}</p></div>
       <div data-exam-report>${exampleReport(c)}</div>
@@ -572,14 +580,20 @@ async function loadExam(id) {
   const box = $(`[data-exam-live="${id}"]`); if (!box) return;
   const api = (SESSION && SESSION.api) || apiBase() || AUTH_HOSTS.prod;
   let d = null, status = 0;
-  try { const r = await fetch(api + "/api/academy/exam/" + id, { headers: SESSION ? { Authorization: "Bearer " + SESSION.token } : {} }); status = r.status; d = r.ok ? await r.json() : null; } catch (e) { status = -1; }
+  /* K-φ restarts for a few seconds on each release: try again before saying anything (owner, 2026-11-17) */
+  for (let i = 0; i < 4; i++) {
+    try { const r = await fetch(api + "/api/academy/exam/" + id, { headers: SESSION ? { Authorization: "Bearer " + SESSION.token } : {} }); status = r.status; d = r.ok ? await r.json() : null; } catch (e) { status = -1; }
+    if (d || (status > 0 && status < 500)) break;
+    await new Promise(z => setTimeout(z, 3000));
+  }
   EXAMSTATE[id] = d;
   drawExam(id, status);
 }
 function drawExam(id, status) {
   const box = $(`[data-exam-live="${id}"]`); if (!box) return;
   const d = EXAMSTATE[id], c = course(id);
-  if (!d) { box.innerHTML = `<h3>Your exam</h3><p>${status === 404 ? "Exams open with the next K-φ release." : "Could not reach K-φ. Reload the page to try again."}</p>`; return; }
+  if (!d && status === 401) { box.innerHTML = `<h3>Your exam</h3><p>Your sign-in to the academy has expired.</p><a class="btn primary" href="${esc(apiBase() || AUTH_HOSTS.prod)}/academy/signin">Sign in again</a>`; return; }
+  if (!d) { box.innerHTML = `<h3>Your exam</h3><p>${status === 404 ? "Exams open with the next K-φ release." : "K-φ did not answer (it may be restarting for a release). Reload the page in a minute."}</p>`; return; }
   if (!SESSION) { box.innerHTML = `<h3>Ready?</h3><p>Sign in to take the exam: you get a fresh company of your own for each attempt.</p><a class="btn primary" href="${esc(apiBase() || AUTH_HOSTS.prod)}/academy/signin">Sign in</a>`; return; }
   const st = d.state, last = st.attempts[st.attempts.length - 1];
   const rep = $("[data-exam-report]");
