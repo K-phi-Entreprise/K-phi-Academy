@@ -688,8 +688,8 @@ Write the client a short note: where each figure comes from, how often it is ref
         "situation": "You get an exam company with Halden's three companies and chart of accounts, nothing else. Four set-up steps (2 to 5 below), then two answers. Every step is something you did in a lesson; the lesson is named at the end of the step. Allow about 45 minutes.",
         "tasks": [
             "Start: press Start exam on the right, then Open my exam company. The three files appear on this page.",
-            "The ledger: in the exam company, import halden-ledger-2026.csv, as the import proposes (one version per month). (F3.1)",
-            "The connector and its two test entries: ERP Connect, Add Connector, mode Push, template \u201cGeneric CSV \u2014 K-\u03c6 layout\u201d, Save. Press Postman to download its collection. In Postman: Import that file, open \u201c3. Test Ingest (2 rows)\u201d, press Send. K-\u03c6 answers 200. Change nothing in the request. (F5.4)",
+            "The ledger, and your template: in the exam company, import halden-ledger-2026.csv. At the column step, press Save Template and name it (for example Halden ledger): that template is your ERP's layout, reused in the next step. Then finish the import as it proposes (one version per month). (F3.1)",
+            "Your connector and its two test entries: ERP Connect, Add Connector, mode Push, template: the one you saved (under Saved templates), Save. Press Postman to download its collection. In Postman: Import that file, open \u201c3. Test Ingest (2 rows)\u201d, press Send. K-\u03c6 answers 200. Change nothing in the request. (F5.4)",
             "The closing days: Settings, Organization, the holiday calendar of each company. Add the six days of company-calendar.csv, two per company. (F1.3)",
             "The third parties: turn the Copilot on (Admin, AI), attach third-parties.csv, send /tp /import and apply. (F3.2)",
             "Check: press Check my exam company. Every step shows PASS, or says what is missing. Submit does not count, and uses no attempt, until steps 2 to 5 all pass.",
@@ -697,7 +697,7 @@ Write the client a short note: where each figure comes from, how often it is ref
         ],
         "checks": [
             "The ledger file is in once, every company and month balanced",
-            "A push connector exists, and its two test entries came in from Postman, balanced",
+            "Your saved template is the connector's, and its two test entries came in from Postman, balanced",
             "The six closing days are in the three company calendars",
             "Every customer and supplier is in, with the payment terms of the file",
             "Halden Trading Ltd's net result, January to October 2026, is right",
@@ -705,7 +705,7 @@ Write the client a short note: where each figure comes from, how often it is ref
         ],
         "report": [
             ["pass", "The ledger, imported", "1,301 lines, January to October 2026; every company and month balances."],
-            ["pass", "The connector and its two test entries", "Connector \u201cHalden ERP\u201d: its two test entries came in from Postman, balanced, in their own version \u201cAPI_TEST_2026-11\u201d, apart from the books."],
+            ["pass", "Your template, a connector, two test entries", "Template \u201cHalden ledger\u201d, connector \u201cHalden ERP\u201d: the two test entries came in from Postman, balanced, in their own version \u201cAPI_TEST_2026-11\u201d, apart from the books."],
             ["pass", "The calendars", "The 6 closing days are in the three calendars: payments due on those days move to the next working day."],
             ["pass", "The third parties", "22 customers and suppliers, each with its payment terms: the cash forecast now times their payments."],
             ["fail", "The net result", "Not right. Statements, P&L: company Halden Trading Ltd, January to October 2026, local currency (GBP), the last line, net result after tax."],
