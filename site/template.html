@@ -747,7 +747,7 @@ function verifyBox(l) {
   const head = `<div class="eyebrow">Check my work${passed ? " · passed" : ""}</div>`;
   if (!SESSION) return `<div class="verify">${head}<p class="note">Sign in (top right) to have K-φ check this step in your practice company.</p></div>`;
   const fl = (c.files && c.files.length) ? c.files : (c.file ? [c.file] : []);
-  const file = fl.length ? `<div class="files">${fl.map(f => `<button class="btn" type="button" data-file="${esc(f)}">Download ${esc(f)}</button>`).join("")}</div><span class="note">Your own variant of ${fl.length > 1 ? "these files" : "the file"}: import ${fl.length > 1 ? "them" : "it"} in your practice company.</span>` : "";
+  const file = fl.length ? `<div class="files">${fl.map(f => `<button class="btn" type="button" data-file="${esc(f)}">Download ${esc(f)}</button>`).join("")}</div><span class="note">${fl.length === 1 && /\.json$/.test(fl[0]) ? "Set to your practice company: import it in Postman." : `Your own variant of ${fl.length > 1 ? "these files" : "the file"}: import ${fl.length > 1 ? "them" : "it"} in your practice company.`}</span>` : "";
   const input = c.kind === "answer" ? `<input type="text" name="answer" autocomplete="off" inputmode="${c.unit ? "decimal" : "text"}" placeholder="${c.unit ? "Amount in " + esc(c.unit) : "Your answer"}" aria-label="${esc(c.prompt)}">` : "";
   const erp = c.erp ? `<div class="erpbox" data-erpfor="${esc(l.code)}"><div class="eyebrow">Your practice company's Halden ERP</div><p class="note">Loading its address and key…</p></div>` : "";
   if (c.erp) setTimeout(() => loadPracticeErp(l.code), 0);

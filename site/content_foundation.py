@@ -623,32 +623,27 @@ A budget in a sheet lands as a **Budget version** of the ledger (version type Bu
                     ],
                 },
                 {
-                    "code": "F5.4", "title": "The developers page, an API key and Postman", "minutes": 8,
-                    "objective": "Call K-φ from outside with a key that holds only what the job needs.",
+                    "code": "F5.4", "title": "Push two ledger lines from Postman", "minutes": 8,
+                    "objective": "Send data to K-φ from outside, with a key that holds only what the job needs.",
                     "read": """
-When a system has no recipe yet, it talks to K-φ directly: its developers push data to K-φ's API, or read from it.
+When a system has no recipe yet, its developers send data to K-φ's API. You try it with Postman: two ledger lines, pushed from outside into your practice company.
 
-- **The developers page** (k-phi.com/developers) describes every call, and `/api/v1/openapi.json` describes them for tools. **Postman** imports it: File, Import, paste the link. Every call is then ready, with its parameters.
-- **An API key** is made in Admin, the AI tab, API keys. Give it the **scopes the job needs and nothing more**: a dashboard that reads the P&L needs `read:gl`; an ERP that pushes the ledger needs `write:data`. Never an owner's session, never one key for everything.
-- **The key is shown once.** Keep it in the system that uses it, or in a password manager; never in an e-mail, a ticket or a chat.
-- **Every call is recorded** under the key's label, and the key's last use shows in Admin, API keys. A key nobody uses any more is revoked.
+1. **Make a key.** In your practice company: Admin, the AI tab, API keys. Label it `Postman`, pick *Choose scopes…*, tick `write:data` and nothing else, press Create. **Copy the key now: it is shown once.**
+2. **Import the collection.** Download it under *Check my work* below. In Postman: Import, drop the file. A collection appears with one request, *Post 2 GL lines*, its address already set to your practice company.
+3. **Give Postman the key.** Click the collection's name, open *Variables*, paste the key as the value of `api_key`, Save. Nothing goes in *Params*, *Headers* or the URL.
+4. **Send.** Open *Post 2 GL lines*, press Send. K-φ answers **200** with `"stored": 2`. **401**: the key is not in `api_key`. **403**: the key lacks `write:data`.
 
-To push data, the same contract applies: `POST /api/v1/contract_ingest` with the object (GL, INV, BAL, TRA, FX) and its rows, the same checks and the same "same id, replaced" rule as a connection or a sheet.
+Then open the ledger: October 2026, Halden Trading Ltd, account 1000 debited and 4000 credited by 1,000. Send it again and nothing doubles: the same line id replaces the line.
 
-**Step by step, in Postman**
-
-1. **Make the key.** In your practice company: Admin, the AI tab, API keys. Label it `Postman`, pick *Choose scopes…*, tick `read:gl` and nothing else, press Create. Copy the key now: it is shown once.
-2. **Import the API.** In Postman: Import, then paste the import link shown under *Check my work* below. It is your practice company's server, not k-phi.com: a key made in the practice company is unknown anywhere else. Postman makes a collection named *K-φ API*, every call in it, `baseUrl` already filled in.
-3. **Give Postman the key.** Click the collection's name, open its *Variables* tab, add a variable named `bearerToken` and paste the key as its value. Save. Every call already sends it as a bearer token, so nothing goes in *Params*, *Headers* or the URL.
-4. **Make the call.** Open *Who this credential is* (`GET /api/v1/me`) and press Send. **200** shows your practice company and the key's scopes. **401**: the key is not in `bearerToken`, or the collection points to another server. **403**: the key lacks the scope.
-
-The ERP connector page also offers a Postman download for the older GL push (`/api/gl/ingest`, key in an `X-API-Key` header). It is a different door: this lesson uses the import link above.
+- **One key per job, with only the scopes it needs**: a dashboard that reads needs `read:gl`, a system that pushes needs `write:data`. Never an owner's session, never one key for everything.
+- **The key lives in the system that uses it** or in a password manager, never in an e-mail, a ticket or a chat. Every call is recorded under its label; a key nobody uses any more is revoked.
+- **The full API** is on the developers page (k-phi.com/developers): the same push takes invoices, balances, transactions and FX rates (`"object": "INV"`, `"BAL"`, `"TRA"`, `"FX"`), with the same checks as a connection or a sheet.
 """,
-"try": "In your practice company, create a key with read:gl only. In Postman, import the link shown below, put the key in the collection's bearerToken variable, and send GET /api/v1/me.",
+                    "try": "Make a key with write:data only, import the collection into Postman, paste the key in its api_key variable and send Post 2 GL lines.",
                     "points": [
-                        "openapi.json into Postman: every call ready.",
-                        "One key per job, only the scopes it needs.",
-                        "Shown once, kept in the system, revoked when unused.",
+                        "A key per job, with only the scopes it needs.",
+                        "The key in the system, never in a message.",
+                        "Same line id, replaced: a re-send never doubles.",
                     ],
                 },
                 {
