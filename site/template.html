@@ -335,9 +335,34 @@ const nextUp = (c = course("foundation")) => { const ls = lessonsOf(c); return l
 const current = () => OPEN.find(c => pct(c) > 0 && pct(c) < 100) || OPEN.find(c => pct(c) < 100) || OPEN[0];
 const tick = code => `<span class="tick ${done.has(code) ? "done" : ""}" aria-label="${done.has(code) ? "Completed" : "Not started"}"></span>`;
 
+/* Where a learner stands, shown on the catalogue (owner, 2026-11-17: "I had passed everything but the exam of
+   first path... and everything is reset"). Nothing was lost: the page only ever showed the next course at 0 %.
+   Each path and course now says what is done, and Continue goes to the exam still owed before a new course. */
+const examPassed = id => !!(EXAMS_DONE[id] && EXAMS_DONE[id].passed);
+const courseState = c => {
+  if (c.status !== "available") return null;
+  const p = pct(c);
+  if (examPassed(c.id)) return { p, label: "Passed", cls: "ok" };
+  if (p === 100) return { p, label: "Lessons done · exam to pass", cls: "todo" };
+  if (p > 0) return { p, label: p + "% done", cls: "todo" };
+  return { p, label: "", cls: "" };
+};
+const pathState = pa => {
+  const cs = pa.courses.map(course).filter(c => c && c.status === "available");
+  const total = cs.length * 2;   /* each course: its lessons, then its exam */
+  const got = cs.reduce((a, c) => a + pct(c) / 100 + (examPassed(c.id) ? 1 : 0), 0);
+  return { pc: total ? Math.round(100 * got / total) : 0, open: cs.length };
+};
+/* the exam still owed: lessons of a course all done, its exam not passed */
+const examOwed = () => OPEN.find(c => pct(c) === 100 && !examPassed(c.id)) || null;
+
 function home() {
-  const cc = current(), p = pct(cc), n = nextUp(cc);
-  const resume = DATA.courses.some(c => c.status === "available" && pct(c) > 0)
+  const cc = current(), p = pct(cc), n = nextUp(cc), owed = examOwed();
+  const resume = owed
+    ? `<div class="resume"><div><div class="eyebrow">Continue</div><b>Exam · ${esc(owed.title)}</b></div>
+        <div class="bar" aria-label="${esc(owed.title)} lessons 100%"><i style="width:100%"></i></div>
+        <span class="mono note">Lessons done · exam to pass</span><a class="btn primary" href="#exam-${owed.id}">Go to the exam</a></div>`
+    : DATA.courses.some(c => c.status === "available" && pct(c) > 0)
     ? `<div class="resume"><div><div class="eyebrow">Continue</div><b>${esc(n.code)} · ${esc(n.title)}</b></div>
         <div class="bar" aria-label="${esc(cc.title)} progress ${p}%"><i style="width:${p}%"></i></div>
         <span class="mono note">${p}% of ${esc(cc.title)}</span><a class="btn primary" href="#${slug(n.code)}">Resume</a></div>`
@@ -347,14 +372,15 @@ function home() {
   const paths = DATA.paths.map(pa => `
     <article class="path ${pa.id === "architect" ? "star" : ""}">
       <div class="eyebrow">${esc(pa.hours)}</div><h3>${esc(pa.title)}</h3><p>${esc(pa.who)}</p>
-      <div class="seq">${pa.courses.map(c => `<span class="chip">${esc(course(c).code)} ${esc(course(c).title)}</span>`).join("")}</div>
+      <div class="seq">${pa.courses.map(c => { const st = courseState(course(c)); const tag = !st || !st.label ? "" : st.cls === "ok" ? " ✓" : st.p === 100 ? " · exam" : " · " + st.p + "%"; return `<span class="chip ${st && st.cls === "ok" ? "live" : ""}" title="${esc(st && st.label || "")}">${esc(course(c).code)} ${esc(course(c).title)}${tag}</span>`; }).join("")}</div>
+      ${(() => { const ps = pathState(pa); return ps.pc > 0 ? `<div class="bar" aria-label="${esc(pa.title)} progress ${ps.pc}%" style="margin:10px 0 4px;width:100%;min-width:0;flex:none"><i style="width:${ps.pc}%"></i></div><div class="mono note">${ps.pc}% of the path</div>` : ""; })()}
       <div class="cred">AI-ready</div>
     </article>`).join("");
   const rows = DATA.courses.map(c => `
     <a class="crow" href="#course-${c.id}">
       <span class="code">${esc(c.code)}</span>
       <div><h3>${esc(c.title)}</h3><p>${esc(c.summary)}</p></div>
-      ${c.status === "available" ? `<span class="chip live">Open · ${esc(c.duration.replace("About ", ""))}</span>` : `<span class="chip">In preparation</span>`}
+      ${c.status === "available" ? (() => { const st = courseState(c); return st && st.label ? `<span class="chip ${st.cls === "ok" ? "live" : ""}">${esc(st.label)}</span>` : `<span class="chip live">Open · ${esc(c.duration.replace("About ", ""))}</span>`; })() : `<span class="chip">In preparation</span>`}
     </a>`).join("");
   return `
   <div class="hero">
@@ -681,7 +707,7 @@ function takeProgress(d) {
     if (k === "_checks") { WATCH._checks = WATCH._checks || {}; for (const ch of Object.keys(d.watch._checks)) { const u = [...new Set([].concat(WATCH._checks[ch] || [], d.watch._checks[ch]))]; if (u.length !== (WATCH._checks[ch] || []).length) { WATCH._checks[ch] = u; changed = true; } } continue; }
     if (_cov(d.watch[k]) > _cov(WATCH[k])) { WATCH[k] = d.watch[k]; changed = true; }
   }
-  if (d.checks) { for (const k of Object.keys(d.checks)) if (!PASSED[k]) { PASSED[k] = d.checks[k]; changed = true; } }
+  if (d.checks) { for (const k of Object.keys(d.checks)) { if (!PASSED[k]) { PASSED[k] = d.checks[k]; changed = true; } if (lessonByCode(k) && !done.has(k)) { done.add(k); changed = true; } } }
   if (d.exams) { EXAMS_DONE = d.exams; changed = true; }
   try { localStorage.setItem("kphi-academy-done", JSON.stringify([...done])); localStorage.setItem("kphi-academy-watch", JSON.stringify(WATCH)); } catch (e) {}
   return changed;
