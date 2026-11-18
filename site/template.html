@@ -403,6 +403,8 @@ function home() {
     <p class="lede">Learn what AI agents can and cannot do in finance, and how to run, build and verify them on K-φ. For finance teams and the consultants who implement K-φ. Every exam is a real task on a tenant of your own, graded automatically against an independent answer key.</p>
     ${resume}
   </div>
+  ${CERTS.length ? `<section class="block"><header><h2>Your certificates</h2><span class="note">Each has a public page to verify it, and goes on LinkedIn in one click.</span></header>
+    <div class="certs">${CERTS.map(c => `<a class="crow" href="#cert-${esc(c.id)}"><span class="code">✓</span><div><h3>${esc(c.title)}</h3><p class="mono">${esc(c.id)} · issued ${esc(c.issued_at)}${c.of ? " · " + c.checked + " of " + c.of + " checks" : ""}</p></div><span class="chip live">View · share</span></a>`).join("")}</div></section>` : ""}
   <section class="block"><header><h2>Paths</h2><span class="note">Each path ends with a credential.</span></header><div class="paths">${paths}</div></section>
   <section class="block"><header><h2>Courses</h2><span class="note">Open for the pilot: ${OPEN.map(c => esc(c.title)).join(", ")}. The others follow.</span></header><div class="courses">${rows}</div></section>
   <section class="block"><header><h2>How certification works</h2></header>
@@ -608,7 +610,7 @@ function drawExam(id, status) {
   if (!st.open) { const q0 = $("[data-exam-quiz]"); if (q0) q0.innerHTML = ""; }
   const rep = $("[data-exam-report]");
   if (rep && last && last.report) rep.innerHTML = `<section class="block" style="margin-top:12px"><header><h2>Your report</h2></header>${reportHtml(last.report, `<span>Attempt ${last.attempt} of ${st.max} · ${esc(c.title)}</span><span>${last.report.filter(r => r.ok).length} of ${last.report.length} checks passed${last.passed ? " · passed" : st.next_at ? " · next attempt " + esc(when(st.next_at)) : ""}</span>`)}</section>`;
-  if (st.passed) { box.innerHTML = `<h3>Passed</h3><p>You passed this exam on attempt ${last.attempt}.</p>`; return; }
+  if (st.passed) { const ce = CERTS.find(x => x.ref === id); box.innerHTML = `<h3>Passed</h3><p>You passed this exam on attempt ${last.attempt}.</p>${ce ? `<a class="btn primary" href="#cert-${esc(ce.id)}">Your certificate</a>` : `<p class="note">Your certificate is being issued: open this page again in a moment.</p>`}`; if (!ce) syncProgress().then(ch => { if (ch && location.hash === "#exam-" + id) render(); }); return; }
   if (st.open) {
     const files = d.exam.files.map(f => `<button class="btn" type="button" data-examfile="${esc(id)}|${esc(f)}">Download ${esc(f)}</button>`).join("");
     /* a multiple-choice exam (course M): the questions in the main column, no company to open */
@@ -730,6 +732,55 @@ document.addEventListener("submit", async e => {
   } catch (err) { out.hidden = false; out.className = "out fail"; out.textContent = "Could not reach K-φ. Try again."; b.disabled = false; b.textContent = "Submit for checking"; }
 });
 
+/* a real certificate (owner, 2026-11-18): read from the server its number names, KPA- production, KPS- staging */
+const certHost = id => /^KPS-/.test(id) ? AUTH_HOSTS.staging : AUTH_HOSTS.prod;
+const certUrl = id => "https://academy.k-phi.com/#cert-" + id;
+const CERT_SEEN = {};
+function liUrl(c) {
+  const d = String(c.issued_at || "").split("-");
+  return "https://www.linkedin.com/profile/add?" + new URLSearchParams({ startTask: "CERTIFICATION_NAME", name: c.title, organizationName: "K-φ", issueYear: d[0] || "", issueMonth: String(+d[1] || ""), certUrl: certUrl(c.id), certId: c.id }).toString();
+}
+function certPage(id) {
+  const c = CERT_SEEN[id];
+  if (!c) {
+    fetch(certHost(id) + "/api/academy/cert/" + encodeURIComponent(id), { headers: { "X-Requested-With": "XMLHttpRequest" } })
+      .then(r => r.json().then(d => ({ ok: r.ok, d }))).then(({ ok, d }) => { CERT_SEEN[id] = ok ? d.cert : { missing: true, error: d.error }; if (location.hash.toUpperCase() === "#CERT-" + id) render(); })
+      .catch(() => { CERT_SEEN[id] = { missing: true, error: "Could not reach K-φ to check this certificate. Try again." }; if (location.hash.toUpperCase() === "#CERT-" + id) render(); });
+    return `<div class="course-head"><div class="crumb note"><a href="#home">Catalogue</a> / Certificate</div><h1>Checking certificate ${esc(id)}…</h1></div>`;
+  }
+  if (c.missing) return `<div class="course-head"><div class="crumb note"><a href="#home">Catalogue</a> / Certificate</div><h1>Not a valid certificate</h1><p class="lede">${esc(c.error || "No certificate with this number.")} The number is ${esc(id)}.</p></div>`;
+  const mine = CERTS.some(x => x.id === id), holder = (CERTS.find(x => x.id === id) || {}).holder || c.holder;
+  return `
+  <div class="course-head"><div class="crumb note"><a href="#home">Catalogue</a> / Certificate</div>
+    <h1>${mine ? "Your certificate" : "Verify a certificate"}</h1><p class="lede">${mine ? "This page is public: anyone with the link sees what you see here." : "Issued by K-φ after an exam graded on a live K-φ company."}</p></div>
+  <div style="margin-top:28px; display:grid; gap:14px">
+    <article class="cert"><span class="aurora" aria-hidden="true"></span>
+      <div class="eyebrow">Certified by K-φ · ${esc(certUrl(id).replace("https://", ""))}</div>
+      <div class="holder">${holder ? esc(holder) : mine ? "Your name here" : "Name not set yet"}</div>
+      <span class="valid">${c.valid ? "Valid" : "Revoked"}</span>
+      <dl>
+        <div><dt>Certificate</dt><dd>${esc(c.title)}</dd></div>
+        <div><dt>Number</dt><dd class="mono">${esc(c.id)}</dd></div>
+        <div><dt>Issued</dt><dd class="mono">${esc(c.issued_at)}</dd></div>
+        ${c.of ? `<div><dt>Checks passed</dt><dd class="mono">${esc(String(c.checked))} / ${esc(String(c.of))}</dd></div>` : ""}
+      </dl>
+      <p class="note" style="margin:0">The exam is a real task on a K-φ company of the candidate's own, graded automatically against an answer key.</p>
+      ${mine && !holder ? `<form class="examform" data-certname="${esc(id)}"><label>Your name, as it should read on the certificate<input name="holder" maxlength="80" required autocomplete="name"></label><button class="btn primary" type="submit">Put my name on it</button><p class="flash" hidden data-certnamemsg></p></form>` : ""}
+      ${mine ? `<div style="display:flex; gap:10px; flex-wrap:wrap"><a class="btn primary" href="${esc(liUrl(c))}" target="_blank" rel="noopener">Add to LinkedIn</a><button class="btn" data-copy="${esc(certUrl(id))}">Copy verify link</button></div>` : ""}
+    </article>
+  </div>`;
+}
+document.addEventListener("submit", async e => {
+  const f = e.target.closest && e.target.closest("[data-certname]"); if (!f) return;
+  e.preventDefault(); const id = f.dataset.certname, msg = f.querySelector("[data-certnamemsg]");
+  try {
+    const r = await fetch(SESSION.api + "/api/academy/cert/" + encodeURIComponent(id) + "/holder", { method: "PUT", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: JSON.stringify({ holder: f.holder.value }) });
+    const d = await r.json();
+    if (!r.ok) { msg.hidden = false; msg.textContent = d.error || "Could not save the name."; return; }
+    CERTS = CERTS.map(x => Object.assign({}, x, { holder: d.cert.holder })); Object.keys(CERT_SEEN).forEach(k => { CERT_SEEN[k].holder = d.cert.holder; }); render();
+  } catch (_e) { msg.hidden = false; msg.textContent = "Could not reach K-φ. Try again."; }
+});
+
 function certView() {
   return `
   <div class="course-head"><div class="crumb note"><a href="#home">Catalogue</a> / Verify a certificate</div>
@@ -769,7 +820,7 @@ const saveWatch = () => { try { localStorage.setItem("kphi-academy-watch", JSON.
 /* ── Progress on the account (K-phi-engine, blocks/academy/practice.js) ──
    Completed lessons and watched parts of videos follow the learner from one
    device to another; the server merges, so nothing completed is ever lost. */
-let EXAMS_DONE = {}, _pushT = null;
+let EXAMS_DONE = {}, CERTS = [], _pushT = null;
 const _cov = w => (w && w.ranges ? w.ranges.reduce((a, r) => a + Math.max(0, r[1] - r[0]), 0) : 0);
 function pushSoon() { if (!SESSION) return; clearTimeout(_pushT); _pushT = setTimeout(pushProgress, 1500); }
 async function pushProgress() {
@@ -789,6 +840,7 @@ function takeProgress(d) {
   }
   if (d.checks) { for (const k of Object.keys(d.checks)) { if (!PASSED[k]) { PASSED[k] = d.checks[k]; changed = true; } if (lessonByCode(k) && !done.has(k)) { done.add(k); changed = true; } } }
   if (d.exams && JSON.stringify(d.exams) !== JSON.stringify(EXAMS_DONE)) { EXAMS_DONE = d.exams; changed = true; }
+  if (d.certs && JSON.stringify(d.certs) !== JSON.stringify(CERTS)) { CERTS = d.certs; changed = true; }
   try { localStorage.setItem("kphi-academy-done", JSON.stringify([...done])); localStorage.setItem("kphi-academy-watch", JSON.stringify(WATCH)); } catch (e) {}
   return changed;
 }
@@ -960,6 +1012,7 @@ function render() {
   else if (h.startsWith("lesson-")) { const code = h.slice(7).toUpperCase().replace(/-/, "."); html = lessonView(code); nav = "learn"; }
   else if (h.startsWith("exam-")) { html = examView(h.slice(5)); nav = "learn"; }
   else if (h === "certificate-sample") { html = certView(); nav = "cert"; }
+  else if (/^cert-KP[AS]-/i.test(h)) { html = certPage(h.slice(5).toUpperCase()); nav = "cert"; }
   else if (h === "prepare-practice") html = prepareView("practice");
   else if (h.startsWith("prepare-exam-")) html = prepareView("exam", h.slice(13));
   else html = home();
@@ -981,7 +1034,7 @@ document.addEventListener("click", e => {
   if (!t) return;
   if (t.matches("[data-complete]")) { if (t.disabled) return; done.add(t.dataset.complete); save(); location.hash = t.dataset.next; }
   else if (t.matches("[data-li]")) { const m = $("[data-certmsg]"); m.textContent = "In the live version, this opens LinkedIn with the certificate pre-filled."; m.hidden = false; }
-  else if (t.matches(".cert [data-copy]")) { /* the sample certificate's own button; the other copy buttons carry their value (erpRow) */
+  else if (t.matches(".cert [data-copy=\"\"], .cert [data-copy]:not([data-copy^=\"http\"])")) { /* the sample certificate's own button; the other copy buttons carry their value (erpRow) */
     const m = $("[data-certmsg]"), url = "https://academy.k-phi.com/verify/KPA-26-0007";
     const ok = () => { m.textContent = "Link copied."; m.hidden = false; };
     try { navigator.clipboard.writeText(url).then(ok, () => { m.textContent = url; m.hidden = false; }); } catch (err) { m.textContent = url; m.hidden = false; }
