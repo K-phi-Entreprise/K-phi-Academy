@@ -572,7 +572,7 @@ function reportHtml(rows, head) {
   return `<div class="report"><div class="rh">${head}</div>${rows.map(r => `<div class="rline"><span class="st ${r.ok ? "pass" : "fail"}">${r.ok ? "PASS" : "FAIL"}</span><div>${esc(r.label)}${lessonLink(r.lesson)}<small>${esc(r.detail)}</small></div></div>`).join("")}</div>`;
 }
 function exampleReport(c) {
-  const e = c.exam, L = { foundation: ["F3.1", "F5.4", "F1.3", "F3.2", "F1.1", "A0.1"] }[c.id] || [], rows = e.report.map(([st, t, d], i) => ({ ok: st === "pass", label: t, detail: d, lesson: L[i] || null }));
+  const e = c.exam, L = { foundation: ["F3.1", "F5.4", "F3.2", "F1.1", "A0.1"] }[c.id] || [], rows = e.report.map(([st, t, d], i) => ({ ok: st === "pass", label: t, detail: d, lesson: L[i] || null }));
   /* the pass rule, as the checker applies it: more than 80% of the checks (owner, 2026-11-18) */
   const ok = rows.filter(r => r.ok).length, pass = rows.length > 0 && ok / rows.length > 0.8;
   return `<section class="block" style="margin-top:12px"><header><h2>What your report looks like</h2><span class="sample">Example, ${pass ? "passed" : "failed"} attempt</span></header>
@@ -629,7 +629,7 @@ function drawExam(id, status) {
         ? `<div class="day2"><div class="eyebrow">November is closed</div><p>${esc(st.open.day2.cfo)}</p><button class="btn" type="button" data-examnight="${esc(id)}">Run tonight's schedules</button><p class="note">Runs only what you scheduled: your connections, and your sheets read again. It imports nothing for you.</p></div>`
         : `<div class="day2"><div class="eyebrow">Month end</div><p class="note">When Check my exam company shows your set-up done, close November: the ERP publishes it and the night runs your own schedules. You import nothing.</p><button class="btn" type="button" data-examclose="${esc(id)}">Close November</button></div>`) : ""}
       ${d.exam.precheck ? `<div class="precheck"><button class="btn" type="button" data-examcheck="${esc(id)}">Check my exam company</button><p class="note">As often as you like: it shows what is done and what is missing, uses no attempt and grades nothing. The figures are only checked when you submit.</p></div>` : ""}
-      <form class="examform" data-examsubmit="${esc(id)}"><h3>Submit</h3>${fields}<button class="btn primary" type="submit">Submit for checking</button><p class="note">Submit counts once your set-up steps pass, one step left at most; before that, it shows what is left and uses no attempt.</p></form>
+      <form class="examform" data-examsubmit="${esc(id)}"><h3>Submit</h3>${fields}<button class="btn primary" type="submit">Submit for checking</button><p class="note">Submit counts once your set-up steps pass; before that, it shows what is left and uses no attempt.</p></form>
       <p class="out" role="status" hidden></p>`;
     draftRestore(id);
     return;
