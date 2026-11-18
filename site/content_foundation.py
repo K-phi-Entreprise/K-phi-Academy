@@ -693,7 +693,7 @@ Write the client a short note: where each figure comes from, how often it is ref
             "The closing days: Settings, Organization, the holiday calendar of each company. Add the six days of company-calendar.csv, two per company. (F1.3)",
             "The third parties: turn the Copilot on (Admin, AI), open it and choose \u26a1 Consultant at its top. Attach third-parties.csv, send /tp /import and apply. The rules land in Settings, Organization, Third Party Rules. (F3.2)",
             "Check: press Check my exam company. Every step shows PASS, or says what is missing. Submit does not count, and uses no attempt, until steps 2 to 5 all pass.",
-            "Answer and submit: the net result of Halden Trading Ltd for the month of October 2026 alone, in GBP (Statements, P&L, company Halden Trading Ltd, October 2026, the last line). Type the amount only, for example 48210.55. Then ask the Copilot \u201cSummarise Halden's financial situation\u201d, paste its answer, and submit."
+            "Answer and submit: the net result of Halden Trading Ltd for the month of October 2026 alone, in GBP (Statements, P&L: Entities, Halden Trading Ltd only; Company at the top, for GBP rather than the group's USD; Basis: Incremental, since YTD adds every month from January; the 2026-10 column, last line, Net income). Type the amount only, for example 48210.55. Then ask the Copilot \u201cSummarise Halden's financial situation\u201d, paste its answer, and submit."
         ],
         "checks": [
             "The ledger file is in once, every company and month balanced",
