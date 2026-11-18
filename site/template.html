@@ -388,7 +388,7 @@ function home() {
         return `<ul class="psteps">${pa.courses.map(id => { const c = course(id), lc = lessonCount(c), soon = c.status !== "available";
           return `<li><b>${esc(c.code)} ${esc(c.title)}</b><span class="${!soon && lc.n === lc.of ? "ok" : ""}">${soon ? "lessons soon" : lc.n === lc.of ? "✓ lessons" : lc.n + " of " + lc.of + " lessons"}</span><span class="${examPassed(id) ? "ok" : ""}">${examPassed(id) ? "✓ exam passed" : "exam to pass"}</span></li>`; }).join("")}</ul>
         <div class="mono note">${ps.got} of ${ps.steps.length} steps done</div>`; })()}
-      <div class="cred">AI-ready</div>
+      ${(() => { const pc = CERTS.find(x => x.kind === "path" && x.ref === pa.id); return pc ? `<a class="cred" href="#cert-${esc(pc.id)}">✓ ${esc(pc.title)} · view · share</a>` : `<div class="cred">AI-ready</div>`; })()}
     </article>`).join("");
   const rows = DATA.courses.map(c => `
     <a class="crow" href="#course-${c.id}">
@@ -759,10 +759,11 @@ function certPage(id) {
       <div class="holder">${holder ? esc(holder) : mine ? "Your name here" : "Name not set yet"}</div>
       <span class="valid">${c.valid ? "Valid" : "Revoked"}</span>
       <dl>
-        <div><dt>Certificate</dt><dd>${esc(c.title)}</dd></div>
+        <div><dt>${c.kind === "path" ? "Credential" : "Certificate"}</dt><dd>${esc(c.title)}</dd></div>
         <div><dt>Number</dt><dd class="mono">${esc(c.id)}</dd></div>
         <div><dt>Issued</dt><dd class="mono">${esc(c.issued_at)}</dd></div>
         ${c.of ? `<div><dt>Checks passed</dt><dd class="mono">${esc(String(c.checked))} / ${esc(String(c.of))}</dd></div>` : ""}
+        ${c.courses ? `<div><dt>Covers</dt><dd>${c.courses.map(esc).join(" · ")}</dd></div>` : ""}
       </dl>
       <p class="note" style="margin:0">The exam is a real task on a K-φ company of the candidate's own, graded automatically against an answer key.</p>
       ${mine && !holder ? `<form class="examform" data-certname="${esc(id)}"><label>Your name, as it should read on the certificate<input name="holder" maxlength="80" required autocomplete="name"></label><button class="btn primary" type="submit">Put my name on it</button><p class="flash" hidden data-certnamemsg></p></form>` : ""}
