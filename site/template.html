@@ -723,6 +723,9 @@ document.addEventListener("submit", async e => {
       return;
     }
     { const k = draftKey(id); if (k) { try { localStorage.removeItem(k); } catch (_e) { /* nothing kept */ } } DRAFTS[id] = {}; }
+    /* the catalogue and the paths read EXAMS_DONE: take the result now (owner, 2026-11-18: passed, "where is the status update?") */
+    if (d.result && d.result.passed) EXAMS_DONE[id] = Object.assign({}, EXAMS_DONE[id], { passed: true, passed_at: d.result.submitted_at || new Date().toISOString() });
+    syncProgress();
     await loadExam(id); window.scrollTo(0, 0);
   } catch (err) { out.hidden = false; out.className = "out fail"; out.textContent = "Could not reach K-φ. Try again."; b.disabled = false; b.textContent = "Submit for checking"; }
 });
@@ -785,7 +788,7 @@ function takeProgress(d) {
     if (_cov(d.watch[k]) > _cov(WATCH[k])) { WATCH[k] = d.watch[k]; changed = true; }
   }
   if (d.checks) { for (const k of Object.keys(d.checks)) { if (!PASSED[k]) { PASSED[k] = d.checks[k]; changed = true; } if (lessonByCode(k) && !done.has(k)) { done.add(k); changed = true; } } }
-  if (d.exams) { EXAMS_DONE = d.exams; changed = true; }
+  if (d.exams && JSON.stringify(d.exams) !== JSON.stringify(EXAMS_DONE)) { EXAMS_DONE = d.exams; changed = true; }
   try { localStorage.setItem("kphi-academy-done", JSON.stringify([...done])); localStorage.setItem("kphi-academy-watch", JSON.stringify(WATCH)); } catch (e) {}
   return changed;
 }
@@ -1166,7 +1169,7 @@ document.addEventListener("click", e => {
 themeLabel();
 document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = $("#acct .menu"); if (m) m.hidden = true; } });
 
-window.addEventListener("hashchange", () => { if (!/^#signin-/.test(location.hash)) render(); else boot(); });
+window.addEventListener("hashchange", () => { if (!/^#signin-/.test(location.hash)) { render(); /* an exam passed in another tab, or a minute ago: fetch it, redraw if it changed */ syncProgress().then(ch => { if (ch && !/^#exam-/.test(location.hash)) render(); }); } else boot(); });
 async function boot() {
   if (location.hash === "#practice-expired") {
     FLASH = "That practice link has expired or was already used. Click Open my practice company again.";
