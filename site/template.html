@@ -531,7 +531,7 @@ function examView(id) {
     <div class="chapters">
       <div class="panel"><h3>Your task</h3><ol class="tasks">${e.tasks.map(t => { const m = /^([^:]{2,40}): (.*)$/s.exec(t); return `<li>${m ? `<b>${esc(m[1])}.</b> ${esc(m[2].charAt(0).toUpperCase() + m[2].slice(1))}` : esc(t)}</li>`; }).join("")}</ol></div>
       <div class="panel"><h3>What the checker verifies</h3><ul class="outcomes">${e.checks.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
-        <p>${esc(TRAP[c.id] || "")}</p></div>
+        <p>${esc(TRAP[c.id] || "")} ${c.exam.checks.length > 1 ? esc("You pass with more than 80% of the checks right (" + (Math.floor(c.exam.checks.length * 0.8) + 1) + " of " + c.exam.checks.length + ").") : ""}</p></div>
       <div data-exam-quiz></div>
       <div data-exam-report>${exampleReport(c)}</div>
     </div>
@@ -573,8 +573,10 @@ function reportHtml(rows, head) {
 }
 function exampleReport(c) {
   const e = c.exam, L = { foundation: ["F3.1", "F5.4", "F1.3", "F3.2", "F1.1", "A0.1"] }[c.id] || [], rows = e.report.map(([st, t, d], i) => ({ ok: st === "pass", label: t, detail: d, lesson: L[i] || null }));
-  return `<section class="block" style="margin-top:12px"><header><h2>What your report looks like</h2><span class="sample">Example, failed attempt</span></header>
-    ${reportHtml(rows, `<span>Attempt 1 of 3 · ${esc(c.title)}</span><span>${rows.filter(r => r.ok).length} of ${rows.length} checks passed · next attempt in 24 h</span>`)}</section>`;
+  /* the pass rule, as the checker applies it: more than 80% of the checks (owner, 2026-11-18) */
+  const ok = rows.filter(r => r.ok).length, pass = rows.length > 0 && ok / rows.length > 0.8;
+  return `<section class="block" style="margin-top:12px"><header><h2>What your report looks like</h2><span class="sample">Example, ${pass ? "passed" : "failed"} attempt</span></header>
+    ${reportHtml(rows, `<span>Attempt 1 of 3 · ${esc(c.title)}</span><span>${ok} of ${rows.length} checks passed · ${pass ? "passed (more than 80%)" : "next attempt in 24 h"}</span>`)}</section>`;
 }
 
 /* ── Exams (K-phi-engine, blocks/academy/exams.js) ───────────────────────
