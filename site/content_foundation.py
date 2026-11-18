@@ -693,14 +693,14 @@ Write the client a short note: where each figure comes from, how often it is ref
             "The closing days: Settings, Organization, the holiday calendar of each company. Add the six days of company-calendar.csv, two per company. (F1.3)",
             "The third parties: turn the Copilot on (Admin, AI), open it and choose \u26a1 Consultant at its top. Attach third-parties.csv, send /tp /import and apply. The rules land in Settings, Organization, Third Party Rules. (F3.2)",
             "Check: press Check my exam company. Every step shows PASS, or says what is missing. Submit does not count, and uses no attempt, until steps 2 to 5 all pass.",
-            "Answer and submit: the net result of Halden Trading Ltd for the month of October 2026 alone, in GBP (Statements, P&L: Entities, Halden Trading Ltd only; Company at the top, for GBP rather than the group's USD; Basis: Incremental, since YTD adds every month from January; the 2026-10 column, last line, Net income). Type the amount only, for example 48210.55. Then ask the Copilot \u201cSummarise Halden's financial situation\u201d, paste its answer, and submit."
+            "Answer and submit: Halden Trading Ltd's net income at October 2026, year to date, in GBP (Statements, P&L: Entities, Halden Trading Ltd only; Company at the top, so it stays in GBP; the 2026-10 column, last line, Net income). Type the amount only, for example 312450.80. Then ask the Copilot \u201cSummarise Halden's financial situation\u201d, paste its answer, and submit."
         ],
         "checks": [
             "The ledger file is in once, every company and month balanced",
             "Your saved template is the connector's, and its two test entries came in from Postman, balanced",
             "The six closing days are in the three company calendars",
             "Every customer and supplier is in, with the payment terms of the file",
-            "Halden Trading Ltd's net result for October 2026 is right",
+            "Halden Trading Ltd's net income at October 2026, year to date, is right",
             "The Copilot was asked in the exam company, and its summary quotes your books"
         ],
         "report": [
@@ -708,7 +708,7 @@ Write the client a short note: where each figure comes from, how often it is ref
             ["pass", "Your template, a connector, two test entries", "Template \u201cHalden ledger\u201d, connector \u201cHalden ERP\u201d: the two test entries came in from Postman, balanced, in their own version \u201cAPI_TEST_2026-11\u201d, apart from the books."],
             ["pass", "The calendars", "The 6 closing days are in the three calendars: payments due on those days move to the next working day."],
             ["pass", "The third parties", "22 customers and suppliers, each with its payment terms: the cash forecast now times their payments."],
-            ["fail", "The net result", "Not right: this is Halden Trading Ltd from January to October together: take October 2026 alone. Statements, P&L: company Halden Trading Ltd, the month of October 2026 only, local currency (GBP), the last line, net result after tax."],
+            ["fail", "The net result", "Not right: this is the 2026-09 column: take 2026-10. Statements, P&L: Entities, Halden Trading Ltd only; Company at the top, so the figures stay in GBP; the 2026-10 column, last line, Net income."],
             ["pass", "The Copilot's summary", "The summary comes from your books: its figures match the ledger."]
         ]
     },
