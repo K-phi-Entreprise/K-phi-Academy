@@ -25,10 +25,12 @@ OUTLINES = [
      ]},
 ]
 
+# owner, 2026-11-18: "agentic finance and MCP should be inside AI foundation": every other path starts with the
+# whole K-φ AI Foundation (F, A and M), shown as one block on its card
 PATHS = [
     {"id": "practitioner", "title": "K-φ AI Foundation", "who": "Everyone starting on K-φ", "courses": ["foundation", "ai", "mcp"], "credential": "K-φ AI Foundation", "hours": "5 h"},
-    {"id": "fpa", "title": "K-φ Agentic FP&A", "who": "Controllers and FP&A teams", "courses": ["foundation", "ai", "fpa"], "credential": "K-φ Agentic FP&A", "hours": "8 h"},
-    {"id": "cash", "title": "K-φ Agentic Treasury", "who": "Treasurers and cash managers", "courses": ["foundation", "ai", "cash"], "credential": "K-φ Agentic Treasury", "hours": "8 h"},
-    {"id": "builder", "title": "K-φ Builder", "who": "People who build on K-φ with an LLM", "courses": ["foundation", "ai", "build"], "credential": "K-φ Builder", "hours": "8 h"},
-    {"id": "architect", "title": "K-φ Agentic Architect", "who": "Implementers who design and run K-φ for clients", "courses": ["foundation", "ai", "fpa", "cash", "build", "implementation"], "credential": "K-φ Agentic Architect", "hours": "18 h"},
+    {"id": "fpa", "title": "K-φ Agentic FP&A", "who": "Controllers and FP&A teams", "base": "practitioner", "courses": ["foundation", "ai", "mcp", "fpa"], "credential": "K-φ Agentic FP&A", "hours": "8 h"},
+    {"id": "cash", "title": "K-φ Agentic Treasury", "who": "Treasurers and cash managers", "base": "practitioner", "courses": ["foundation", "ai", "mcp", "cash"], "credential": "K-φ Agentic Treasury", "hours": "8 h"},
+    {"id": "builder", "title": "K-φ Builder", "who": "People who build on K-φ with an LLM", "base": "practitioner", "courses": ["foundation", "ai", "mcp", "build"], "credential": "K-φ Builder", "hours": "8 h"},
+    {"id": "architect", "title": "K-φ Agentic Architect", "who": "Implementers who design and run K-φ for clients", "base": "practitioner", "courses": ["foundation", "ai", "mcp", "fpa", "cash", "build", "implementation"], "credential": "K-φ Agentic Architect", "hours": "18 h"},
 ]
