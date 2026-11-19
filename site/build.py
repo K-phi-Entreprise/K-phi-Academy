@@ -36,7 +36,7 @@ def data():
                     l["video"] = v + ".mp4"
                     if os.path.exists(os.path.join(HERE, "static", v + ".vtt")): l["captions"] = v + ".vtt"
         out.append(f)
-    order = ["foundation", "ai", "mcp", "fpa", "cash", "build", "implementation"]
+    order = ["ai", "mcp", "foundation", "fpa", "cash", "build", "implementation"]  # owner, 2026-11-19: A > M > F
     allc = {c["id"]: c for c in out + OUTLINES}
     return {"courses": [allc[i] for i in order], "paths": PATHS}
 

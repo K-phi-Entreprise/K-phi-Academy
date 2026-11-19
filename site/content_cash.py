@@ -3,7 +3,7 @@ from content_fpa import L, Q
 
 COURSE = {
     "id": "cash", "code": "C", "title": "Cash", "badge": "Cash", "duration": "About 4 hours", "status": "available",
-    "audience": "Treasurers, cash managers, consultants.", "prereq": "Data foundation, Agentic finance",
+    "audience": "Treasurers, cash managers, consultants.", "prereq": "Agentic finance, MCP, Data foundation",
     "summary": "Bank structure, categorisation, the cash position, receivables and payables, the cash forecast and payment controls.",
     "outcomes": [
         "Organise bank accounts by entity and by pool, the way treasury reads them.",
@@ -11,7 +11,7 @@ COURSE = {
         "Manage receivables and payables, including intercompany, and reconcile them.",
         "Build a cash forecast from banks, invoices and the budget, and spot funding needs early.",
     ],
-    "lab": "Practise in your own practice company, a copy of Halden Trading, once you have set it up in Data foundation, chapter S0: six bank accounts with eleven months of statements, open invoices, and the ledger behind them.",
+    "lab": "Practise in your own practice company, a copy of Halden Trading, once you have set it up in Agentic finance, chapter S0: six bank accounts with eleven months of statements, open invoices, and the ledger behind them.",
     "chapters": [
         {"code": "C1", "title": "Bank structure", "lessons": [
             L("C1.1", "Accounts by entity and by pool", 7,

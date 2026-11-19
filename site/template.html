@@ -308,7 +308,7 @@ dialog.help::backdrop { background: rgba(5, 7, 12, .62); }
   <a class="mark" href="#home" aria-label="K-φ Academy, home"><b class="kphi">K-φ</b><span>Academy</span></a>
   <nav aria-label="Main">
     <a href="#home" data-nav="home">Catalogue</a>
-    <a href="#course-foundation" data-nav="learn">My learning</a>
+    <a href="#course-ai" data-nav="learn">My learning</a>
     <a href="#certificate-sample" data-nav="cert">Verify</a>
   </nav>
   <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to light mode" title="Light or dark">
@@ -335,14 +335,14 @@ const course = id => DATA.courses.find(c => c.id === id);
 const OPEN = DATA.courses.filter(c => c.status === "available");
 const lessonsOf = c => c.chapters.flatMap(ch => ch.lessons.map(l => ({ ...l, ch, c })));
 const ALL = OPEN.flatMap(lessonsOf);
-const flat = lessonsOf(course("foundation"));
+const flat = lessonsOf(DATA.courses[0]);   /* the first course (Agentic finance since 2026-11-19) */
 
 /* progress: kept in this browser, and on the learner's account once signed in (syncProgress) */
 let done = new Set();
 try { done = new Set(JSON.parse(localStorage.getItem("kphi-academy-done") || "[]")); } catch (e) {}
 const save = () => { try { localStorage.setItem("kphi-academy-done", JSON.stringify([...done])); } catch (e) {} pushSoon(); };
-const pct = (c = course("foundation")) => { const ls = lessonsOf(c); return Math.round(100 * ls.filter(l => done.has(l.code)).length / ls.length); };
-const nextUp = (c = course("foundation")) => { const ls = lessonsOf(c); return ls.find(l => !done.has(l.code)) || ls[ls.length - 1]; };
+const pct = (c = DATA.courses[0]) => { const ls = lessonsOf(c); return Math.round(100 * ls.filter(l => done.has(l.code)).length / ls.length); };
+const nextUp = (c = DATA.courses[0]) => { const ls = lessonsOf(c); return ls.find(l => !done.has(l.code)) || ls[ls.length - 1]; };
 const current = () => OPEN.find(c => pct(c) > 0 && pct(c) < 100) || OPEN.find(c => pct(c) < 100) || OPEN[0];
 const tick = code => `<span class="tick ${done.has(code) ? "done" : ""}" aria-label="${done.has(code) ? "Completed" : "Not started"}"></span>`;
 
@@ -378,9 +378,9 @@ function home() {
     ? `<div class="resume"><div><div class="eyebrow">Continue</div><b>${esc(n.code)} · ${esc(n.title)}</b></div>
         <div class="bar" aria-label="${esc(cc.title)} progress ${p}%"><i style="width:${p}%"></i></div>
         <span class="mono note">${p}% of ${esc(cc.title)}</span><a class="btn primary" href="#${slug(n.code)}">Resume</a></div>`
-    : `<div class="resume"><div><div class="eyebrow">Start here</div><b>F1.1 · ${esc(flat[0].title)}</b></div>
-        <span class="note">Data foundation takes about two hours and is required for every other course.</span>
-        <a class="btn primary" href="#${slug(flat[0].code)}">Start Data foundation</a></div>`;
+    : `<div class="resume"><div><div class="eyebrow">Start here</div><b>${esc(flat[0].code)} · ${esc(flat[0].title)}</b></div>
+        <span class="note">${esc(DATA.courses[0].title)} opens every path, and sets up your practice company.</span>
+        <a class="btn primary" href="#${slug(flat[0].code)}">Start ${esc(DATA.courses[0].title)}</a></div>`;
   const paths = DATA.paths.map(pa => `
     <article class="path ${pa.id === "architect" ? "star" : ""}">
       <div class="eyebrow">${esc(pa.hours)}</div><h3>${esc(pa.title)}</h3><p>${esc(pa.who)}</p>
@@ -450,7 +450,7 @@ function courseView(id) {
       ${open ? `<div class="panel"><h3>Your progress</h3><div class="bar"><i style="width:${p}%"></i></div><p class="mono">${p}% of lessons · next: ${esc(n.code)}</p><p class="note">${EXAMS_DONE[c.id] && EXAMS_DONE[c.id].passed ? "Exam passed: this course is complete." : "The course is complete once its exam is passed."}${SESSION ? " Saved to your account." : " Sign in to keep your progress on every device."}</p><a class="btn primary" href="#${slug(n.code)}">${p ? "Resume" : "Start course"}</a></div>
       <div class="panel"><h3>Practise</h3><p>${esc(c.lab)}</p>${practiceLink("practice")}</div>
       <div class="panel"><h3>Exam</h3><p>One task on a fresh tenant, graded by the checker. Three attempts, 24 hours apart.</p><a class="btn" href="#exam-${c.id}">See the exam</a></div>`
-      : `<div class="panel"><h3>In preparation</h3><p>The chapters are set; lessons are being written and recorded. Data foundation is open now and is the prerequisite.</p><a class="btn primary" href="#course-foundation">Go to Data foundation</a></div>`}
+      : `<div class="panel"><h3>In preparation</h3><p>The chapters are set; lessons are being written and recorded. The K-φ AI Foundation courses (Agentic finance, MCP, Data foundation) are open now and come first.</p><a class="btn primary" href="#course-foundation">Go to Data foundation</a></div>`}
     </aside>
   </div>`;
 }
@@ -484,7 +484,7 @@ document.addEventListener("click", e => { const b = e.target.closest("[data-prac
 
 function lessonView(code) {
   const hit = ALL.find(l => l.code === code);
-  if (!hit) return courseView("foundation");
+  if (!hit) return courseView(DATA.courses[0].id);
   const c = hit.c, ls = lessonsOf(c), i = ls.findIndex(l => l.code === code);
   const l = ls[i], prev = ls[i - 1], next = ls[i + 1];
   const last = l.ch.lessons[l.ch.lessons.length - 1].code === l.code;
