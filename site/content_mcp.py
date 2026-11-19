@@ -88,7 +88,7 @@ K-φ's **private MCP** is the whole application served to your assistant: **your
             L("M2.1", "Analyse a ledger with the public MCP", 12,
               "Get K-φ's analysis of a ledger from your assistant, and read it critically.",
               """
-**1. Have a ledger.** Any general ledger works: one line per posting with a date, a company, an account, a description, a debit, a credit and a currency. Take the ledger file of your practice company (lesson S0.2), or make one in a spreadsheet: a few dozen lines over two or three months are enough. Make it balance: every month, debits equal credits.
+**1. Have a ledger.** Any general ledger works: one line per posting with a date, a company, an account, a description, a debit, a credit and a currency. Take the ledger file of your practice company (below this lesson: November 2024 to September 2026), or make one in a spreadsheet: a few dozen lines over two or three months are enough. Make it balance: every month, debits equal credits.
 
 **2. Ask your assistant.** With the K-φ connector added (M1.2), attach nothing yet and write: “Analyse my general ledger with K-φ.” The assistant calls the public MCP and gives you an **upload link**.
 

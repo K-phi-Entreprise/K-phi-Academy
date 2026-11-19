@@ -2,8 +2,8 @@
 from content_fpa import L, Q
 
 COURSE = {
-    "id": "ai", "code": "A", "title": "Agentic finance", "badge": "Agentic finance", "duration": "About 2 hours 30 minutes", "status": "available",
-    "audience": "Everyone. The first course: it opens every path, and sets up your practice company.", "prereq": "None",
+    "id": "ai", "code": "A", "title": "Agentic finance", "badge": "Agentic finance", "duration": "About 2 hours", "status": "available",
+    "audience": "Everyone. The first course: it opens every path.", "prereq": "None",
     "summary": "What a model is, what an agent is, how agentic workflows fit in finance, how to keep them safe, and how to prove their output right.",
     "outcomes": [
         "Explain what a language model does well and badly with financial work.",
@@ -11,119 +11,8 @@ COURSE = {
         "Design a finance workflow with an agent, with approvals at the right points.",
         "Keep data and credentials safe, and verify an AI's output before anyone relies on it.",
     ],
-    "lab": "Practise in your own K-φ account (the one you signed in with), connected to your AI assistant, and in your practice company, a copy of Halden Trading.",
+    "lab": "Practise in your own K-φ account (the one you signed in with), connected to your AI assistant, and in your practice company: a copy of Halden Trading that opens set up, with three companies, 23 months of ledger, six banks and the open invoices.",
     "chapters": [
-        {
-            "code": "S0", "title": "Set up your practice company",
-            "lessons": [
-                {
-                    "code": "S0.1", "title": "Your practice company and its three entities", "minutes": 5,
-                    "objective": "Open your own practice company and give it its three entities, each in its own currency.",
-                    "read": """
-Every lesson in this academy happens in **your practice company**: your own copy of Halden Trading, a distribution group that is moving to K-φ. It is a K-φ company of its own, separate from the account you signed in with, so nothing you do here touches real books.
-
-It starts the way a client's company starts on day one: **empty**. Only the six bank accounts are there, because banks are connected, not typed in, and five of them already carry their statements. Everything else you bring in yourself, from the files the academy gives you, in four steps. Files imported by hand are the quick way to start and to learn what each import does; chapter F5 shows how a client runs, with nobody importing anything:
-
-1. **The entities**, in this lesson.
-2. **The ledger**, 23 months of it (S0.2).
-3. **A bank statement**, for the one account still without its history (S0.3).
-4. **The open receivables and payables** (S0.4).
-
-Halden Trading has three legal companies. Each keeps its books in its own currency:
-
-| Code | Company | Currency |
-|---|---|---|
-| HTUS | Halden Trading Inc. | USD |
-| HTUK | Halden Trading Ltd | GBP |
-| HTFR | Halden Négoce SAS | EUR |
-
-The codes matter: the ledger file uses them on every line. An entity created with the wrong currency stays wrong in every report that converts it.
-""",
-                    "try": "In your practice company, open Configuration from the FP&A home and create the three entities with exactly these codes, names and currencies.",
-                    "points": [
-                        "Your practice company is yours alone, separate from your own K-φ account.",
-                        "It starts empty, like a client on day one.",
-                        "Each entity has a code and a currency: the ledger relies on both.",
-                    ],
-                },
-                {
-                    "code": "S0.2", "title": "Import the ledger", "minutes": 8,
-                    "objective": "Bring 23 months of general ledger into K-φ, once, and check that every company-month landed.",
-                    "read": """
-The ledger file holds **November 2024 to September 2026** for the three companies: one balanced journal per company per month, about 3,000 lines, with the entity, business unit, account, debit, credit, currency and third party on each line.
-
-Import it from **File import** on the FP&A home. K-φ reads the columns, shows you a preview with the totals of debits and credits, and saves it as one version.
-
-Two things to watch:
-
-- **Once only.** Importing the same file twice doubles every figure. If it happens, delete the extra version and keep one.
-- **The totals.** Debits equal credits in the preview. If they do not, the file did not land as it should.
-
-October 2026 is not in this file. It arrives later, in lesson F3.1 of Data foundation, the way a new month arrives at a client.
-""",
-                    "try": "In your practice company, download the ledger file below and import it with File import. Then open the P&L and check that the 23 months are there.",
-                    "points": [
-                        "One file, one import, one version.",
-                        "Debits equal credits before you save.",
-                        "Twice is the most common mistake: delete the extra version.",
-                    ],
-                },
-                {
-                    "code": "S0.3", "title": "Import a bank statement", "minutes": 5,
-                    "objective": "Load eleven months of movements into the one account that has none yet: Barclays Operating.",
-                    "read": """
-The six accounts are already there, with their balance on 31 October 2026, the way a bank connection would show them:
-
-| Bank | Account | Company |
-|---|---|---|
-| JPMorgan Chase | Operating, Payroll | Halden Trading Inc. |
-| Barclays | Operating, Reserve | Halden Trading Ltd |
-| BNP Paribas | Operating, Payroll | Halden Négoce SAS |
-
-Five of them already hold their history, from **December 2025 to October 2026**: customer receipts, supplier payments, payroll, tax, the loan, and the transfers between the group's own accounts. **Barclays Operating** has none yet. Its statement is the file below, in the format banks send: **camt.053**, the ISO 20022 end-of-day statement.
-
-A camt.053 carries three things a spreadsheet does not:
-
-| In the file | What K-φ does with it |
-|---|---|
-| The account's **IBAN** | files the statement in its account, without asking |
-| The **opening and closing balances** | checks that opening plus the movements equals closing, and says so |
-| The bank's **reference** for each movement | recognises a movement already imported, so a second import doubles nothing |
-
-1. In Cash, press **Import a statement** and choose the file.
-2. K-φ says how many movements it imported, into which account, and that the balances reconcile.
-3. Press Check below.
-
-A CSV statement works too, but it names no account: K-φ then asks which one it is for, and a statement in the wrong account is the mistake to avoid. The balances would still add up, but each company's cash would be wrong.
-
-Pick the statement, not the ledger: a ledger file in Import a statement is refused, with a message saying it is a ledger.
-""",
-                    "try": "In your practice company, download the Barclays Operating camt.053 below and import it from Import a statement in Cash.",
-                    "points": [
-                        "Accounts come from the bank; history comes from the statements.",
-                        "A camt.053 names its IBAN and its balances: it files and reconciles itself. A CSV does neither.",
-                        "The ledger's cash on each month end equals the bank balance that day.",
-                    ],
-                },
-                {
-                    "code": "S0.4", "title": "Import the open receivables and payables", "minutes": 7,
-                    "objective": "Bring in the invoices still open on 31 October 2026, each in its direction.",
-                    "read": """
-Two files: what customers still owe Halden Trading (**receivables**) and what it still owes its suppliers (**payables**), as at 31 October 2026. Each line has its direction, its company, its customer or supplier, its dates and its open amount.
-
-Import both from the **AR/AP import** in Cash. K-φ maps the columns for you; check the direction before you save.
-
-A few documents are between two group companies: the management fee the subsidiaries owe Halden Trading Inc. They carry the partner company in **Intercompany partner**. K-φ flags them intercompany, so they are left out of the group's cash forecast and matched on both sides.
-""",
-                    "try": "In your practice company, download the two invoice files below and import them with the AR/AP import in Cash, receivables as receivables and payables as payables.",
-                    "points": [
-                        "Receivables and payables are imported in their own direction.",
-                        "Intercompany documents name the partner company.",
-                        "With the ledger, the banks and the invoices in, your company is set up.",
-                    ],
-                },
-            ],
-        },
         {"code": "A0", "title": "The Copilot in K-\u03c6", "lessons": [
             L("A0.1", "Turning it on, and what it sees", 6,
               "Switch the Copilot on for a company and know what it can and cannot reach.",
@@ -150,7 +39,7 @@ Then check the answer the way you check any figure:
 
 The Copilot is a fast way to the right page and a good explainer of what moved. It is not a reason to skip the page.
 """,
-              "Ask the Copilot for Halden Trading Ltd's cash at the banks on 31 October 2026, then read the same figure in Cash.",
+              "In your practice company, ask the Copilot for Halden Trading Ltd's cash at the banks on 31 October 2026, then read the same figure in Cash.",
               ["Company, period, measure, version.", "Check the answer on the page it points to.", "If they differ, the page is right."]),
             L("A0.3", "What it can change, and how", 6,
               "Know which Copilot actions change data, and how each is controlled.",

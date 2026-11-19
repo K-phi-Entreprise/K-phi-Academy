@@ -571,7 +571,7 @@ Write the client a short note: where each figure comes from, how often it is ref
             ],
         },
     ],
-    "lab": "Practise in your own practice company, a copy of Halden Trading. You set it up in Agentic finance, chapter S0, from the academy's files: the entities, the ledger, the bank statements and the invoices. This course brings in October 2026 (F3.1) and connects it for good (F5).",
+    "lab": "Practise in your own practice company, a copy of Halden Trading. It opens set up: the three companies, 23 months of ledger, six banks and the open invoices. This course brings in October 2026 (F3.1) and connects it for good (F5).",
     "exam": {
         "title": "Exam: set Halden up, then answer two questions",
         "situation": "You get an exam company with Halden's three companies and chart of accounts, nothing else. Three set-up steps (2 to 4 below), then two answers. Every step is something you did in a lesson; the lesson is named at the end of the step. Allow about 45 minutes.",
