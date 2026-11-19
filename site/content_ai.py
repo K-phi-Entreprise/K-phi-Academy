@@ -321,35 +321,30 @@ Everything in this course applies: the engine computes, the agent builds, a pers
         ]},
     ],
     "exam": {
-        "title": "Exam: an agentic analysis",
-        "situation": "Your exam company is a fresh copy of Halden Trading with the ledger to October 2026. You connect your own AI assistant to it through K-φ's connector.",
+        "title": "Exam: an assistant on the books, safely",
+        "situation": "Your exam company is a copy of Halden Trading with its ledger to October 2026. You give your own AI assistant a key that only reads, let it work through K-φ, check what an AI wrote, catch an instruction hidden in an email, and check the Copilot. About 45 minutes.",
         "tasks": [
-            "Connect your assistant to the exam company through K-φ's connector, or an API key you create in the company. Never paste a password into the conversation.",
-            "Have the assistant find the three largest changes in Halden Trading Inc.'s operating expenses from September to October 2026, by account, October minus September: a cost increase is positive.",
-            "Have the assistant save a scenario in K-φ named \"Largest customer pays 30 days later\", with its driver set. Check the driver yourself before you let it save.",
-            "Check every figure against K-φ, then submit the three accounts and their changes.",
+            "Start: press Start exam on the right, then Open my exam company. Download the two files: ai-draft-october-note.md and supplier-email.txt.",
+            "A key that only reads: in the exam company, Admin, AI tab, API keys, create a key with mcp:tools only (it reads everything, it writes nothing). (A4.1)",
+            "Your assistant through K-φ: add K-φ to your assistant (Claude, ChatGPT or another that takes connectors) with that key, using the settings K-φ shows next to it. Ask it anything about Halden Trading Inc.'s October 2026. (A6.1)",
+            "The AI note: ai-draft-october-note.md gives five figures for Halden Trading Inc., October 2026, in USD. Two are wrong. Check each one in K-φ (Statements, P&L, Halden Trading Inc., October 2026) and give the numbers of the two wrong ones with their right values. (A5.2)",
+            "The email: supplier-email.txt is a supplier's message. Copy the sentence that is addressed to an AI assistant, and choose what you do with the email. (A4.2)",
+            "The Copilot: turn it on in the exam company (Admin, AI), ask it for Halden Trading Ltd's cash at the banks on 31 October 2026, check the figure in Cash, and type it. (A0.2)",
+            "Check, then submit: Check my exam company shows the two key steps; Submit counts once both pass."
         ],
         "checks": [
-            "An assistant was connected to the exam company",
-            "Accounts, order, amounts and signs match the engine",
-            "The scenario is saved in K-φ with a driver",
+            "A key with read scopes only exists in the exam company",
+            "That key was used by your assistant",
+            "The two wrong figures of the AI note, and their right values",
+            "The sentence addressed to the AI, and the right reaction",
+            "The Copilot was asked in the exam company, and its figure checks out"
         ],
         "report": [
-            [
-                "pass",
-                "Connector used, no password shared",
-                "Assistant connected through K-φ's connector (Claude)",
-            ],
-            [
-                "fail",
-                "The three largest changes",
-                "#1 has the wrong sign",
-            ],
-            [
-                "pass",
-                "Scenario saved in K-φ",
-                "\"Largest customer pays 30 days later\", 1 lever(s)",
-            ],
-        ],
+            ["pass", "A key that only reads", "Key “My assistant”: read scopes only (mcp:tools)."],
+            ["pass", "Your assistant worked through K-φ", "The read-only key “My assistant” was used by your assistant."],
+            ["fail", "The AI note, checked", "Not the two wrong figures. Check each of the five against K-φ: the company, the month, the sign."],
+            ["pass", "The instruction hidden in an email", "You found the instruction to the assistant, and changed nothing."],
+            ["pass", "The Copilot asked, its answer checked", "Asked in the exam company; the figure matches Cash."]
+        ]
     },
 }

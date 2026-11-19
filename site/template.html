@@ -526,7 +526,7 @@ function examView(id) {
   if (!c || !c.exam) return courseView(id);
   const e = c.exam;
   const TRAP = { foundation: "Nothing is hidden: the checker reads what you put in the exam company. Check my exam company tells you what is left before you submit.", fpa: "One problem is planted in the data. Finding it is part of the exam.",
-    cash: "The trap: movements that look like payroll or payments but are transfers between the group's own accounts.", ai: "The trap: an assistant that gets the sign of a change wrong. Check every figure." };
+    cash: "The trap: movements that look like payroll or payments but are transfers between the group's own accounts.", ai: "The traps: an AI note that reads well and holds two wrong figures, and an email that gives orders to whatever AI reads it." };
   return `
   <div class="course-head">
     <div class="crumb note"><a href="#home">Catalogue</a> / <a href="#course-${c.id}">${esc(c.title)}</a> / Exam</div>
@@ -578,7 +578,7 @@ function reportHtml(rows, head) {
   return `<div class="report"><div class="rh">${head}</div>${rows.map(r => `<div class="rline"><span class="st ${r.ok ? "pass" : "fail"}">${r.ok ? "PASS" : "FAIL"}</span><div>${esc(r.label)}${lessonLink(r.lesson)}<small>${esc(r.detail)}</small></div></div>`).join("")}</div>`;
 }
 function exampleReport(c) {
-  const e = c.exam, L = { foundation: ["F3.1", "F5.4", "F3.2", "F1.1", "A0.1"] }[c.id] || [], rows = e.report.map(([st, t, d], i) => ({ ok: st === "pass", label: t, detail: d, lesson: L[i] || null }));
+  const e = c.exam, L = { foundation: ["F3.1", "F5.4", "F3.2", "F1.1", "A0.1"], ai: ["A4.1", "A6.1", "A5.2", "A4.2", "A0.2"] }[c.id] || [], rows = e.report.map(([st, t, d], i) => ({ ok: st === "pass", label: t, detail: d, lesson: L[i] || null }));
   /* the pass rule, as the checker applies it: more than 80% of the checks (owner, 2026-11-18) */
   const ok = rows.filter(r => r.ok).length, pass = rows.length > 0 && ok / rows.length > 0.8;
   return `<section class="block" style="margin-top:12px"><header><h2>What your report looks like</h2><span class="sample">Example, ${pass ? "passed" : "failed"} attempt</span></header>
@@ -626,7 +626,7 @@ function drawExam(id, status) {
       draftRestore(id); return;
     }
     if (qz) qz.innerHTML = "";
-    const fields = d.exam.form.map(f => `<label class="field"><span>${esc(f.label)}</span>${f.type === "text" ? `<textarea name="${esc(f.id)}" rows="5"></textarea>` : `<input type="text" name="${esc(f.id)}" autocomplete="off" inputmode="${f.unit ? "decimal" : "text"}">`}</label>`).join("");
+    const fields = d.exam.form.map(f => f.type === "choice" ? `<fieldset class="field quizq"><legend>${esc(f.label)}</legend>${(f.options || []).map((o, j) => `<label><input type="radio" name="${esc(f.id)}" value="${j}"> <span>${esc(o)}</span></label>`).join("")}</fieldset>` : `<label class="field"><span>${esc(f.label)}</span>${f.type === "text" ? `<textarea name="${esc(f.id)}" rows="5"></textarea>` : `<input type="text" name="${esc(f.id)}" autocomplete="off" inputmode="${f.unit ? "decimal" : "text"}">`}</label>`).join("");
     box.innerHTML = `<h3>Attempt ${st.open.attempt} of ${st.max}</h3><p class="note">Your exam company is open until ${esc(when(st.open.expires_at))}.</p>
       <button class="btn primary" type="button" data-examopen="${esc(id)}">Open my exam company</button>
       ${files ? `<div class="files">${files}</div>` : ""}
