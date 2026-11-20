@@ -742,7 +742,8 @@ const certUrl = id => "https://academy.k-phi.com/#cert-" + id;
 const CERT_SEEN = {};
 function liUrl(c) {
   const d = String(c.issued_at || "").split("-");
-  return "https://www.linkedin.com/profile/add?" + new URLSearchParams({ startTask: "CERTIFICATION_NAME", name: c.title, organizationName: "K-φ", issueYear: d[0] || "", issueMonth: String(+d[1] || ""), certUrl: certUrl(c.id), certId: c.id }).toString();
+  /* organizationId: K-φ's LinkedIn company page (owner, 2026-11-20): links the certificate to the page and shows its logo */
+  return "https://www.linkedin.com/profile/add?" + new URLSearchParams({ startTask: "CERTIFICATION_NAME", name: c.title, organizationId: "115993299", organizationName: "K-φ", issueYear: d[0] || "", issueMonth: String(+d[1] || ""), certUrl: certUrl(c.id), certId: c.id }).toString();
 }
 function certPage(id) {
   const c = CERT_SEEN[id];
