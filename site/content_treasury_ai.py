@@ -16,7 +16,7 @@ COURSE = {
         "Use an assistant on cash forecasting, categorisation, covenants and reporting, and verify every figure it produces.",
     ],
     "lab": "Every exercise works with the assistant you already use (Claude, ChatGPT, Copilot or another) and a spreadsheet, on the files of Norvane Group, a fictional company in three countries: bank lines, a 13-week forecast, a payment run, a facility agreement. No account and no product needed.",
-    "cpe": "Built for continuing education: about 150 minutes of content, a final assessment of 20 questions passed with more than 80% (17 of 20), and a certificate of completion stating the date and the hours. CTP and FPAC holders can submit it for recertification credits under AFP's independent study rules.",
+    "cpe": "3 CTP credits: about 150 minutes of lessons and exercises plus the 20-question assessment, at AFP's 50 minutes per credit. Passed with more than 80% (17 of 20), it gives a certificate of completion stating the date and the hours. CTP and FPAC holders report the credits themselves, under AFP's independent study rules.",
     "chapters": [
         {"code": "T1", "title": 'Models and agents in treasury', "lessons": [
             # from A1.1

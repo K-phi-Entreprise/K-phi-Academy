@@ -157,7 +157,7 @@ def static_pages(d):
              "K-φ Academy (" + SITE + ") is free. Courses are online and self-paced; learners practise in a K-φ company of their own, "
              "and a path is certified by a practical exam graded automatically. Credentials have a public verification page and can be added to LinkedIn.",
              "Agentic AI in Treasury teaches no product: every exercise works with any AI assistant and a spreadsheet, "
-             "and it ends with an assessment passed with more than 80% and a certificate of completion, built for continuing education (CTP and FPAC holders can submit it under AFP's independent study rules).", "",
+             "and it ends with an assessment passed with more than 80% and a certificate of completion, worth 3 CTP credits (CTP and FPAC holders report them under AFP's independent study rules).", "",
              "## Paths and credentials", ""]
     lines += [f'- [{p["credential"]}]({SITE}paths/{p["id"]}.html): {p.get("who", "")}, about {p.get("hours", "")}; courses: ' + ", ".join(cname(courses[x]) for x in p["courses"] if x in courses) for p in paths]
     lines += ["", "## Courses", ""]

@@ -488,7 +488,7 @@ function altTile() {
   const c = course(pa.courses[0]), lc = lessonCount(c), pc = CERTS.find(x => x.kind === "path" && x.ref === pa.id);
   return `<article class="path alt ${pa.id === SEL_PATH ? "sel" : ""}" data-href="#path-${pa.id === SEL_PATH ? "practitioner" : pa.id}" tabindex="0" role="button" aria-pressed="${pa.id === SEL_PATH}" aria-label="${esc(pa.title)}">
       <div class="eyebrow">${esc(pa.hours)}</div><h3>${esc(pa.title)}</h3><p>${esc(pa.who)}</p>
-      <div class="seq"><span class="chip">${esc(c.code)} ${lc.n ? lc.n + " of " + lc.of + " lessons" : lc.of + " lessons"}</span><span class="chip">${esc(String(c.exam ? 20 : 0))} questions</span><span class="chip ctp" title="CTP and FPAC holders can submit it for recertification credits under AFP's independent study rules">CTP recertification</span></div>
+      <div class="seq"><span class="chip">${esc(c.code)} ${lc.n ? lc.n + " of " + lc.of + " lessons" : lc.of + " lessons"}</span><span class="chip">${esc(String(c.exam ? 20 : 0))} questions</span><span class="chip ctp" title="About 170 minutes with the assessment: 3 credits at AFP's 50 minutes per credit. CTP and FPAC holders report them themselves, under AFP's independent study rules.">3 CTP credits</span></div>
       ${pc ? `<a class="cred" href="#cert-${esc(pc.id)}">✓ Certificate · view · share</a>` : `<div class="cred">Certificate of completion</div>`}
     </article>`;
 }
