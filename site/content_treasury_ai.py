@@ -7,8 +7,8 @@ from content_fpa import L, Q
 COURSE = {
     "id": "treasury-ai", "code": "T", "title": "Agentic AI in Treasury", "badge": "Agentic AI in Treasury", "duration": "About 2 hours 30 minutes", "status": "available",
     "neutral": True,
-    "audience": "Treasurers, cash managers, FP&A and finance professionals. Vendor-neutral: no product is taught.", "prereq": "None",
-    "summary": "How AI models and agents work, where they help in treasury, how to keep them under control, and how to check their figures. Vendor-neutral, with a graded assessment and a certificate of completion.",
+    "audience": "Treasurers, cash managers, FP&A and finance professionals. Works with any AI assistant.", "prereq": "None",
+    "summary": "How AI models and agents work, where they help in treasury, how to keep them under control, and how to check their figures. With a graded assessment and a certificate of completion.",
     "outcomes": [
         "Explain what a language model and an agent do, and which treasury tasks to give them.",
         "Design an agentic treasury workflow with approvals at the point of effect and checks written in advance.",

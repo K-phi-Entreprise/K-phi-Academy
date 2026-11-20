@@ -9,7 +9,7 @@
 :root {
   --bg: #0B0F1A; --surface: #121829; --surface-2: #1A2238; --line: #27314B;
   --fg: #EDEFF5; --muted: #98A1B7; --hi: #E6FF00; --accent: #E6FF00; --accent-ink: #0B0F1A;
-  --ok: #46D79A; --bad: #FF7A7A; --ok-bg: rgba(70,215,154,.12); --bad-bg: rgba(255,122,122,.12);
+  --ok: #46D79A; --bad: #FF7A7A; --ok-bg: rgba(70,215,154,.12); --bad-bg: rgba(255,122,122,.12); --alt: #6FD8E8;
   --shadow: 0 1px 0 rgba(255,255,255,.03), 0 12px 32px rgba(0,0,0,.35);
   --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
   --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
@@ -19,7 +19,7 @@
 :root[data-theme="light"] {
   --bg: #F3F5FA; --surface: #FFFFFF; --surface-2: #E9EDF5; --line: #D5DBE7;
   --fg: #121A2E; --muted: #56607A; --hi: #22307A; --accent: #E6FF00; --accent-ink: #121A2E;
-  --ok: #11845A; --bad: #C23A3A; --ok-bg: rgba(17,132,90,.10); --bad-bg: rgba(194,58,58,.10);
+  --ok: #11845A; --bad: #C23A3A; --ok-bg: rgba(17,132,90,.10); --bad-bg: rgba(194,58,58,.10); --alt: #0D6E7C;
   --shadow: 0 1px 2px rgba(18,26,46,.06), 0 8px 24px rgba(18,26,46,.06); color-scheme: light; }
 
 * { box-sizing: border-box; }
@@ -92,6 +92,13 @@ section.block h2 { font-size: 24px; }
 .paths { display: grid; grid-template-columns: repeat(auto-fill, minmax(216px, 1fr)); gap: 14px; align-items: start; }
 .path { display: grid; gap: 10px; align-content: start; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
 [data-cur] { scroll-margin-top: 84px; }
+.path.alt { position: relative; margin-left: 16px; border-color: color-mix(in srgb, var(--alt) 45%, var(--line)); background: color-mix(in srgb, var(--alt) 7%, var(--surface)); }
+.path.alt::before { content: ""; position: absolute; left: -16px; top: 6px; bottom: 6px; border-left: 1px dashed var(--line); }
+.path.alt .eyebrow, .path.alt .cred { color: var(--alt); }
+.path.alt[data-href]:hover, .path.alt[data-href]:focus-visible, .path.alt.sel { border-color: var(--alt); }
+.path.alt.sel { box-shadow: 0 0 0 1px var(--alt) inset; }
+.altsel h2 { color: var(--alt); }
+@media (max-width: 720px) { .path.alt { margin-left: 0; margin-top: 10px; } .path.alt::before { left: 6px; right: 6px; top: -12px; bottom: auto; border-left: 0; border-top: 1px dashed var(--line); } }
 .path.star, .path.sel { border-color: var(--hi); } .path.sel { box-shadow: 0 0 0 1px var(--hi) inset; }
 .path h3 { font-size: 17px; } /* the longest name, K-φ Agentic Architect, stays on one line in the narrowest card */
 .path p { margin: 0; color: var(--muted); font-size: 14px; }
@@ -415,8 +422,7 @@ function home() {
   ${CERTS.length ? `<section class="block"><header><h2>Your credentials</h2><span class="note">One per path completed. Each has a public page to verify it, and goes on LinkedIn in one click.</span></header>
     <div class="certs">${CERTS.map(c => `<a class="crow" href="#cert-${esc(c.id)}"><span class="code">✓</span><div><h3>${esc(c.title)}</h3><p class="mono">${esc(c.id)} · issued ${esc(c.issued_at)}${c.of ? " · " + c.checked + " of " + c.of + " checks" : ""}</p></div><span class="chip live">View · share</span></a>`).join("")}</div></section>` : ""}
   ${foundationBlock()}
-  <section class="block"><header><h2>Then, a specialisation</h2><span class="note">Each starts from the K-φ AI Foundation and ends with its own credential. Click one to see its curriculum above.</span></header><div class="paths">${paths}</div></section>
-  ${neutralBlock()}
+  <section class="block"><header><h2>Then, a specialisation</h2><span class="note">Each starts from the K-φ AI Foundation and ends with its own credential. Click one to see its curriculum above.</span></header><div class="paths">${paths}${altTile()}</div></section>
   <section class="block"><header><h2>Courses</h2><span class="note">Open for the pilot: ${OPEN.map(c => esc(c.title)).join(", ")}. The others follow.</span></header><div class="courses">${rows}</div></section>
   <section class="block"><header><h2>How certification works</h2></header>
     <ol class="steps">
@@ -446,6 +452,11 @@ function pathCred(pa) {
 }
 function foundationBlock() {
   const fp = DATA.paths.find(x => !x.base); if (!fp) return "";
+  const alt = SEL_PATH && DATA.paths.find(x => x.id === SEL_PATH && x.neutral);
+  if (alt) { const ac = course(alt.courses[0]), apc = CERTS.find(x => x.kind === "path" && x.ref === alt.id);
+    return `<section class="block foundation altsel" data-cur><header><h2>${esc(alt.title)}</h2><span class="note">${esc(alt.hours)} · ${esc(alt.who)} · free · its own certificate · <a href="#path-practitioner">back to the ${esc(fp.title)}</a></span></header>
+    <div class="courses">${pathCourseRows(alt)}${pathExam(alt)}</div>
+    <div style="margin-top:12px">${apc ? pathCred(alt) : `<p class="note">${esc(ac.cpe || "")}</p>`}</div></section>`; }
   const pa = SEL_PATH && DATA.paths.find(x => x.id === SEL_PATH && x.base);
   if (!pa) return `<section class="block foundation" data-cur><header><h2>Start here: ${esc(fp.title)}</h2><span class="note">${esc(fp.hours)} · ${esc(fp.who)} · free · its own credential</span></header>
     <div class="courses">${pathCourseRows(fp)}${pathExam(fp)}</div>
@@ -458,14 +469,18 @@ function foundationBlock() {
       ${pathCourseRows(Object.assign({}, pa, { courses: own }))}${pathExam(Object.assign({}, pa, { courses: own }))}</div>
     <div style="margin-top:12px">${pathCred(pa)}</div></section>`;
 }
-/* the vendor-neutral course (owner, 2026-11-20): apart from the K-φ paths, no product taught, its own certificate */
-function neutralBlock() {
+/* Agentic AI in Treasury (owner, 2026-11-20: "add the tile but with a bit of separation and slightly different
+   color"): a tile after the specialisations, its own colour; a click shows its curriculum above, like the others */
+function altTile() {
   const pa = DATA.paths.find(x => x.neutral); if (!pa) return "";
-  return `<section class="block"><header><h2>Vendor-neutral: ${esc(pa.title)}</h2><span class="note">${esc(pa.hours)} · no product taught · any AI assistant and a spreadsheet · its own certificate of completion</span></header>
-    <div class="courses">${pathCourseRows(pa)}${pathExam(pa)}</div>
-    <div style="margin-top:12px">${CERTS.find(x => x.kind === "path" && x.ref === pa.id) ? pathCred(pa) : `<p class="note">${esc(course(pa.courses[0]).cpe || "")}</p>`}</div></section>`;
+  const c = course(pa.courses[0]), lc = lessonCount(c), pc = CERTS.find(x => x.kind === "path" && x.ref === pa.id);
+  return `<article class="path alt ${pa.id === SEL_PATH ? "sel" : ""}" data-href="#path-${pa.id === SEL_PATH ? "practitioner" : pa.id}" tabindex="0" role="button" aria-pressed="${pa.id === SEL_PATH}" aria-label="${esc(pa.title)}">
+      <div class="eyebrow">${esc(pa.hours)}</div><h3>${esc(pa.title)}</h3><p>${esc(pa.who)}</p>
+      <div class="seq"><span class="chip">${esc(c.code)} ${lc.n ? lc.n + " of " + lc.of + " lessons" : lc.of + " lessons"}</span><span class="chip">${esc(String(c.exam ? 20 : 0))} questions</span></div>
+      ${pc ? `<a class="cred" href="#cert-${esc(pc.id)}">✓ Certificate · view · share</a>` : `<div class="cred">Certificate of completion</div>`}
+    </article>`;
 }
-function pathView(id) { SEL_PATH = DATA.paths.some(x => x.id === id && x.base) ? id : null; SCROLL_CUR = true; return home(); }
+function pathView(id) { SEL_PATH = DATA.paths.some(x => x.id === id && (x.base || x.neutral)) ? id : null; SCROLL_CUR = true; return home(); }
 document.addEventListener("click", e => { if (e.target.closest("a, button")) return; const c = e.target.closest("[data-href]"); if (c) location.hash = c.dataset.href; });
 document.addEventListener("keydown", e => { if (e.key !== "Enter") return; const c = e.target.closest && e.target.closest("[data-href]"); if (c) location.hash = c.dataset.href; });
 
@@ -811,10 +826,10 @@ function certPage(id) {
   }
   if (c.missing) return `<div class="course-head"><div class="crumb note"><a href="#home">Catalogue</a> / Certificate</div><h1>Not a valid certificate</h1><p class="lede">${esc(c.error || "No certificate with this number.")} The number is ${esc(id)}.</p></div>`;
   const mine = CERTS.some(x => x.id === id), holder = (CERTS.find(x => x.id === id) || {}).holder || c.holder;
-  const np = DATA.paths.find(x => x.neutral && x.id === c.ref), nc = np && course(np.courses[0]);   /* the vendor-neutral certificate of completion */
+  const np = DATA.paths.find(x => x.neutral && x.id === c.ref), nc = np && course(np.courses[0]);   /* the Agentic AI in Treasury certificate of completion */
   return `
   <div class="course-head"><div class="crumb note"><a href="#home">Catalogue</a> / Certificate</div>
-    <h1>${mine ? "Your certificate" : "Verify a certificate"}</h1><p class="lede">${mine ? "This page is public: anyone with the link sees what you see here." : (np ? "A certificate of completion issued by the K-φ Academy after a vendor-neutral course and its graded assessment." : "Issued by K-φ after an exam graded on a live K-φ company.")}</p></div>
+    <h1>${mine ? "Your certificate" : "Verify a certificate"}</h1><p class="lede">${mine ? "This page is public: anyone with the link sees what you see here." : (np ? "A certificate of completion issued by the K-φ Academy after the course and its graded assessment." : "Issued by K-φ after an exam graded on a live K-φ company.")}</p></div>
   <div style="margin-top:28px; display:grid; gap:14px">
     <article class="cert"><span class="aurora" aria-hidden="true"></span>
       <div class="eyebrow">${np ? "Certificate of completion · K-φ Academy" : "Certified by K-φ"} · ${esc(certUrl(id).replace("https://", ""))}</div>
@@ -828,7 +843,7 @@ function certPage(id) {
         ${c.of ? `<div><dt>${np ? "Assessment" : "Checks passed"}</dt><dd class="mono">${esc(String(c.checked))} / ${esc(String(c.of))}</dd></div>` : ""}
         ${c.courses && !np ? `<div><dt>Covers</dt><dd>${c.courses.map(esc).join(" · ")}</dd></div>` : ""}
       </dl>
-      <p class="note" style="margin:0">${np ? "Vendor-neutral course: " + esc(nc.chapters.map(ch => ch.title).join(", ")) + ". Final assessment of " + esc(String(c.of || 20)) + " questions, graded on the server, passed with more than 80%." : "The exam is a real task on a K-φ company of the candidate's own, graded automatically against an answer key."}</p>
+      <p class="note" style="margin:0">${np ? "Course: " + esc(nc.chapters.map(ch => ch.title).join(", ")) + ". Final assessment of " + esc(String(c.of || 20)) + " questions, graded on the server, passed with more than 80%." : "The exam is a real task on a K-φ company of the candidate's own, graded automatically against an answer key."}</p>
       ${mine && !holder ? `<form class="examform" data-certname="${esc(id)}"><label>Your name, as it should read on the certificate<input name="holder" maxlength="80" required autocomplete="name"></label><button class="btn primary" type="submit">Put my name on it</button><p class="flash" hidden data-certnamemsg></p></form>` : ""}
       ${mine ? `<div style="display:flex; gap:10px; flex-wrap:wrap"><a class="btn primary" href="${esc(liUrl(c))}" target="_blank" rel="noopener">Add to LinkedIn</a><button class="btn" data-copy="${esc(certUrl(id))}">Copy verify link</button></div>` : ""}
     </article>

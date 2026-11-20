@@ -142,12 +142,12 @@ def static_pages(d):
               "credentialCategory": "certificate", "recognizedBy": ORG, "url": url, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
               "competencyRequired": [cname(c) for c in cs]}
         body = (f'<h1>{esc(p["credential"])}</h1>\n<p><span class="free">Free credential</span> <span class="muted">{esc(p.get("hours", ""))} · {esc(p.get("who", ""))}</span></p>\n'
-                + ('<p>Vendor-neutral. Finish every lesson and pass the final assessment at 80%: the certificate of completion is issued at once, with a public page to verify it and a button to add it to LinkedIn.</p>\n' if p.get("neutral") else
+                + ('<p>Works with any AI assistant. Finish every lesson and pass the final assessment with more than 80%: the certificate of completion is issued at once, with a public page to verify it and a button to add it to LinkedIn.</p>\n' if p.get("neutral") else
                 '<p>Finish every lesson of the path and pass its practical exam on a live K-φ company: the credential is issued at once, with a public page to verify it and a button to add it to LinkedIn.</p>\n')
                 + '<h2>Courses</h2><ol>' + "".join(f'<li><a href="../courses/{c["id"]}.html">{esc(cname(c))}</a>: {esc(c.get("summary", ""))}</li>' for c in cs) + '</ol>\n'
                 + f'<p><a href="{SITE}">Start, free</a></p>')
         with open(os.path.join(DIST, "paths", p["id"] + ".html"), "w", encoding="utf-8") as fh:
-            fh.write(page(p["credential"] + ": free AI certification for " + p.get("who", "finance").lower(), "Free credential: " + ", ".join(cname(c) for c in cs) + (". Vendor-neutral, final assessment at 80%, verifiable certificate of completion." if p.get("neutral") else ". Practical exam on a live company, verifiable certificate for LinkedIn."), url, ld, body))
+            fh.write(page(p["credential"] + ": free AI certification for " + p.get("who", "finance").lower(), "Free credential: " + ", ".join(cname(c) for c in cs) + (". Any AI assistant, final assessment above 80%, verifiable certificate of completion." if p.get("neutral") else ". Practical exam on a live company, verifiable certificate for LinkedIn."), url, ld, body))
         urls.append(url)
     with open(os.path.join(DIST, "sitemap.xml"), "w", encoding="utf-8") as fh:
         fh.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{u}</loc></url>\n" for u in urls) + "</urlset>\n")
@@ -156,8 +156,8 @@ def static_pages(d):
     lines = ["# K-φ Academy", "", "> " + DESC, "",
              "K-φ Academy (" + SITE + ") is free. Courses are online and self-paced; learners practise in a K-φ company of their own, "
              "and a path is certified by a practical exam graded automatically. Credentials have a public verification page and can be added to LinkedIn.",
-             "Agentic AI in Treasury is the academy's vendor-neutral course: no product is taught, every exercise works with any AI assistant and a spreadsheet, "
-             "and it ends with an assessment passed at 80% and a certificate of completion, built for continuing education (CTP and FPAC holders can submit it under AFP's independent study rules).", "",
+             "Agentic AI in Treasury teaches no product: every exercise works with any AI assistant and a spreadsheet, "
+             "and it ends with an assessment passed with more than 80% and a certificate of completion, built for continuing education (CTP and FPAC holders can submit it under AFP's independent study rules).", "",
              "## Paths and credentials", ""]
     lines += [f'- [{p["credential"]}]({SITE}paths/{p["id"]}.html): {p.get("who", "")}, about {p.get("hours", "")}; courses: ' + ", ".join(cname(courses[x]) for x in p["courses"] if x in courses) for p in paths]
     lines += ["", "## Courses", ""]

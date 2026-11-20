@@ -34,5 +34,5 @@ PATHS = [
     {"id": "builder", "title": "K-φ Builder", "who": "People who build on K-φ with an LLM", "base": "practitioner", "courses": ["ai", "mcp", "foundation", "build"], "credential": "K-φ Builder", "hours": "8 h"},
     {"id": "architect", "title": "K-φ Agentic Architect", "who": "Implementers who design and run K-φ for clients", "base": "practitioner", "courses": ["ai", "mcp", "foundation", "fpa", "cash", "build", "implementation"], "credential": "K-φ Agentic Architect", "hours": "18 h"},
     # owner, 2026-11-20: a vendor-neutral course, built from sessions that use no K-φ material, for continuing education
-    {"id": "treasury-ai", "title": "Agentic AI in Treasury", "who": "Treasury and finance professionals, vendor-neutral", "neutral": True, "courses": ["treasury-ai"], "credential": "Agentic AI in Treasury, certificate of completion", "hours": "2.5 h"},
+    {"id": "treasury-ai", "title": "Agentic AI in Treasury", "who": "Treasurers, cash managers and finance teams", "neutral": True, "courses": ["treasury-ai"], "credential": "Agentic AI in Treasury, certificate of completion", "hours": "2.5 h"},
 ]
