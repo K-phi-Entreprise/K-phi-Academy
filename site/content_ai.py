@@ -320,31 +320,4 @@ Everything in this course applies: the engine computes, the agent builds, a pers
             Q("Through the private MCP, what can an assistant change?", ["Anything", "What the connected account may change, where write-back is allowed", "Nothing"], 1, "It acts with the connected account's rights."),
         ]},
     ],
-    "exam": {
-        "title": "Exam: an assistant on the books, safely",
-        "situation": "Your exam company is a copy of Halden Trading with its ledger to October 2026. You give your own AI assistant a key that only reads, let it work through K-φ, check what an AI wrote, catch an instruction hidden in an email, and check the Copilot. About 45 minutes.",
-        "tasks": [
-            "Start: press Start exam on the right, then Open my exam company. Download the two files: ai-draft-october-note.md and supplier-email.txt.",
-            "A key that only reads: in the exam company, Admin, AI tab, API keys, create a key with mcp:tools only (it reads everything, it writes nothing). (A4.1)",
-            "Your assistant through K-φ: add K-φ to your assistant (Claude, ChatGPT or another that takes connectors) with that key, using the settings K-φ shows next to it. Ask it anything about Halden Trading Inc.'s October 2026. (A6.1)",
-            "The AI note: ai-draft-october-note.md gives five figures for Halden Trading Inc., October 2026, in USD. Two are wrong. Check each one in K-φ (Statements, P&L, Halden Trading Inc., October 2026) and give the numbers of the two wrong ones with their right values. (A5.2)",
-            "The email: supplier-email.txt is a supplier's message. Copy the sentence that is addressed to an AI assistant, and choose what you do with the email. (A4.2)",
-            "The Copilot: turn it on in the exam company (Admin, AI), ask it for Halden Trading Ltd's cash at the banks on 31 October 2026, check the figure in Cash, and type it. (A0.2)",
-            "Check, then submit: Check my exam company shows the two key steps; Submit counts once both pass."
-        ],
-        "checks": [
-            "A key with read scopes only exists in the exam company",
-            "That key was used by your assistant",
-            "The two wrong figures of the AI note, and their right values",
-            "The sentence addressed to the AI, and the right reaction",
-            "The Copilot was asked in the exam company, and its figure checks out"
-        ],
-        "report": [
-            ["pass", "A key that only reads", "Key “My assistant”: read scopes only (mcp:tools)."],
-            ["pass", "Your assistant worked through K-φ", "The read-only key “My assistant” was used by your assistant."],
-            ["fail", "The AI note, checked", "Not the two wrong figures. Check each of the five against K-φ: the company, the month, the sign."],
-            ["pass", "The instruction hidden in an email", "You found the instruction to the assistant, and changed nothing."],
-            ["pass", "The Copilot asked, its answer checked", "Asked in the exam company; the figure matches Cash."]
-        ]
-    },
 }

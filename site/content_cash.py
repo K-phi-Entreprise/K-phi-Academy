@@ -312,49 +312,4 @@ Review who can sign, and their limits, each quarter, along with the roles review
             Q("Maya prepared a payment run. What can she do with it?", ["Approve it", "Sign it", "Neither; others approve and sign"], 2, "The preparer can neither approve nor sign; the run needs an approver and two other signers."),
         ]},
     ],
-    "exam": {
-        "title": "Exam: pool, categories and position",
-        "situation": "Your exam company is a fresh copy of Halden Trading: three companies, six bank accounts with statements from December 2025 to October 2026, and the open receivables and payables.",
-        "tasks": [
-            "Create one pool for Halden Trading Ltd's two GBP accounts, with the Operating account as header.",
-            "Write forecast category rules so every receipt, supplier and rent payment, payroll, tax and loan movement lands in its category. Transfers between the group's own accounts, and the intercompany fee, stay out.",
-            "Submit each company's cash at the banks on 31 October 2026, in its own currency.",
-            "Submit the lowest end-of-day balance of Halden Négoce SAS's Operating account since 1 December 2025, and its date.",
-            "Submit Halden Trading Inc.'s open receivables on 31 October 2026, without intercompany.",
-        ],
-        "checks": [
-            "A pool of exactly the two GBP accounts, Operating as header",
-            "Every movement in its category, internal transfers left out",
-            "Position per company within 0.2%",
-            "Lowest balance within 0.2%, on the right day",
-            "Open receivables within 0.2%, intercompany left out",
-        ],
-        "report": [
-            [
-                "pass",
-                "Pool structure",
-                "GBP pool, Operating as header",
-            ],
-            [
-                "fail",
-                "Categories",
-                "22 internal transfers categorised (for example \"Transfer to payroll account\")",
-            ],
-            [
-                "pass",
-                "Position on 31 October 2026",
-                "3 of 3 companies match",
-            ],
-            [
-                "fail",
-                "Lowest balance and its date",
-                "Date does not match.",
-            ],
-            [
-                "pass",
-                "Open receivables",
-                "Matches, intercompany left out",
-            ],
-        ],
-    },
 }

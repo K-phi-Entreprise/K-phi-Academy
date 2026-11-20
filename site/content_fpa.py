@@ -374,48 +374,4 @@ If a difference stays unexplained, say so in the pack. An unexplained difference
             Q("You cannot explain a small difference in cash before a board meeting. What do you do?", ["Adjust it", "Disclose it in the pack", "Leave it out"], 1, "Disclosed, it is a question; found later, it is a credibility problem."),
         ]},
     ],
-    "exam": {
-        "title": "Exam: statements, a gap in the books, a forecast version",
-        "situation": "Your exam company is a fresh copy of Halden Trading: three companies, the ledger to September 2026, banks and invoices. One company's month never reached K-φ.",
-        "tasks": [
-            "Find the month of one company that is missing from the books. Download that company's full ledger file and import that month only: nothing may land twice.",
-            "Produce the P&L for January to September 2026 for each company, and the balance sheet of Halden Trading Inc. on 30 September 2026.",
-            "Create a budget named \"Forecast Q4\" from actuals.",
-            "Submit net income for January to September 2026 for each company in its own currency, EBITDA for Halden Trading Inc., and its total assets on 30 September 2026.",
-        ],
-        "checks": [
-            "Every company-month of the ledger matches the answer key, nothing twice",
-            "Net income per company within half a percent",
-            "EBITDA within 1%",
-            "Total assets within half a percent",
-            "A budget named Forecast Q4 exists",
-        ],
-        "report": [
-            [
-                "fail",
-                "Ledger complete, nothing twice",
-                "Halden Trading Ltd, 2024-11: too much (2,411,602.10 debits for 1,205,801.05); 21 more",
-            ],
-            [
-                "fail",
-                "Net income by company",
-                "Not matching the answer key: Halden Trading Ltd",
-            ],
-            [
-                "pass",
-                "EBITDA",
-                "Within 1% of the answer key",
-            ],
-            [
-                "pass",
-                "Balance sheet",
-                "Total assets match",
-            ],
-            [
-                "pass",
-                "Forecast version",
-                "Found \"Forecast Q4\"",
-            ],
-        ],
-    },
 }

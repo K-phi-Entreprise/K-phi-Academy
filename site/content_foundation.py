@@ -573,8 +573,8 @@ Write the client a short note: where each figure comes from, how often it is ref
     ],
     "lab": "Practise in your own practice company, a copy of Halden Trading. It opens set up: the three companies, 23 months of ledger, six banks and the open invoices. This course brings in October 2026 (F3.1) and connects it for good (F5).",
     "exam": {
-        "title": "Exam: set Halden up, then answer two questions",
-        "situation": "You get an exam company with Halden's three companies and chart of accounts, nothing else. Three set-up steps (2 to 4 below), then two answers. Every step is something you did in a lesson; the lesson is named at the end of the step. Allow about 45 minutes.",
+        "title": "Exam: the K-φ AI Foundation",
+        "situation": "The one exam of the K-φ AI Foundation path: it covers Agentic finance, MCP and Data foundation, and passing it gives the K-φ AI Foundation credential. You get an exam company with Halden's three companies and chart of accounts, nothing else. Three set-up steps (2 to 4 below), then two answers. Every step is something you did in a lesson; the lesson is named at the end of the step. Allow about 45 minutes.",
         "tasks": [
             "Start: press Start exam on the right, then Open my exam company. The two files appear on this page.",
             "The ledger, and your template: in the exam company, import halden-ledger-2026.csv. At the column step, press Save Template and name it (for example Halden ledger): that template is your ERP's layout, reused in the next step. Then finish the import as it proposes (one version per month). (F3.1)",

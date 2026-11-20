@@ -132,19 +132,4 @@ Two habits whichever the door:
             Q("A request to consolidate three companies in USD. Which door?", ["Public", "Private", "Either"], 1, "The public MCP sums as it is; consolidation is K-φ's, in your company."),
         ]},
     ],
-    "exam": {
-        "title": "Exam: ten questions on K-φ's two MCP doors",
-        "situation": "No company to set up: ten multiple-choice questions on what the public and the private MCP offer, how they are reached, and which fits which need. Eight right answers pass.",
-        "tasks": [
-            "Start: press Start exam on the right. The questions appear once the exam has started.",
-            "Answer the ten questions: one choice each. Chapter M1 has every answer; M2.1 shows them at work.",
-            "Submit: the result comes at once, with the numbers of any question not right."
-        ],
-        "checks": [
-            "Eight of the ten answers are right"
-        ],
-        "report": [
-            ["pass", "Your answers", "9 of 10 right (not right: question 5)."]
-        ]
-    },
 }

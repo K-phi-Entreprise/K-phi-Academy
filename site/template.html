@@ -354,7 +354,7 @@ const courseState = c => {
   if (c.status !== "available") return null;
   const p = pct(c);
   if (examPassed(c.id)) return { p, label: "Passed", cls: "ok" };
-  if (p === 100) return { p, label: "Lessons done · exam to pass", cls: "todo" };
+  if (p === 100) return c.exam ? { p, label: "Lessons done · exam to pass", cls: "todo" } : { p, label: "Lessons done", cls: "ok" };
   if (p > 0) { const lc = lessonCount(c); return { p, label: lc.n + " of " + lc.of + " lessons", cls: "todo" }; }
   return { p, label: "", cls: "" };
 };
@@ -362,11 +362,11 @@ const courseState = c => {
 const lessonCount = c => { const ls = lessonsOf(c); return { n: ls.filter(l => done.has(l.code)).length, of: ls.length }; };
 const pathSteps = pa => {
   const cs = pa.courses.map(course).filter(Boolean);
-  const steps = cs.flatMap(c => [{ c, kind: "lessons", ok: c.status === "available" && pct(c) === 100 }, { c, kind: "exam", ok: examPassed(c.id) }]);
+  const steps = cs.flatMap(c => [{ c, kind: "lessons", ok: c.status === "available" && pct(c) === 100 }].concat(c.exam ? [{ c, kind: "exam", ok: examPassed(c.id) }] : []));   /* one exam only since 2026-11-20 */
   return { steps, got: steps.filter(x => x.ok).length };
 };
 /* the exam still owed: lessons of a course all done, its exam not passed */
-const examOwed = () => OPEN.find(c => pct(c) === 100 && !examPassed(c.id)) || null;
+const examOwed = () => OPEN.find(c => c.exam && pct(c) === 100 && !examPassed(c.id)) || null;
 
 function home() {
   const cc = current(), p = pct(cc), n = nextUp(cc), owed = examOwed();
@@ -390,7 +390,7 @@ function home() {
         const bcert = bp && CERTS.find(x => x.kind === "path" && x.ref === bp.id), bps = bp && pathSteps(bp);
         if (!ps.got && !pa.courses.some(id => pct(course(id)) > 0)) return `<div class="seq">${bp ? `<span class="chip">${esc(bp.title)}</span>` : ""}${own.map(c => `<span class="chip">${esc(course(c).code)} ${esc(course(c).title)}</span>`).join("")}</div>`;
         return `<ul class="psteps">${bp ? `<li><b>${esc(bp.title)}</b><span class="${bcert ? "ok" : ""}">${bcert ? "✓ credential" : bps.got + " of " + bps.steps.length + " steps"}</span><span>${bp.courses.map(id => esc(course(id).code)).join(" · ")}</span></li>` : ""}${own.map(id => { const c = course(id), lc = lessonCount(c), soon = c.status !== "available";
-          return `<li><b>${esc(c.code)} ${esc(c.title)}</b><span class="${!soon && lc.n === lc.of ? "ok" : ""}">${soon ? "lessons soon" : lc.n === lc.of ? "✓ lessons" : lc.n + " of " + lc.of + " lessons"}</span><span class="${examPassed(id) ? "ok" : ""}">${examPassed(id) ? "✓ exam passed" : "exam to pass"}</span></li>`; }).join("")}</ul>
+          return `<li><b>${esc(c.code)} ${esc(c.title)}</b><span class="${!soon && lc.n === lc.of ? "ok" : ""}">${soon ? "lessons soon" : lc.n === lc.of ? "✓ lessons" : lc.n + " of " + lc.of + " lessons"}</span>${c.exam ? `<span class="${examPassed(id) ? "ok" : ""}">${examPassed(id) ? "✓ exam passed" : "exam to pass"}</span>` : ""}</li>`; }).join("")}</ul>
         <div class="mono note">${ps.got} of ${ps.steps.length} steps done</div>`; })()}
       ${(() => { const pc = CERTS.find(x => x.kind === "path" && x.ref === pa.id); return pc ? `<a class="cred" href="#cert-${esc(pc.id)}">✓ ${esc(pc.title)} · view · share</a>` : `<div class="cred">AI-ready</div>`; })()}
     </article>`).join("");
