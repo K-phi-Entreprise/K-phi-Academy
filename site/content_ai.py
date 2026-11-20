@@ -196,7 +196,7 @@ In K-φ, the controls that govern people apply to agents too (Data foundation, c
 - Payments need two signers. An agent can prepare a run; it cannot be one of the signers.
 - Every change is in the audit trail, including those made through a connector.
 """,
-              "For the task you picked in A3.1, mark the single point where a person must approve.",
+              "In your practice company, Settings, Governance: turn on dual approval for sensitive changes. Then, for the task you picked in A3.1, mark the single point where a person must approve.",
               ["Approve at the point of effect, not every step.", "Agents act with the connected account's rights.", "Agents can prepare payments, never sign them."]),
             L("A3.3", "Designing an agentic workflow", 8,
               "Write down a workflow so it can be run, checked and improved.",
@@ -235,7 +235,7 @@ Before giving data to an assistant, check three things:
 
 **Never paste credentials** into a chat: passwords, API keys, tokens, bank logins. Anything in a conversation can end up in logs or history. Connect systems through their proper connectors, which handle sign-in without exposing secrets. In K-φ, the builder pass works this way: the assistant never sees a GitHub token or a password.
 """,
-              "Check your company's assistant plan: does it allow training on your data, and how long are conversations kept?",
+              "In your practice company, Admin, AI tab, API keys: create a key that only reads (mcp:tools), the one you would give an assistant that analyses. Then check your company's assistant plan: does it allow training on your data, and how long are conversations kept?",
               ["Know your product, your plan and its data terms.", "Share only what the task needs.", "Never paste credentials; use connectors."]),
             L("A4.2", "Prompt injection and untrusted content", 7,
               "Recognise instructions hidden in data.",
