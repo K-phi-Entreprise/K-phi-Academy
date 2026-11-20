@@ -51,6 +51,17 @@ h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.1
 .theme-toggle .sun { display: none; }
 :root[data-theme="light"] .theme-toggle .sun { display: block; }
 :root[data-theme="light"] .theme-toggle .moon { display: none; }
+/* switching dark and light (owner, 2026-11-20: "a very subtle animation"): a short cross-fade where the browser has
+   view transitions, a colour fade elsewhere, the icon turning in; nothing for people who asked for less motion */
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .32s; animation-timing-function: ease-out; }
+html.theme-fading, html.theme-fading * { transition: background-color .32s ease-out, color .32s ease-out, border-color .32s ease-out, fill .32s ease-out, stroke .32s ease-out !important; }
+.theme-toggle.turn svg { animation: theme-turn .32s ease-out; }
+@keyframes theme-turn { from { transform: rotate(-60deg) scale(.7); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  html.theme-fading, html.theme-fading * { transition: none !important; }
+  .theme-toggle.turn svg { animation: none; }
+}
 .mark span { font: 600 13px/1 var(--f-display); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .top nav { display: flex; gap: 18px; margin-left: auto; font-size: 14px; }
 .top nav a { color: var(--muted); text-decoration: none; }
@@ -1296,8 +1307,14 @@ document.addEventListener("click", e => {
 function themeLabel() { const b = $("[data-theme-toggle]"); if (!b) return; const light = document.documentElement.getAttribute("data-theme") === "light"; b.setAttribute("aria-label", light ? "Switch to dark mode" : "Switch to light mode"); }
 document.addEventListener("click", e => {
   if (!e.target.closest("[data-theme-toggle]")) return;
-  const light = document.documentElement.getAttribute("data-theme") !== "light";
-  if (light) document.documentElement.setAttribute("data-theme", "light"); else document.documentElement.removeAttribute("data-theme");
+  const root = document.documentElement, light = root.getAttribute("data-theme") !== "light";
+  const apply = () => { if (light) root.setAttribute("data-theme", "light"); else root.removeAttribute("data-theme"); };
+  const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (calm) apply();
+  else if (document.startViewTransition) document.startViewTransition(apply);
+  else { root.classList.add("theme-fading"); apply(); setTimeout(() => root.classList.remove("theme-fading"), 360); }
+  const btn = e.target.closest("[data-theme-toggle]");
+  btn.classList.remove("turn"); void btn.offsetWidth; btn.classList.add("turn");
   store.set("kphi-academy-theme", light ? "light" : null);
   themeLabel();
 });
