@@ -91,7 +91,8 @@ section.block h2 { font-size: 24px; }
 .path[data-href] { cursor: pointer; transition: border-color .15s; } .path[data-href]:hover, .path[data-href]:focus-visible { border-color: var(--hi); outline: none; }
 .paths { display: grid; grid-template-columns: repeat(auto-fill, minmax(216px, 1fr)); gap: 14px; align-items: start; }
 .path { display: grid; gap: 10px; align-content: start; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
-.path.star { border-color: var(--hi); }
+[data-cur] { scroll-margin-top: 84px; }
+.path.star, .path.sel { border-color: var(--hi); } .path.sel { box-shadow: 0 0 0 1px var(--hi) inset; }
 .path h3 { font-size: 17px; } /* the longest name, K-φ Agentic Architect, stays on one line in the narrowest card */
 .path p { margin: 0; color: var(--muted); font-size: 14px; }
 .path .seq { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -385,7 +386,7 @@ function home() {
   /* owner, 2026-11-20: "why can't i click curriculums? also we should not have AI foundation the same than other
      courses as it is a curriculum of its own": every card opens its path; the AI Foundation stands apart, first */
   const paths = DATA.paths.filter(pa => pa.base).map(pa => `
-    <article class="path ${pa.id === "architect" ? "star" : ""}" data-href="#path-${pa.id}" tabindex="0" role="link" aria-label="${esc(pa.title)}">
+    <article class="path ${pa.id === SEL_PATH ? "sel" : ""}" data-href="#path-${pa.id === SEL_PATH ? "practitioner" : pa.id}" tabindex="0" role="button" aria-pressed="${pa.id === SEL_PATH}" aria-label="${esc(pa.title)}">
       <div class="eyebrow">${esc(pa.hours)}</div><h3>${esc(pa.title)}</h3><p>${esc(pa.who)}</p>
       ${(() => { const ps = pathSteps(pa);
         /* a path built on the AI Foundation shows it as one block, then its own courses */
@@ -413,7 +414,7 @@ function home() {
   ${CERTS.length ? `<section class="block"><header><h2>Your credentials</h2><span class="note">One per path completed. Each has a public page to verify it, and goes on LinkedIn in one click.</span></header>
     <div class="certs">${CERTS.map(c => `<a class="crow" href="#cert-${esc(c.id)}"><span class="code">✓</span><div><h3>${esc(c.title)}</h3><p class="mono">${esc(c.id)} · issued ${esc(c.issued_at)}${c.of ? " · " + c.checked + " of " + c.of + " checks" : ""}</p></div><span class="chip live">View · share</span></a>`).join("")}</div></section>` : ""}
   ${foundationBlock()}
-  <section class="block"><header><h2>Then, a specialisation</h2><span class="note">Each starts from the K-φ AI Foundation and ends with its own credential.</span></header><div class="paths">${paths}</div></section>
+  <section class="block"><header><h2>Then, a specialisation</h2><span class="note">Each starts from the K-φ AI Foundation and ends with its own credential. Click one to see its curriculum above.</span></header><div class="paths">${paths}</div></section>
   <section class="block"><header><h2>Courses</h2><span class="note">Open for the pilot: ${OPEN.map(c => esc(c.title)).join(", ")}. The others follow.</span></header><div class="courses">${rows}</div></section>
   <section class="block"><header><h2>How certification works</h2></header>
     <ol class="steps">
@@ -442,23 +443,20 @@ function pathCred(pa) {
     : `<p class="note">${ps.got} of ${ps.steps.length} steps done. The ${esc(pa.credential)} credential comes when every lesson is done and the exam passed: a public page to verify it, and one click to add it to LinkedIn.</p>`;
 }
 function foundationBlock() {
-  const pa = DATA.paths.find(x => !x.base); if (!pa) return "";
-  return `<section class="block foundation"><header><h2>Start here: ${esc(pa.title)}</h2><span class="note">${esc(pa.hours)} · ${esc(pa.who)} · free · its own credential</span></header>
-    <div class="courses">${pathCourseRows(pa)}${pathExam(pa)}</div>
+  const fp = DATA.paths.find(x => !x.base); if (!fp) return "";
+  const pa = SEL_PATH && DATA.paths.find(x => x.id === SEL_PATH && x.base);
+  if (!pa) return `<section class="block foundation" data-cur><header><h2>Start here: ${esc(fp.title)}</h2><span class="note">${esc(fp.hours)} · ${esc(fp.who)} · free · its own credential</span></header>
+    <div class="courses">${pathCourseRows(fp)}${pathExam(fp)}</div>
+    <div style="margin-top:12px">${pathCred(fp)}</div></section>`;
+  /* owner, 2026-11-20: "clickable yes but it should update the curriculum upper" */
+  const own = pa.courses.filter(x => !fp.courses.includes(x)), fcert = CERTS.find(x => x.kind === "path" && x.ref === fp.id), fps = pathSteps(fp);
+  return `<section class="block foundation" data-cur><header><h2>${esc(pa.title)}</h2><span class="note">${esc(pa.hours)} · ${esc(pa.who)} · free · its own credential · <a href="#path-practitioner">back to the ${esc(fp.title)}</a></span></header>
+    <div class="courses">
+      <a class="crow" href="#path-practitioner"><span class="code">${fcert ? "✓" : "1"}</span><div><h3>${esc(fp.title)}</h3><p>${fp.courses.map(x => esc(course(x).title)).join(" · ")} · exam</p></div><span class="chip ${fcert ? "live" : ""}">${fcert ? "✓ Credential" : fps.got + " of " + fps.steps.length + " steps"}</span></a>
+      ${pathCourseRows(Object.assign({}, pa, { courses: own }))}${pathExam(Object.assign({}, pa, { courses: own }))}</div>
     <div style="margin-top:12px">${pathCred(pa)}</div></section>`;
 }
-function pathView(id) {
-  const pa = DATA.paths.find(x => x.id === id); if (!pa) return home();
-  const bp = pa.base && DATA.paths.find(x => x.id === pa.base), own = bp ? pa.courses.filter(x => !bp.courses.includes(x)) : pa.courses;
-  const bcert = bp && CERTS.find(x => x.kind === "path" && x.ref === bp.id), bps = bp && pathSteps(bp);
-  return `
-  <div class="course-head"><div class="crumb note"><a href="#home">Catalogue</a> / Paths</div>
-    <h1>${esc(pa.title)}</h1><p class="lede">${esc(pa.who)} · ${esc(pa.hours)} · free</p></div>
-  ${bp ? `<section class="block"><header><h2>1. ${esc(bp.title)}</h2><span class="note">The curriculum every path starts from</span></header>
-    <a class="crow" href="#path-${bp.id}"><span class="code">${bcert ? "✓" : "1"}</span><div><h3>${esc(bp.title)}</h3><p>${bp.courses.map(x => esc(course(x).title)).join(" · ")}</p></div><span class="chip ${bcert ? "live" : ""}">${bcert ? "✓ Credential" : bps.got + " of " + bps.steps.length + " steps"}</span></a></section>` : ""}
-  <section class="block"><header><h2>${bp ? "2. " : ""}Courses</h2></header><div class="courses">${pathCourseRows(Object.assign({}, pa, { courses: own }))}${bp ? pathExam(Object.assign({}, pa, { courses: own })) : pathExam(pa)}</div></section>
-  <section class="block"><header><h2>Credential</h2></header>${pathCred(pa)}</section>`;
-}
+function pathView(id) { SEL_PATH = DATA.paths.some(x => x.id === id && x.base) ? id : null; SCROLL_CUR = true; return home(); }
 document.addEventListener("click", e => { if (e.target.closest("a, button")) return; const c = e.target.closest("[data-href]"); if (c) location.hash = c.dataset.href; });
 document.addEventListener("keydown", e => { if (e.key !== "Enter") return; const c = e.target.closest && e.target.closest("[data-href]"); if (c) location.hash = c.dataset.href; });
 
@@ -871,7 +869,7 @@ const saveWatch = () => { try { localStorage.setItem("kphi-academy-watch", JSON.
 /* ── Progress on the account (K-phi-engine, blocks/academy/practice.js) ──
    Completed lessons and watched parts of videos follow the learner from one
    device to another; the server merges, so nothing completed is ever lost. */
-let EXAMS_DONE = {}, CERTS = [], _pushT = null;
+let EXAMS_DONE = {}, CERTS = [], _pushT = null, SEL_PATH = null, SCROLL_CUR = false;
 const _cov = w => (w && w.ranges ? w.ranges.reduce((a, r) => a + Math.max(0, r[1] - r[0]), 0) : 0);
 function pushSoon() { if (!SESSION) return; clearTimeout(_pushT); _pushT = setTimeout(pushProgress, 1500); }
 async function pushProgress() {
@@ -891,7 +889,7 @@ function takeProgress(d) {
   }
   if (d.checks) { for (const k of Object.keys(d.checks)) { if (!PASSED[k]) { PASSED[k] = d.checks[k]; changed = true; } if (lessonByCode(k) && !done.has(k)) { done.add(k); changed = true; } } }
   if (d.exams && JSON.stringify(d.exams) !== JSON.stringify(EXAMS_DONE)) { EXAMS_DONE = d.exams; changed = true; }
-  if (d.certs && JSON.stringify(d.certs) !== JSON.stringify(CERTS)) { CERTS = d.certs; changed = true; }
+  const pc = (d.certs || []).filter(x => x.kind === "path"); if (d.certs && JSON.stringify(pc) !== JSON.stringify(CERTS)) { CERTS = pc; changed = true; }
   try { localStorage.setItem("kphi-academy-done", JSON.stringify([...done])); localStorage.setItem("kphi-academy-watch", JSON.stringify(WATCH)); } catch (e) {}
   return changed;
 }
@@ -1060,7 +1058,7 @@ function render() {
   const h = (location.hash || "#home").slice(1);
   let html, nav = "home";
   if (h.startsWith("course-")) { html = courseView(h.slice(7)); nav = "learn"; }
-  else if (h.startsWith("path-")) { html = pathView(h.slice(5)); nav = "learn"; }
+  else if (h.startsWith("path-")) { html = pathView(h.slice(5)); }
   else if (h.startsWith("lesson-")) { const code = h.slice(7).toUpperCase().replace(/-/, "."); html = lessonView(code); nav = "learn"; }
   else if (h.startsWith("exam-")) { html = examView(h.slice(5)); nav = "learn"; }
   else if (h === "certificate-sample") { html = certView(); nav = "cert"; }
@@ -1078,7 +1076,8 @@ function render() {
   setupWatch();
   if (h.startsWith("exam-")) loadExam(h.slice(5));
   if (h === "prepare-practice") runPrepare("practice"); else if (h.startsWith("prepare-exam-")) runPrepare("exam", h.slice(13)); else PREP = null;
-  window.scrollTo(0, 0);
+  const curBlock = SCROLL_CUR && document.querySelector("[data-cur]"); SCROLL_CUR = false;
+  if (curBlock) curBlock.scrollIntoView({ block: "start", behavior: "smooth" }); else window.scrollTo(0, 0);
 }
 
 document.addEventListener("click", e => {
