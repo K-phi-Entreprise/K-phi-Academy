@@ -94,7 +94,7 @@ section.block h2 { font-size: 24px; }
 [data-cur] { scroll-margin-top: 84px; }
 .path.alt { position: relative; margin-left: 16px; border-color: color-mix(in srgb, var(--alt) 45%, var(--line)); background: color-mix(in srgb, var(--alt) 7%, var(--surface)); }
 .path.alt::before { content: ""; position: absolute; left: -16px; top: 6px; bottom: 6px; border-left: 1px dashed var(--line); }
-.path.alt .eyebrow, .path.alt .cred { color: var(--alt); }
+.path.alt .eyebrow, .path.alt .cred { color: var(--alt); } .path.alt .chip.ctp { color: var(--alt); border-color: color-mix(in srgb, var(--alt) 55%, var(--line)); }
 .path.alt[data-href]:hover, .path.alt[data-href]:focus-visible, .path.alt.sel { border-color: var(--alt); }
 .path.alt.sel { box-shadow: 0 0 0 1px var(--alt) inset; }
 .altsel h2 { color: var(--alt); }
@@ -476,7 +476,7 @@ function altTile() {
   const c = course(pa.courses[0]), lc = lessonCount(c), pc = CERTS.find(x => x.kind === "path" && x.ref === pa.id);
   return `<article class="path alt ${pa.id === SEL_PATH ? "sel" : ""}" data-href="#path-${pa.id === SEL_PATH ? "practitioner" : pa.id}" tabindex="0" role="button" aria-pressed="${pa.id === SEL_PATH}" aria-label="${esc(pa.title)}">
       <div class="eyebrow">${esc(pa.hours)}</div><h3>${esc(pa.title)}</h3><p>${esc(pa.who)}</p>
-      <div class="seq"><span class="chip">${esc(c.code)} ${lc.n ? lc.n + " of " + lc.of + " lessons" : lc.of + " lessons"}</span><span class="chip">${esc(String(c.exam ? 20 : 0))} questions</span></div>
+      <div class="seq"><span class="chip">${esc(c.code)} ${lc.n ? lc.n + " of " + lc.of + " lessons" : lc.of + " lessons"}</span><span class="chip">${esc(String(c.exam ? 20 : 0))} questions</span><span class="chip ctp" title="CTP and FPAC holders can submit it for recertification credits under AFP's independent study rules">CTP recertification</span></div>
       ${pc ? `<a class="cred" href="#cert-${esc(pc.id)}">✓ Certificate · view · share</a>` : `<div class="cred">Certificate of completion</div>`}
     </article>`;
 }
