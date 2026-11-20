@@ -9,7 +9,7 @@
 :root {
   --bg: #0B0F1A; --surface: #121829; --surface-2: #1A2238; --line: #27314B;
   --fg: #EDEFF5; --muted: #98A1B7; --hi: #E6FF00; --accent: #E6FF00; --accent-ink: #0B0F1A;
-  --ok: #46D79A; --bad: #FF7A7A; --ok-bg: rgba(70,215,154,.12); --bad-bg: rgba(255,122,122,.12); --alt: #6FD8E8;
+  --ok: #46D79A; --bad: #FF7A7A; --ok-bg: rgba(70,215,154,.12); --bad-bg: rgba(255,122,122,.12); --alt: #C4B5FD;
   --shadow: 0 1px 0 rgba(255,255,255,.03), 0 12px 32px rgba(0,0,0,.35);
   --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
   --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
@@ -19,7 +19,7 @@
 :root[data-theme="light"] {
   --bg: #F3F5FA; --surface: #FFFFFF; --surface-2: #E9EDF5; --line: #D5DBE7;
   --fg: #121A2E; --muted: #56607A; --hi: #22307A; --accent: #E6FF00; --accent-ink: #121A2E;
-  --ok: #11845A; --bad: #C23A3A; --ok-bg: rgba(17,132,90,.10); --bad-bg: rgba(194,58,58,.10); --alt: #0D6E7C;
+  --ok: #11845A; --bad: #C23A3A; --ok-bg: rgba(17,132,90,.10); --bad-bg: rgba(194,58,58,.10); --alt: #6D4FD8;
   --shadow: 0 1px 2px rgba(18,26,46,.06), 0 8px 24px rgba(18,26,46,.06); color-scheme: light; }
 
 * { box-sizing: border-box; }
@@ -314,13 +314,13 @@ dialog.help::backdrop { background: rgba(5, 7, 12, .62); }
 }
 .psteps{list-style:none;margin:10px 0 6px;padding:0;display:grid;gap:6px}
 .psteps li{display:grid;grid-template-columns:auto auto 1fr;column-gap:10px;row-gap:1px;align-items:baseline;font-size:12px}
-.psteps li b{grid-column:1/-1;font-weight:600;color:var(--text,#e8e8f0)}
-.psteps li span{font-family:var(--mono,monospace);font-size:11px;color:var(--muted,#8a8aa8);white-space:nowrap}
-.psteps li span.ok{color:var(--accent,#e6ff00)}
+.psteps li b{grid-column:1/-1;font-weight:600;color:var(--fg)}
+.psteps li span{font-family:var(--f-mono);font-size:11px;color:var(--muted,#8a8aa8);white-space:nowrap} .psteps li{grid-template-columns:auto 1fr} .psteps li span:nth-of-type(n+2){grid-column:1/-1}
+.psteps li span.ok{color:var(--hi)}
 .answer{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:8px 12px}.answer summary{cursor:pointer;font-weight:600}.answer p{margin:8px 0 0}
 .quizq{border:0;margin:0 0 16px;padding:0}
 .quizq legend{font-weight:600;margin-bottom:8px;line-height:1.4}
-.quizq legend .mono{color:var(--accent,#e6ff00);margin-right:6px}
+.quizq legend .mono{color:var(--hi);margin-right:6px}
 .quizq label{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin:6px 0;cursor:pointer}
 .quizq label:hover{border-color:var(--muted,#8a8aa8)}
 .quizq input{margin-top:3px;width:auto}
@@ -414,7 +414,7 @@ function home() {
         const bcert = bp && CERTS.find(x => x.kind === "path" && x.ref === bp.id), bps = bp && pathSteps(bp);
         if (!ps.got && !pa.courses.some(id => pct(course(id)) > 0)) return `<div class="seq">${bp ? `<span class="chip">${esc(bp.title)}</span>` : ""}${own.map(c => `<span class="chip">${esc(course(c).code)} ${esc(course(c).title.length > 24 && course(c).badge ? course(c).badge : course(c).title)}</span>`).join("")}</div>`;
         return `<ul class="psteps">${bp ? `<li><b>${esc(bp.title)}</b><span class="${bcert ? "ok" : ""}">${bcert ? "✓ credential" : bps.got + " of " + bps.steps.length + " steps"}</span><span>${bp.courses.map(id => esc(course(id).code)).join(" · ")}</span></li>` : ""}${own.map(id => { const c = course(id), lc = lessonCount(c), soon = c.status !== "available";
-          return `<li><b>${esc(c.code)} ${esc(c.title)}</b><span class="${!soon && lc.n === lc.of ? "ok" : ""}">${soon ? "lessons soon" : lc.n === lc.of ? "✓ lessons" : lc.n + " of " + lc.of + " lessons"}</span>${c.exam ? `<span class="${examPassed(id) ? "ok" : ""}">${examPassed(id) ? "✓ exam passed" : "exam to pass"}</span>` : ""}</li>`; }).join("")}</ul>
+          return `<li><b>${esc(c.code)} ${esc(c.title.length > 24 && c.badge ? c.badge : c.title)}</b><span class="${!soon && lc.n === lc.of ? "ok" : ""}">${soon ? "lessons soon" : lc.n === lc.of ? "✓ lessons" : lc.n + " of " + lc.of + " lessons"}</span>${c.exam ? `<span class="${examPassed(id) ? "ok" : ""}">${examPassed(id) ? "✓ exam passed" : "exam to pass"}</span>` : ""}</li>`; }).join("")}</ul>
         <div class="mono note">${ps.got} of ${ps.steps.length} steps done</div>`; })()}
       ${(() => { const pc = CERTS.find(x => x.kind === "path" && x.ref === pa.id); return pc ? `<a class="cred" href="#cert-${esc(pc.id)}">✓ ${esc(pc.title)} · view · share</a>` : `<div class="cred">AI-ready</div>`; })()}
     </article>`).join("");
