@@ -176,7 +176,7 @@ a.lrow:hover { background: var(--surface-2); }
 .try .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
 .verify { display: grid; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
 .verify .ask { font-weight: 600; }
-.verify .files { display: flex; flex-wrap: wrap; gap: 8px; }
+.verify .files, .try .files { display: flex; flex-wrap: wrap; gap: 8px; } .try .files { margin-top: 12px; }
 .verify .files .btn { font-size: 13px; }
 .verify form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .verify input[type=text] { flex: 1 1 220px; min-width: 0; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
@@ -298,6 +298,7 @@ dialog.help::backdrop { background: rgba(5, 7, 12, .62); }
 .psteps li b{grid-column:1/-1;font-weight:600;color:var(--text,#e8e8f0)}
 .psteps li span{font-family:var(--mono,monospace);font-size:11px;color:var(--muted,#8a8aa8);white-space:nowrap}
 .psteps li span.ok{color:var(--accent,#e6ff00)}
+.answer{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:8px 12px}.answer summary{cursor:pointer;font-weight:600}.answer p{margin:8px 0 0}
 .quizq{border:0;margin:0 0 16px;padding:0}
 .quizq legend{font-weight:600;margin-bottom:8px;line-height:1.4}
 .quizq legend .mono{color:var(--accent,#e6ff00);margin-right:6px}
@@ -495,7 +496,7 @@ function courseView(id) {
     </div>
     <aside class="side">
       ${open ? `<div class="panel"><h3>Your progress</h3><div class="bar"><i style="width:${p}%"></i></div><p class="mono">${p}% of lessons · next: ${esc(n.code)}</p><p class="note">${EXAMS_DONE[c.id] && EXAMS_DONE[c.id].passed ? "Exam passed: this course is complete." : "The course is complete once its exam is passed."}${SESSION ? " Saved to your account." : " Sign in to keep your progress on every device."}</p><a class="btn primary" href="#${slug(n.code)}">${p ? "Resume" : "Start course"}</a></div>
-      <div class="panel"><h3>Practise</h3><p>${esc(c.lab)}</p>${c.neutral ? "" : practiceLink("practice")}</div>
+      <div class="panel"><h3>Practise</h3><p>${esc(c.lab)}</p>${c.files_all ? `<a class="btn" href="${esc(c.files_all)}" download>Download all Norvane files</a>` : c.neutral ? "" : practiceLink("practice")}</div>
       ${c.cpe ? `<div class="panel"><h3>Continuing education</h3><p>${esc(c.cpe)}</p></div>` : ""}
       ${c.exam ? `<div class="panel"><h3>${c.neutral ? "Assessment" : "Exam"}</h3><p>${c.neutral ? "Twenty questions, more than 80% to pass. Three attempts, 24 hours apart." : "One task on a fresh tenant, graded by the checker. Three attempts, 24 hours apart."}</p><a class="btn" href="#exam-${c.id}">See the ${c.neutral ? "assessment" : "exam"}</a></div>` : ""}`
       : `<div class="panel"><h3>In preparation</h3><p>The chapters are set; lessons are being written and recorded. The K-φ AI Foundation courses (Agentic finance, MCP, Data foundation) are open now and come first.</p><a class="btn primary" href="#course-foundation">Go to Data foundation</a></div>`}
@@ -556,7 +557,7 @@ function lessonView(code) {
         <div class="watch" data-watch="${esc(l.code)}"><div class="wbar"><canvas width="760" height="8" aria-hidden="true"></canvas></div><span class="wtxt mono">Watched 0%</span></div>` : ""}
       <div class="prose">${l.read.replace(/<table>/g, '<div class="tablewrap"><table>').replace(/<\/table>/g, "</table></div>")}</div>
       <section class="try"><div class="eyebrow">Try it</div><div>${esc(l.try)}</div>
-        ${/\bIn your practice company\b/.test(l.try) ? practiceLink("practice") : /K-φ account/.test(l.try) ? practiceLink("account") : ""}${verifyBox(l)}</section>
+        ${/\bIn your practice company\b/.test(l.try) ? practiceLink("practice") : /K-φ account/.test(l.try) ? practiceLink("account") : ""}${verifyBox(l)}${l.files ? `<div class="files">${l.files.map(f => `<a class="btn" href="${esc(f)}" download>Download ${esc(f.split("/").pop())}</a>`).join("")}</div>` : ""}${l.answer ? `<details class="answer"><summary>Check your answer</summary><p>${esc(l.answer)}</p></details>` : ""}</section>
       <section><div class="eyebrow" style="margin-bottom:10px">Key points</div><ul class="keys">${l.points.map(k => `<li>${esc(k)}</li>`).join("")}</ul></section>
       ${l.resources ? `<section><div class="eyebrow" style="margin-bottom:10px">Resources</div><div class="res">${l.resources.map(r => `<span class="chip">${esc(r)} · pilot</span>`).join("")}</div></section>` : ""}
       ${check}

@@ -1,0 +1,11 @@
+FACILITY AGREEMENT between Norvane Group Ltd and Harbour Bank plc (extract)
+
+21.1 Leverage. The Borrower shall ensure that Leverage in respect of each Relevant Period does not exceed 3.00:1.
+     Leverage means the ratio of Total Net Debt on the last day of a Relevant Period to Covenant EBITDA for that
+     Relevant Period. Tested quarterly on the last 12 months.
+
+1.1  Covenant EBITDA means consolidated operating profit before interest, tax, depreciation and amortisation
+     (Accounting EBITDA), adjusted by adding back, without double counting:
+     (a) exceptional restructuring costs, capped at 10% of Accounting EBITDA;
+     (b) non-cash share-based payment charges.
+     Total Net Debt means borrowings, including drawn revolving credit, less cash and cash equivalents.

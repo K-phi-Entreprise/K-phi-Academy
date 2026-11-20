@@ -15,7 +15,7 @@ COURSE = {
         "Apply data, credential, payment and segregation controls to agents, and recognise prompt injection and beneficiary fraud.",
         "Use an assistant on cash forecasting, categorisation, covenants and reporting, and verify every figure it produces.",
     ],
-    "lab": "Every exercise works with the assistant you already use (Claude, ChatGPT, Copilot or another) and a spreadsheet. No account and no product needed.",
+    "lab": "Every exercise works with the assistant you already use (Claude, ChatGPT, Copilot or another) and a spreadsheet, on the files of Norvane Group, a fictional company in three countries: bank lines, a 13-week forecast, a payment run, a facility agreement. No account and no product needed.",
     "cpe": "Built for continuing education: about 150 minutes of content, a final assessment of 20 questions passed with more than 80% (17 of 20), and a certificate of completion stating the date and the hours. CTP and FPAC holders can submit it for recertification credits under AFP's independent study rules.",
     "chapters": [
         {"code": "T1", "title": 'Models and agents in treasury', "lessons": [
@@ -438,3 +438,40 @@ If a difference stays unexplained, say so in the pack. An unexplained difference
         "checks": ["Each question: right or not, with the lesson that has the answer", "Pass: more than 80% right, 17 of 20 or more"],
     },
 }
+
+# Norvane Group, the course's fictional company (owner, 2026-11-20: "Can we make a neutral db so that they can work
+# with it? Unbranded?" ... "Yes"): plain files from tools/norvane_data.py, used with any assistant and a spreadsheet.
+# The answers below are the ones that script prints; run it again after any change to the data.
+D = "data/norvane/"
+NORVANE = {
+    "T1.2": ("Open norvane-open-invoices.csv, paste its ten lines into your assistant and ask for the total. Then add them up in a spreadsheet.",
+             ["norvane-open-invoices.csv"], "The ten invoices total 155,073.95 GBP. If your assistant gave anything else, that is the lesson: the arithmetic belongs in a tool."),
+    "T1.3": ("Ask your assistant which costs went wrong in October, first with no context, then with norvane-budget-vs-actuals-2026-10.csv, your role (group treasurer), and the rule that actual minus budget above zero is unfavourable for a cost. Compare the two answers.",
+             ["norvane-budget-vs-actuals-2026-10.csv"], "With the file and the rule: Payroll (+19,600), Freight (+23,700) and Professional fees (+8,900) are over budget, so unfavourable. EBITDA is 74,200 below budget."),
+    "T2.4": ("Give your assistant norvane-daily-balances-2026-10.csv and ask, in two separate conversations, for the average balance of October. Then ask it for a spreadsheet formula instead, and compare the three results.",
+             ["norvane-daily-balances-2026-10.csv"], "The average closing balance over the 31 days is 318,610.73 GBP: =AVERAGE(B2:B32). The formula gives it every time; the two conversations may not."),
+    "T2.5": ("Give your assistant norvane-budget-vs-actuals-2026-10.csv, ask for a three-line variance commentary for the CFO, then run the five checks on it.",
+             ["norvane-budget-vs-actuals-2026-10.csv"], "Revenue 88,800 below budget, cost of sales 56,100 under budget (favourable), Freight 23,700 and Payroll 19,600 over (unfavourable), EBITDA 309,300 against 383,500. Watch the signs: a commentary calling Freight favourable has read the column the wrong way."),
+    "T3.2": ("Give norvane-supplier-invoice-ST-4471.txt to your assistant and ask it to summarise the invoice for payment. Read what it does with the notes, then write what your workflow would do.",
+             ["norvane-supplier-invoice-ST-4471.txt"], "The notes hold prompt injection: an order to change the beneficiary and hide it. A sound summary reports the instruction as suspicious and changes nothing. Your workflow: no change of bank details from a document; confirm with Saltmarsh Transport on a number you already hold."),
+    "T3.3": ("Review norvane-payment-run-2026-11-07.csv before approval. Mark each line pay or hold, and say why.",
+             ["norvane-payment-run-2026-11-07.csv"], "Hold PR-1107-01: Saltmarsh Transport's details changed two days before the run, on an email request. Call them on a known number first. The intercompany line to Norvane GmbH goes through the same controls as the others."),
+    "T3.4": ("Read norvane-payment-rights.csv and list every problem.",
+             ["norvane-payment-rights.csv"], "Three problems. D. Okafor can prepare and sign. R. Castellan left in August and can still sign. J. Holm can sign with no limit set, which a sound system treats as cannot sign: set a limit."),
+    "T4.1": ("Give norvane-bank-lines-uncategorised-2026-11.csv to your assistant with the prompt above. Reject at least one rule that is too broad.",
+             ["norvane-bank-lines-uncategorised-2026-11.csv"], "Traps: a rule on PAYROLL catches the transfer to the payroll account as well as the salaries (count payroll once, on SALARIES); a rule on PAYMENT catches customer receipts, supplier payments and a card reversal at once; NORVANE INC and NORVANE GMBH are intercompany, not customers or suppliers."),
+    "T4.2": ("Open norvane-cash-forecast-13-weeks.csv. For each company, say which weeks you would trust most and why, and what you would ask for to trust weeks 5 to 13.",
+             ["norvane-cash-forecast-13-weeks.csv"], "Weeks 1 to 4 rest on bank balances and open invoices; further out, ask which budget and which payment delays the forecast assumes."),
+    "T4.4": ("In norvane-cash-forecast-13-weeks.csv, find every company and week below zero, and answer the three questions for each window.",
+             ["norvane-cash-forecast-13-weeks.csv"], "The group never goes below 1,510,000 GBP, yet Norvane Inc is below zero from W06 to W08, lowest in W07 at minus 105,000 GBP. Fund it before W06: a transfer from Norvane Ltd or Norvane GmbH, or a facility drawing."),
+    "T4.5": ("Read norvane-facility-agreement-extract.txt and norvane-covenant-figures-2026-09-30.csv. Ask your assistant for leverage, then rebuild it in a spreadsheet, with the agreement's definition.",
+             ["norvane-facility-agreement-extract.txt", "norvane-covenant-figures-2026-09-30.csv"], "Net debt 22,430,000. On Accounting EBITDA leverage is 3.02: a breach, if you used the wrong definition. Covenant EBITDA adds back restructuring capped at 742,000 (10%) and the 310,000 share-based charge: 8,472,000, leverage 2.65. Headroom 0.35 turns, about 2,986,000 of extra debt."),
+    "T4.8": ("Tie norvane-cash-reconciliation-2026-10-31.csv company by company and write the one-page note.",
+             ["norvane-cash-reconciliation-2026-10-31.csv"], "Norvane Ltd ties. Norvane Inc: the bank shows 1,240.00 USD more than the ledger, to explain. Norvane GmbH: the ledger shows 37.12 EUR more than the bank. If it stays unexplained, the note says so."),
+}
+for _ch in COURSE["chapters"]:
+    for _l in _ch["lessons"]:
+        if _l["code"] in NORVANE:
+            _t, _f, _a = NORVANE[_l["code"]]
+            _l["try"], _l["files"], _l["answer"] = _t, [D + x for x in _f], _a
+COURSE["files_all"] = D + "norvane-group-files.zip"

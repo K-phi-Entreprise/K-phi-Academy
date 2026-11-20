@@ -1,0 +1,9 @@
+line,beneficiary,invoice,amount,currency,beneficiary_details_changed_on,change_requested_by
+PR-1107-01,Saltmarsh Transport Ltd,ST-4466,21450.00,GBP,2026-11-05,email from accounts@saltmarsh-transport.example
+PR-1107-02,Corvid Steel Ltd,CS-90112,88310.40,GBP,,
+PR-1107-03,Wexford Packaging Ltd,WP-2231,6204.00,GBP,,
+PR-1107-04,Ellery Electrical Ltd,EE-7710,12980.55,GBP,,
+PR-1107-05,Brindle Logistics BV,BL-55102,9340.00,EUR,,
+PR-1107-06,Norvane GmbH,IC-2026-11,150000.00,EUR,,
+PR-1107-07,Thornbury Facilities Ltd,TF-1189,4810.00,GBP,,
+PR-1107-08,Quill & Ledger LLP,QL-3301,26900.00,GBP,,

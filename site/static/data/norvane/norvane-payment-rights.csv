@@ -1,0 +1,7 @@
+user,role,can_prepare,can_approve,can_sign,signing_limit_gbp,status
+A. Mercer,Treasury analyst,yes,no,no,,active
+D. Okafor,Treasury manager,yes,yes,yes,250000,active
+L. Varga,Group treasurer,no,yes,yes,1000000,active
+S. Patel,Financial controller,no,no,yes,500000,active
+J. Holm,CFO,no,yes,yes,,active
+R. Castellan,Former AP lead,yes,no,yes,100000,left 2026-08-31

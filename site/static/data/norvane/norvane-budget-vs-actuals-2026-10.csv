@@ -1,0 +1,11 @@
+line,type,budget_gbp,actual_gbp,actual_minus_budget_gbp
+Revenue,income,2480000,2391200,-88800
+Cost of sales,cost,1488000,1431900,-56100
+Gross margin,income,992000,959300,-32700
+Payroll,cost,412000,431600,19600
+Rent and facilities,cost,58000,57400,-600
+Freight,cost,61000,84700,23700
+IT and software,cost,37500,35100,-2400
+Marketing,cost,22000,14300,-7700
+Professional fees,cost,18000,26900,8900
+EBITDA,income,383500,309300,-74200
