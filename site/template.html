@@ -415,6 +415,7 @@ function home() {
     <div class="certs">${CERTS.map(c => `<a class="crow" href="#cert-${esc(c.id)}"><span class="code">✓</span><div><h3>${esc(c.title)}</h3><p class="mono">${esc(c.id)} · issued ${esc(c.issued_at)}${c.of ? " · " + c.checked + " of " + c.of + " checks" : ""}</p></div><span class="chip live">View · share</span></a>`).join("")}</div></section>` : ""}
   ${foundationBlock()}
   <section class="block"><header><h2>Then, a specialisation</h2><span class="note">Each starts from the K-φ AI Foundation and ends with its own credential. Click one to see its curriculum above.</span></header><div class="paths">${paths}</div></section>
+  ${neutralBlock()}
   <section class="block"><header><h2>Courses</h2><span class="note">Open for the pilot: ${OPEN.map(c => esc(c.title)).join(", ")}. The others follow.</span></header><div class="courses">${rows}</div></section>
   <section class="block"><header><h2>How certification works</h2></header>
     <ol class="steps">
@@ -434,7 +435,7 @@ function pathCourseRows(pa) {
 }
 function pathExam(pa) {
   const ex = pa.courses.map(course).filter(c => c && c.exam);
-  return ex.map(c => `<a class="crow" href="#exam-${c.id}"><span class="code">✎</span><div><h3>${esc(c.exam.title)}</h3><p>A practical task on a K-φ company of your own, graded automatically.</p></div>
+  return ex.map(c => `<a class="crow" href="#exam-${c.id}"><span class="code">✎</span><div><h3>${esc(c.exam.title)}</h3><p>${c.neutral ? "Twenty questions, graded on the server: more than 80% to pass." : "A practical task on a K-φ company of your own, graded automatically."}</p></div>
     <span class="chip ${examPassed(c.id) ? "live" : ""}">${examPassed(c.id) ? "✓ Passed" : "To pass"}</span></a>`).join("");
 }
 function pathCred(pa) {
@@ -455,6 +456,13 @@ function foundationBlock() {
       <a class="crow" href="#path-practitioner"><span class="code">${fcert ? "✓" : "1"}</span><div><h3>${esc(fp.title)}</h3><p>${fp.courses.map(x => esc(course(x).title)).join(" · ")} · exam</p></div><span class="chip ${fcert ? "live" : ""}">${fcert ? "✓ Credential" : fps.got + " of " + fps.steps.length + " steps"}</span></a>
       ${pathCourseRows(Object.assign({}, pa, { courses: own }))}${pathExam(Object.assign({}, pa, { courses: own }))}</div>
     <div style="margin-top:12px">${pathCred(pa)}</div></section>`;
+}
+/* the vendor-neutral course (owner, 2026-11-20): apart from the K-φ paths, no product taught, its own certificate */
+function neutralBlock() {
+  const pa = DATA.paths.find(x => x.neutral); if (!pa) return "";
+  return `<section class="block"><header><h2>Vendor-neutral: ${esc(pa.title)}</h2><span class="note">${esc(pa.hours)} · no product taught · any AI assistant and a spreadsheet · its own certificate of completion</span></header>
+    <div class="courses">${pathCourseRows(pa)}${pathExam(pa)}</div>
+    <div style="margin-top:12px">${CERTS.find(x => x.kind === "path" && x.ref === pa.id) ? pathCred(pa) : `<p class="note">${esc(course(pa.courses[0]).cpe || "")}</p>`}</div></section>`;
 }
 function pathView(id) { SEL_PATH = DATA.paths.some(x => x.id === id && x.base) ? id : null; SCROLL_CUR = true; return home(); }
 document.addEventListener("click", e => { if (e.target.closest("a, button")) return; const c = e.target.closest("[data-href]"); if (c) location.hash = c.dataset.href; });
@@ -487,8 +495,9 @@ function courseView(id) {
     </div>
     <aside class="side">
       ${open ? `<div class="panel"><h3>Your progress</h3><div class="bar"><i style="width:${p}%"></i></div><p class="mono">${p}% of lessons · next: ${esc(n.code)}</p><p class="note">${EXAMS_DONE[c.id] && EXAMS_DONE[c.id].passed ? "Exam passed: this course is complete." : "The course is complete once its exam is passed."}${SESSION ? " Saved to your account." : " Sign in to keep your progress on every device."}</p><a class="btn primary" href="#${slug(n.code)}">${p ? "Resume" : "Start course"}</a></div>
-      <div class="panel"><h3>Practise</h3><p>${esc(c.lab)}</p>${practiceLink("practice")}</div>
-      <div class="panel"><h3>Exam</h3><p>One task on a fresh tenant, graded by the checker. Three attempts, 24 hours apart.</p><a class="btn" href="#exam-${c.id}">See the exam</a></div>`
+      <div class="panel"><h3>Practise</h3><p>${esc(c.lab)}</p>${c.neutral ? "" : practiceLink("practice")}</div>
+      ${c.cpe ? `<div class="panel"><h3>Continuing education</h3><p>${esc(c.cpe)}</p></div>` : ""}
+      ${c.exam ? `<div class="panel"><h3>${c.neutral ? "Assessment" : "Exam"}</h3><p>${c.neutral ? "Twenty questions, more than 80% to pass. Three attempts, 24 hours apart." : "One task on a fresh tenant, graded by the checker. Three attempts, 24 hours apart."}</p><a class="btn" href="#exam-${c.id}">See the ${c.neutral ? "assessment" : "exam"}</a></div>` : ""}`
       : `<div class="panel"><h3>In preparation</h3><p>The chapters are set; lessons are being written and recorded. The K-φ AI Foundation courses (Agentic finance, MCP, Data foundation) are open now and come first.</p><a class="btn primary" href="#course-foundation">Go to Data foundation</a></div>`}
     </aside>
   </div>`;
@@ -497,7 +506,7 @@ function courseView(id) {
 function railItems(c) {
   return c.chapters.map(ch => `<div class="rch">${esc(ch.code)} · ${esc(ch.title)}</div>` +
     ch.lessons.map(l => `<a class="ri" href="#${slug(l.code)}" data-code="${esc(l.code)}">${tick(l.code)}<span><span class="mono">${esc(l.code)}</span> ${esc(l.title)}</span></a>`).join("")).join("") +
-    `<div class="rfoot"><a class="ri" href="#exam-${c.id}"><span class="tick"></span><span>${esc(c.exam.title)}</span></a></div>`;
+    (c.exam ? `<div class="rfoot"><a class="ri" href="#exam-${c.id}"><span class="tick"></span><span>${esc(c.exam.title)}</span></a></div>` : "");
 }
 
 /* Practice happens in K-φ itself: each signed-in learner has their own practice company,
@@ -568,7 +577,7 @@ function examView(id) {
     cash: "The trap: movements that look like payroll or payments but are transfers between the group's own accounts.", ai: "The traps: an AI note that reads well and holds two wrong figures, and an email that gives orders to whatever AI reads it." };
   return `
   <div class="course-head">
-    <div class="crumb note"><a href="#home">Catalogue</a> / <a href="#course-${c.id}">${esc(c.title)}</a> / Exam</div>
+    <div class="crumb note"><a href="#home">Catalogue</a> / <a href="#course-${c.id}">${esc(c.title)}</a> / ${c.neutral ? "Assessment" : "Exam"}</div>
     <h1>${esc(e.title)}</h1>
     <p class="lede">${esc(e.situation)}</p>
   </div>
@@ -576,15 +585,18 @@ function examView(id) {
     <div class="chapters">
       <div class="panel"><h3>Your task</h3><ol class="tasks">${e.tasks.map(t => { const m = /^([^:]{2,40}): (.*)$/s.exec(t); return `<li>${m ? `<b>${esc(m[1])}.</b> ${esc(m[2].charAt(0).toUpperCase() + m[2].slice(1))}` : esc(t)}</li>`; }).join("")}</ol></div>
       <div class="panel"><h3>What the checker verifies</h3><ul class="outcomes">${e.checks.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
-        <p>${esc(TRAP[c.id] || "")} ${c.exam.checks.length > 1 ? esc("You pass with more than 80% of the checks right (" + (Math.floor(c.exam.checks.length * 0.8) + 1) + " of " + c.exam.checks.length + ").") : ""}</p></div>
+        <p>${esc(TRAP[c.id] || "")} ${c.exam.checks.length > 1 && !c.neutral ? esc("You pass with more than 80% of the checks right (" + (Math.floor(c.exam.checks.length * 0.8) + 1) + " of " + c.exam.checks.length + ").") : ""}</p></div>
       <div data-exam-quiz></div>
-      <div data-exam-report>${exampleReport(c)}</div>
+      <div data-exam-report>${c.neutral ? "" : exampleReport(c)}</div>
     </div>
     <aside class="side">
-      <div class="rules">
+      <div class="rules">${c.neutral ? `
+        <div class="rule"><b>20</b><span>questions, one choice each</span></div>
+        <div class="rule"><b>17</b><span>right to pass: more than 80%</span></div>
+        <div class="rule"><b>3</b><span>attempts, 24 h apart</span></div>` : `
         <div class="rule"><b>72 h</b><span>your exam company stays open</span></div>
         <div class="rule"><b>3</b><span>attempts, 24 h apart</span></div>
-        <div class="rule"><b>Any LLM</b><span>only the result is graded</span></div>
+        <div class="rule"><b>Any LLM</b><span>only the result is graded</span></div>`}
       </div>
       <div class="panel" data-exam-live="${esc(c.id)}"><h3>Your exam</h3><p class="note">Loading…</p></div>
       <div class="panel"><h3>Stuck?</h3><p>If something does not work as the lessons say, send us your question. We reply by email. We do not give exam answers.</p>${helpButton("the " + c.title + " exam", e.title)}</div>
@@ -648,14 +660,14 @@ function drawExam(id, status) {
   const d = EXAMSTATE[id], c = course(id);
   if (!d && status === 401) { box.innerHTML = `<h3>Your exam</h3><p>Your sign-in to the academy has expired.</p><a class="btn primary" href="${esc(apiBase() || AUTH_HOSTS.prod)}/academy/signin">Sign in again</a>`; return; }
   if (!d) { box.innerHTML = `<h3>Your exam</h3><p>${status === 404 ? "Exams open with the next K-φ release." : "K-φ did not answer (it may be restarting for a release). Reload the page in a minute."}</p>`; return; }
-  if (!SESSION) { box.innerHTML = `<h3>Ready?</h3><p>Sign in to take the exam: you get a fresh company of your own for each attempt.</p><a class="btn primary" href="${esc(apiBase() || AUTH_HOSTS.prod)}/academy/signin">Sign in</a>`; return; }
+  if (!SESSION) { box.innerHTML = `<h3>Ready?</h3><p>${d.exam.quiz ? "Sign in to take the assessment: three attempts, 24 hours apart." : "Sign in to take the exam: you get a fresh company of your own for each attempt."}</p><a class="btn primary" href="${esc(apiBase() || AUTH_HOSTS.prod)}/academy/signin">Sign in</a>`; return; }
   const st = d.state, last = st.attempts[st.attempts.length - 1];
   if (!st.open) { const q0 = $("[data-exam-quiz]"); if (q0) q0.innerHTML = ""; }
   const rep = $("[data-exam-report]");
   if (rep && last && last.report) rep.innerHTML = `<section class="block" style="margin-top:12px"><header><h2>Your report</h2></header>${reportHtml(last.report, `<span>Attempt ${last.attempt} of ${st.max} · ${esc(c.title)}</span><span>${last.report.filter(r => r.ok).length} of ${last.report.length} checks passed${last.passed ? " · passed" : st.next_at ? " · next attempt " + esc(when(st.next_at)) : ""}</span>`)}</section>`;
   if (st.passed) {   /* a credential is for a path done (owner, 2026-11-20): the exam is one step of it */
-    const pa = DATA.paths.find(x => x.id === "practitioner"), pc = CERTS.find(x => x.kind === "path" && x.ref === "practitioner"), left = pa ? pa.courses.map(course).filter(c => c && pct(c) < 100) : [];
-    box.innerHTML = `<h3>Passed</h3><p>You passed this exam on attempt ${last.attempt}.</p>${pc ? `<a class="btn primary" href="#cert-${esc(pc.id)}">Your K-φ AI Foundation credential</a>` : left.length ? `<p class="note">Your K-φ AI Foundation credential comes when every lesson of the path is done. Still to finish: ${left.map(c => esc(c.title)).join(", ")}.</p>` : `<p class="note">Your K-φ AI Foundation credential is being issued: open this page again in a moment.</p>`}`;
+    const pa = DATA.paths.find(x => x.courses.includes(id) && (c.neutral ? x.neutral : !x.base && !x.neutral)), pc = pa && CERTS.find(x => x.kind === "path" && x.ref === pa.id), left = pa ? pa.courses.map(course).filter(c => c && pct(c) < 100) : [];
+    box.innerHTML = `<h3>Passed</h3><p>You passed this exam on attempt ${last.attempt}.</p>${pc ? `<a class="btn primary" href="#cert-${esc(pc.id)}">${esc(pa.credential)}</a>` : left.length ? `<p class="note">Your ${esc(pa ? pa.credential : "")} comes when every lesson of the path is done. Still to finish: ${left.map(c => esc(c.title)).join(", ")}.</p>` : `<p class="note">Your ${esc(pa ? pa.credential : "credential")} is being issued: open this page again in a moment.</p>`}`;
     if (!pc && !left.length) syncProgress().then(ch => { if (ch && location.hash === "#exam-" + id) render(); });
     return; }
   if (st.open) {
@@ -683,7 +695,7 @@ function drawExam(id, status) {
     draftRestore(id);
     return;
   }
-  if (st.can_start) { box.innerHTML = `<h3>Ready?</h3><p>Starting uses attempt ${st.used + 1} of ${st.max}: a fresh company with your own variant of Halden Trading, open for 72 hours.</p><button class="btn primary" type="button" data-examstart="${esc(id)}">Start exam</button>`; return; }
+  if (st.can_start) { box.innerHTML = `<h3>Ready?</h3><p>Starting uses attempt ${st.used + 1} of ${st.max}: ${d.exam.quiz ? d.exam.form.length + " questions, open for 72 hours." : "a fresh company with your own variant of Halden Trading, open for 72 hours."}</p><button class="btn primary" type="button" data-examstart="${esc(id)}">Start exam</button>`; return; }
   box.innerHTML = `<h3>Your exam</h3><p>${st.used >= st.max ? "All three attempts are used." : "Your next attempt opens on " + esc(when(st.next_at)) + "."}</p>`;
 }
 function examOpen(id) { if (SESSION) openPrepared("prepare-exam-" + id); }
@@ -798,22 +810,24 @@ function certPage(id) {
   }
   if (c.missing) return `<div class="course-head"><div class="crumb note"><a href="#home">Catalogue</a> / Certificate</div><h1>Not a valid certificate</h1><p class="lede">${esc(c.error || "No certificate with this number.")} The number is ${esc(id)}.</p></div>`;
   const mine = CERTS.some(x => x.id === id), holder = (CERTS.find(x => x.id === id) || {}).holder || c.holder;
+  const np = DATA.paths.find(x => x.neutral && x.id === c.ref), nc = np && course(np.courses[0]);   /* the vendor-neutral certificate of completion */
   return `
   <div class="course-head"><div class="crumb note"><a href="#home">Catalogue</a> / Certificate</div>
-    <h1>${mine ? "Your certificate" : "Verify a certificate"}</h1><p class="lede">${mine ? "This page is public: anyone with the link sees what you see here." : "Issued by K-φ after an exam graded on a live K-φ company."}</p></div>
+    <h1>${mine ? "Your certificate" : "Verify a certificate"}</h1><p class="lede">${mine ? "This page is public: anyone with the link sees what you see here." : (np ? "A certificate of completion issued by the K-φ Academy after a vendor-neutral course and its graded assessment." : "Issued by K-φ after an exam graded on a live K-φ company.")}</p></div>
   <div style="margin-top:28px; display:grid; gap:14px">
     <article class="cert"><span class="aurora" aria-hidden="true"></span>
-      <div class="eyebrow">Certified by K-φ · ${esc(certUrl(id).replace("https://", ""))}</div>
+      <div class="eyebrow">${np ? "Certificate of completion · K-φ Academy" : "Certified by K-φ"} · ${esc(certUrl(id).replace("https://", ""))}</div>
       <div class="holder">${holder ? esc(holder) : mine ? "Your name here" : "Name not set yet"}</div>
       <span class="valid">${c.valid ? "Valid" : "Revoked"}</span>
       <dl>
-        <div><dt>${c.kind === "path" ? "Credential" : "Certificate"}</dt><dd>${esc(c.title)}</dd></div>
+        <div><dt>${np ? "Course" : c.kind === "path" ? "Credential" : "Certificate"}</dt><dd>${esc(c.title)}</dd></div>
+        ${np ? `<div><dt>Length</dt><dd class="mono">${esc(nc.duration.replace("About ", ""))} · online, self-paced</dd></div>` : ""}
         <div><dt>Number</dt><dd class="mono">${esc(c.id)}</dd></div>
         <div><dt>Issued</dt><dd class="mono">${esc(c.issued_at)}</dd></div>
-        ${c.of ? `<div><dt>Checks passed</dt><dd class="mono">${esc(String(c.checked))} / ${esc(String(c.of))}</dd></div>` : ""}
-        ${c.courses ? `<div><dt>Covers</dt><dd>${c.courses.map(esc).join(" · ")}</dd></div>` : ""}
+        ${c.of ? `<div><dt>${np ? "Assessment" : "Checks passed"}</dt><dd class="mono">${esc(String(c.checked))} / ${esc(String(c.of))}</dd></div>` : ""}
+        ${c.courses && !np ? `<div><dt>Covers</dt><dd>${c.courses.map(esc).join(" · ")}</dd></div>` : ""}
       </dl>
-      <p class="note" style="margin:0">The exam is a real task on a K-φ company of the candidate's own, graded automatically against an answer key.</p>
+      <p class="note" style="margin:0">${np ? "Vendor-neutral course: " + esc(nc.chapters.map(ch => ch.title).join(", ")) + ". Final assessment of " + esc(String(c.of || 20)) + " questions, graded on the server, passed with more than 80%." : "The exam is a real task on a K-φ company of the candidate's own, graded automatically against an answer key."}</p>
       ${mine && !holder ? `<form class="examform" data-certname="${esc(id)}"><label>Your name, as it should read on the certificate<input name="holder" maxlength="80" required autocomplete="name"></label><button class="btn primary" type="submit">Put my name on it</button><p class="flash" hidden data-certnamemsg></p></form>` : ""}
       ${mine ? `<div style="display:flex; gap:10px; flex-wrap:wrap"><a class="btn primary" href="${esc(liUrl(c))}" target="_blank" rel="noopener">Add to LinkedIn</a><button class="btn" data-copy="${esc(certUrl(id))}">Copy verify link</button></div>` : ""}
     </article>

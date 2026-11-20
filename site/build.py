@@ -10,6 +10,7 @@ from content_fpa import COURSE as FPA
 from content_ai import COURSE as AI
 from content_cash import COURSE as CASH
 from content_mcp import COURSE as MCP
+from content_treasury_ai import COURSE as TAI
 from content_outlines import OUTLINES, PATHS
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -21,12 +22,15 @@ def md(text):
     return markdown.markdown(text, extensions=["tables"])
 
 
-OPEN = [COURSE, AI, MCP, FPA, CASH]
+OPEN = [COURSE, AI, MCP, FPA, CASH, TAI]
 
 
 def data():
     out = []
     for c in OPEN:
+        if c.get("neutral"):   # the vendor-neutral course names no product: the build stops if it ever does
+            hit = re.findall(r"K-\u03c6|K-phi|Halden|practice company|Copilot in K", json.dumps(c, ensure_ascii=False))
+            assert not hit, "neutral course mentions: " + ", ".join(sorted(set(hit)))
         f = json.loads(json.dumps(c))
         for ch in f["chapters"]:
             for l in ch["lessons"]:
@@ -36,7 +40,7 @@ def data():
                     l["video"] = v + ".mp4"
                     if os.path.exists(os.path.join(HERE, "static", v + ".vtt")): l["captions"] = v + ".vtt"
         out.append(f)
-    order = ["ai", "mcp", "foundation", "fpa", "cash", "build", "implementation"]  # owner, 2026-11-19: A > M > F
+    order = ["ai", "mcp", "foundation", "fpa", "cash", "build", "implementation", "treasury-ai"]  # owner, 2026-11-19: A > M > F
     allc = {c["id"]: c for c in out + OUTLINES}
     return {"courses": [allc[i] for i in order], "paths": PATHS}
 
@@ -77,8 +81,13 @@ def hours(c):
     return "PT%dH%dM" % (h, mi) if (h or mi) else None
 
 
+def cname(c):
+    """the vendor-neutral course carries no K-φ in its name (owner, 2026-11-20)"""
+    return c["title"] if c.get("neutral") else "K-φ " + c["title"]
+
+
 def course_ld(c, paths):
-    ld = {"@type": "Course", "name": "K-φ " + c["title"], "description": c.get("summary", ""), "url": SITE + "courses/" + c["id"] + ".html",
+    ld = {"@type": "Course", "name": cname(c), "description": c.get("summary", ""), "url": SITE + "courses/" + c["id"] + ".html",
           "provider": ORG, "isAccessibleForFree": True, "inLanguage": "en",
           "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD", "category": "Free"},
           "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "online", "courseWorkload": hours(c) or "PT1H"},
@@ -116,27 +125,29 @@ def static_pages(d):
         soon = c.get("status") != "available"
         chap = "".join(f'<h3>{esc(ch["code"])} · {esc(ch["title"])}</h3><ul>' + "".join(f'<li>{esc(l["code"])} {esc(l["title"])}</li>' for l in ch["lessons"]) + "</ul>" for ch in c["chapters"])
         inpaths = [p for p in paths if c["id"] in p["courses"]]
-        body = (f'<h1>K-φ {esc(c["title"])}</h1>\n<p><span class="free">Free</span> <span class="muted">{esc(c.get("duration", ""))} · online · {"in preparation" if soon else "open now"}</span></p>\n'
+        body = (f'<h1>{esc(cname(c))}</h1>\n<p><span class="free">Free</span> <span class="muted">{esc(c.get("duration", ""))} · online · {"in preparation" if soon else "open now"}</span></p>\n'
                 f'<p>{esc(c.get("summary", ""))}</p>\n<p><b>For:</b> {esc(c.get("audience", ""))}</p>\n'
                 + (f'<h2>You will be able to</h2><ul>' + "".join(f"<li>{esc(o)}</li>" for o in c.get("outcomes", [])) + "</ul>\n" if c.get("outcomes") else "")
-                + (f'<p><b>Exam:</b> {esc(c["exam"]["title"])}, a practical task on a live K-φ company, graded automatically.</p>\n' if c.get("exam") else "")
+                + (f'<p><b>Exam:</b> {esc(c["exam"]["title"])}, a practical task on a live K-φ company, graded automatically.</p>\n' if c.get("exam") and not c.get("neutral") else "")
+                + (f'<p><b>Continuing education:</b> {esc(c["cpe"])}</p>\n' if c.get("cpe") else "")
                 + (f'<p><b>Part of:</b> ' + ", ".join(f'<a href="../paths/{p["id"]}.html">{esc(p["title"])}</a>' for p in inpaths) + '. A path done gives its credential, verifiable online and shareable on LinkedIn.</p>\n' if inpaths else "")
                 + f'<h2>Lessons</h2>{chap}\n<p><a href="{SITE}#course-{c["id"]}">Start the course, free</a></p>')
         with open(os.path.join(DIST, "courses", c["id"] + ".html"), "w", encoding="utf-8") as fh:
-            fh.write(page("K-φ " + c["title"] + ": free course for finance and treasury", c.get("summary", "") + " Free, online, with practice on a live company.", url, course_ld(c, paths), body))
+            fh.write(page(cname(c) + ": free course for finance and treasury", c.get("summary", "") + (" Free, online, with a certificate of completion." if c.get("neutral") else " Free, online, with practice on a live company."), url, course_ld(c, paths), body))
         urls.append(url)
     for p in paths:
         url = SITE + "paths/" + p["id"] + ".html"
         cs = [courses[x] for x in p["courses"] if x in courses]
-        ld = {"@type": "EducationalOccupationalCredential", "name": p["credential"], "description": p.get("who", "") + ": " + ", ".join("K-φ " + c["title"] for c in cs),
+        ld = {"@type": "EducationalOccupationalCredential", "name": p["credential"], "description": p.get("who", "") + ": " + ", ".join(cname(c) for c in cs),
               "credentialCategory": "certificate", "recognizedBy": ORG, "url": url, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-              "competencyRequired": ["K-φ " + c["title"] for c in cs]}
+              "competencyRequired": [cname(c) for c in cs]}
         body = (f'<h1>{esc(p["credential"])}</h1>\n<p><span class="free">Free credential</span> <span class="muted">{esc(p.get("hours", ""))} · {esc(p.get("who", ""))}</span></p>\n'
-                '<p>Finish every lesson of the path and pass its practical exam on a live K-φ company: the credential is issued at once, with a public page to verify it and a button to add it to LinkedIn.</p>\n'
-                '<h2>Courses</h2><ol>' + "".join(f'<li><a href="../courses/{c["id"]}.html">K-φ {esc(c["title"])}</a>: {esc(c.get("summary", ""))}</li>' for c in cs) + '</ol>\n'
-                f'<p><a href="{SITE}">Start, free</a></p>')
+                + ('<p>Vendor-neutral. Finish every lesson and pass the final assessment at 80%: the certificate of completion is issued at once, with a public page to verify it and a button to add it to LinkedIn.</p>\n' if p.get("neutral") else
+                '<p>Finish every lesson of the path and pass its practical exam on a live K-φ company: the credential is issued at once, with a public page to verify it and a button to add it to LinkedIn.</p>\n')
+                + '<h2>Courses</h2><ol>' + "".join(f'<li><a href="../courses/{c["id"]}.html">{esc(cname(c))}</a>: {esc(c.get("summary", ""))}</li>' for c in cs) + '</ol>\n'
+                + f'<p><a href="{SITE}">Start, free</a></p>')
         with open(os.path.join(DIST, "paths", p["id"] + ".html"), "w", encoding="utf-8") as fh:
-            fh.write(page(p["credential"] + ": free AI certification for " + p.get("who", "finance").lower(), "Free credential: " + ", ".join("K-φ " + c["title"] for c in cs) + ". Practical exam on a live company, verifiable certificate for LinkedIn.", url, ld, body))
+            fh.write(page(p["credential"] + ": free AI certification for " + p.get("who", "finance").lower(), "Free credential: " + ", ".join(cname(c) for c in cs) + (". Vendor-neutral, final assessment at 80%, verifiable certificate of completion." if p.get("neutral") else ". Practical exam on a live company, verifiable certificate for LinkedIn."), url, ld, body))
         urls.append(url)
     with open(os.path.join(DIST, "sitemap.xml"), "w", encoding="utf-8") as fh:
         fh.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{u}</loc></url>\n" for u in urls) + "</urlset>\n")
@@ -144,11 +155,13 @@ def static_pages(d):
         fh.write("# search engines and AI assistants are welcome: the academy is free and public\nUser-agent: *\nAllow: /\n\nSitemap: " + SITE + "sitemap.xml\n")
     lines = ["# K-φ Academy", "", "> " + DESC, "",
              "K-φ Academy (" + SITE + ") is free. Courses are online and self-paced; learners practise in a K-φ company of their own, "
-             "and a path is certified by a practical exam graded automatically. Credentials have a public verification page and can be added to LinkedIn.", "",
+             "and a path is certified by a practical exam graded automatically. Credentials have a public verification page and can be added to LinkedIn.",
+             "Agentic AI in Treasury is the academy's vendor-neutral course: no product is taught, every exercise works with any AI assistant and a spreadsheet, "
+             "and it ends with an assessment passed at 80% and a certificate of completion, built for continuing education (CTP and FPAC holders can submit it under AFP's independent study rules).", "",
              "## Paths and credentials", ""]
-    lines += [f'- [{p["credential"]}]({SITE}paths/{p["id"]}.html): {p.get("who", "")}, about {p.get("hours", "")}; courses: ' + ", ".join("K-φ " + courses[x]["title"] for x in p["courses"] if x in courses) for p in paths]
+    lines += [f'- [{p["credential"]}]({SITE}paths/{p["id"]}.html): {p.get("who", "")}, about {p.get("hours", "")}; courses: ' + ", ".join(cname(courses[x]) for x in p["courses"] if x in courses) for p in paths]
     lines += ["", "## Courses", ""]
-    lines += [f'- [K-φ {c["title"]}]({SITE}courses/{c["id"]}.html): {c.get("summary", "")} ({c.get("duration", "")}, free{"" if c.get("status") == "available" else ", in preparation"})' for c in d["courses"]]
+    lines += [f'- [{cname(c)}]({SITE}courses/{c["id"]}.html): {c.get("summary", "")} ({c.get("duration", "")}, free{"" if c.get("status") == "available" else ", in preparation"})' for c in d["courses"]]
     with open(os.path.join(DIST, "llms.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
     return urls
@@ -170,7 +183,7 @@ def main():
                 {"@type": "WebSite", "name": "K-φ Academy", "url": SITE, "description": DESC, "publisher": {"@id": "https://k-phi.com/#org"}},
                 {"@type": "ItemList", "name": "K-φ Academy courses", "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": course_ld(c, d["paths"])} for i, c in enumerate(d["courses"])]}]}, ensure_ascii=False).replace("</", "<\\/") + '</script>\n'
             '</head>\n<body>\n' + re.sub(r'^<title>[^<]*</title>\n?', '', body) + '\n'
-            '<nav class="seo-index" aria-label="All courses and paths" style="max-width:1180px;margin:40px auto 24px;padding:0 16px;font:13px/1.8 system-ui,sans-serif;color:#98A1B7">Free courses: ' + " · ".join(f'<a href="courses/{c["id"]}.html">K-φ {esc(c["title"])}</a>' for c in d["courses"]) + '</nav>\n'
+            '<nav class="seo-index" aria-label="All courses and paths" style="max-width:1180px;margin:40px auto 24px;padding:0 16px;font:13px/1.8 system-ui,sans-serif;color:#98A1B7">Free courses: ' + " · ".join(f'<a href="courses/{c["id"]}.html">{esc(cname(c))}</a>' for c in d["courses"]) + '</nav>\n'
             '</body>\n</html>\n')
     shutil.copytree(os.path.join(HERE, "static"), DIST, dirs_exist_ok=True)
     with open(os.path.join(DIST, "index.html"), "w", encoding="utf-8") as fh:
