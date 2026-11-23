@@ -288,7 +288,7 @@ Ask the assistant to show where each figure came from. A good setup makes this e
               "Have your assistant, connected to your K-φ account, draft a three-line variance commentary, then run the five checks on it.",
               ["Trace every figure to a source.", "Signs, directions, units, periods.", "Keep a known-answer case for repeated workflows."]),
         ], "check": [
-            Q("Your assistant's commentary says costs were favourable by 120k. The table shows costs 120k over budget. What happened?", ["A rounding issue", "A sign error", "A different period"], 1, "Over budget on costs is unfavourable. Sign errors are the most common."),
+            Q("Your assistant's commentary reads: \"Costs came in 120k under budget, a favourable variance.\" The table shows costs 120k over budget. What happened?", ["A rounding issue", "A sign error", "A different period"], 1, "Over budget on costs is unfavourable. Sign errors are the most common."),
             Q("Where should a scenario built with an assistant be stored?", ["In the conversation", "In K-φ, the system of record", "In a pasted spreadsheet"], 1, "Saved in K-φ, it can be found, checked and audited."),
         ]},
         {"code": "A6", "title": "K-φ with AI", "lessons": [

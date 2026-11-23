@@ -227,7 +227,7 @@ Ask the assistant to show where each figure came from. A good setup makes this e
         ], "check": [
             Q("Where should a person approve an agent's work?", ["At every tool call", "At the point of effect: before it is written, sent or paid", "Only at month end"], 1, "Reviewing every step tires people out; the point of effect is what protects you."),
             Q("Who should compute a group DSO for a board pack?", ["The model, from a pasted table", "The system of record, called by the model through a tool", "Whoever is fastest"], 1, "Let the model decide what to ask; let a system of record do the arithmetic."),
-            Q("The commentary says costs were favourable by 120k; the table shows costs 120k over budget. What happened?", ["A rounding error", "A sign error: over budget on costs is unfavourable", "Nothing: both are right"], 1, "Signs and directions are the most common error."),
+            Q("The commentary reads: \"Costs came in 120k under budget, a favourable variance.\" The table shows costs 120k over budget. What happened?", ["A rounding error", "A sign error: over budget on costs is unfavourable", "Nothing: both are right"], 1, "Signs and directions are the most common error."),
         ]},
         {"code": "T3", "title": 'Controls, security and payment fraud', "lessons": [
             # from A4.1
