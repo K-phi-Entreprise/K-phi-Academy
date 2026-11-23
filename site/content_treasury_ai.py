@@ -510,3 +510,9 @@ for _ch in COURSE["chapters"]:
         _q = dict(QCM[_l["code"]]); _n = len(_q["options"]); _k = (_i * 2) % _n   # the right answer is not always the second
         _q["options"] = [_q["options"][(j + _k) % _n] for j in range(_n)]; _q["answer"] = (_q["answer"] - _k) % _n
         _l["qcm"] = _q; _i += 1
+
+# The section tests replace the chapters' ungraded self-checks (owner, 2026-11-23): six questions per section, graded on
+# the K-φ server (blocks/academy/exams.js, TAI_SECTIONS), three tries, and the third failed try resets the section.
+COURSE["sections"] = True
+for _ch in COURSE["chapters"]:
+    _ch.pop("check", None)

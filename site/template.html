@@ -75,6 +75,7 @@ html.theme-fading, html.theme-fading * { transition: background-color .32s ease-
 .acct .menu .id b { display: block; color: var(--fg); font-size: 14px; }
 .acct .menu a, .acct .menu button { text-align: left; padding: 9px 10px; border-radius: 8px; border: 0; background: none; color: var(--fg); font: 500 14px/1.2 var(--f-body); text-decoration: none; cursor: pointer; }
 .acct .menu a:hover, .acct .menu button:hover { background: var(--surface-2); }
+.verdict { margin-bottom: 14px; padding: 12px 14px; border-radius: 10px; } .verdict.ok { background: var(--ok-bg); color: var(--ok); } .verdict.bad { background: var(--bad-bg); color: var(--bad); }
 .banner { margin-bottom: 18px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: 14px; }
 @media (max-width: 560px) { .top nav { order: 3; width: 100%; margin-left: 0; padding-bottom: 10px; } .acct { margin-left: auto; } .acct .who span.nm { display: none; } }
 
@@ -533,7 +534,8 @@ function courseView(id) {
 
 function railItems(c) {
   return c.chapters.map(ch => `<div class="rch">${esc(ch.code)} · ${esc(ch.title)}</div>` +
-    ch.lessons.map(l => `<a class="ri" href="#${slug(l.code)}" data-code="${esc(l.code)}">${tick(l.code)}<span><span class="mono">${esc(l.code)}</span> ${esc(l.title)}</span></a>`).join("")).join("") +
+    ch.lessons.map(l => `<a class="ri" href="#${slug(l.code)}" data-code="${esc(l.code)}">${tick(l.code)}<span><span class="mono">${esc(l.code)}</span> ${esc(l.title)}</span></a>`).join("") +
+    (c.sections ? `<a class="ri" href="#section-${c.id}-${esc(ch.code)}"><span class="tick ${secPassed(c, ch.code) ? "done" : ""}">${secPassed(c, ch.code) ? "✓" : ""}</span><span><span class="mono">${esc(ch.code)}</span> Section test</span></a>` : "")).join("") +
     (c.exam ? `<div class="rfoot"><a class="ri" href="#exam-${c.id}"><span class="tick"></span><span>${esc(c.exam.title)}</span></a></div>` : "");
 }
 
@@ -557,6 +559,76 @@ function openPrepared(hash) {
 }
 function openPractice() { if (SESSION) openPrepared("prepare-practice"); }
 document.addEventListener("click", e => { const b = e.target.closest("[data-practice]"); if (b) openPractice(b); });
+
+/* ── Section tests (owner, 2026-11-23): six questions graded on the K-φ server (blocks/academy/practice.js), more
+   than 80% to pass, three tries; the third failed try sends the section back to its lessons. The next section, and
+   the final assessment, open once the test is passed. ── */
+const secPassed = (c, ch) => !!(((SECTIONS[c.id] || {})[ch] || {}).passed);
+function sectionLock(l) {   /* the section before this lesson's, when its test is not passed yet */
+  const c = l.c; if (!c || !c.sections) return null;
+  const i = c.chapters.findIndex(ch => ch.code === l.ch.code);
+  return i > 0 && !secPassed(c, c.chapters[i - 1].code) ? c.chapters[i - 1] : null;
+}
+function sectionView(id) {
+  const k = id.lastIndexOf("-"), cid = id.slice(0, k), chc = id.slice(k + 1);
+  const c = DATA.courses.find(x => x.id === cid), ch = c && c.chapters.find(x => x.code === chc);
+  if (!c || !ch || !c.sections) return home();
+  const p = pct(c);
+  return `
+  <div class="player">
+    <nav class="rail" aria-label="Course contents"><div class="rhead"><a href="#course-${c.id}">${esc(c.title)}</a><div class="bar"><i style="width:${p}%"></i></div><span class="mono note">${p}% complete</span></div>${railItems(c)}</nav>
+    <article class="lesson">
+      <div class="crumb"><a href="#course-${c.id}">${esc(c.title)}</a> / ${esc(ch.code)} ${esc(ch.title)} <span class="chip">Section test</span></div>
+      <h1>Section test: ${esc(ch.title)}</h1>
+      <div class="rules"><div class="rule"><b>6</b><span>questions, one choice each</span></div><div class="rule"><b>5</b><span>right to pass: more than 80%</span></div><div class="rule"><b>3</b><span>tries; after the third, the section starts again</span></div></div>
+      <section class="check" data-section-live="${esc(id)}"><p class="note">Loading the test…</p></section>
+    </article>
+  </div>`;
+}
+async function loadSection(id) {
+  const box = $(`[data-section-live="${id}"]`); if (!box) return;
+  const k = id.lastIndexOf("-"), cid = id.slice(0, k), chc = id.slice(k + 1);
+  const api = (SESSION && SESSION.api) || apiBase() || AUTH_HOSTS.prod;
+  let d = null;
+  for (let i = 0; i < 3 && !d; i++) { try { const r = await fetch(api + "/api/academy/section/" + cid + "/" + chc, { headers: SESSION ? { Authorization: "Bearer " + SESSION.token } : {} }); d = r.ok ? await r.json() : null; if (!d && r.status < 500) break; } catch (e) { /* again */ } if (!d) await new Promise(z => setTimeout(z, 2500)); }
+  SECSTATE[id] = d; drawSection(id);
+}
+function drawSection(id, result) {
+  const box = $(`[data-section-live="${id}"]`); if (!box) return;
+  const k = id.lastIndexOf("-"), cid = id.slice(0, k), chc = id.slice(k + 1);
+  const c = DATA.courses.find(x => x.id === cid), i = c.chapters.findIndex(x => x.code === chc), nextCh = c.chapters[i + 1];
+  const nextHref = nextCh ? "#" + slug(nextCh.lessons[0].code) : "#exam-" + c.id, nextLabel = nextCh ? "Next section: " + nextCh.title : "The final assessment";
+  const d = SECSTATE[id];
+  if (!d) { box.innerHTML = `<p class="note">The test could not be loaded. Try again in a minute.</p>`; return; }
+  if (!SESSION) { box.innerHTML = `<h3>Sign in to take the test</h3><p>Section tests are graded on the K-φ server, so your tries are kept.</p><a class="btn primary" href="${esc(apiBase() || AUTH_HOSTS.prod)}/academy/signin">Sign in</a>`; return; }
+  const st = d.state || {}, ch = c.chapters[i];
+  const msg = result ? (result.passed ? `<div class="verdict ok"><b>Passed: ${result.right} of ${result.of}.</b></div>`
+    : result.reset ? `<div class="verdict bad"><b>${result.right} of ${result.of}: third failed try.</b> The section starts again: its lessons are marked not done. Go through them again; then you get three new tries.</div>`
+    : `<div class="verdict bad"><b>${result.right} of ${result.of}: not passed.</b> Wrong: question${result.wrong.length > 1 ? "s" : ""} ${result.wrong.join(", ")}. ${st.tries_left} ${st.tries_left === 1 ? "try" : "tries"} left.</div>`) : "";
+  if (st.passed) { box.innerHTML = `${msg}<h3>✓ Section passed${st.right !== null ? ": " + st.right + " of " + st.of : ""}</h3><a class="btn primary" href="${nextHref}">${esc(nextLabel)} →</a>`; return; }
+  const missing = ch.lessons.filter(l => !done.has(l.code));
+  if (!st.lessons_done || missing.length) { box.innerHTML = `${msg}<h3>Finish the section first</h3><p>The test opens once every lesson of the section is done. Left: ${missing.map(l => `<a href="#${slug(l.code)}">${esc(l.code)}</a>`).join(", ") || "sync in progress"}.</p>`; return; }
+  box.innerHTML = `${msg}<p class="note">Try ${st.used + 1} of ${st.max}${st.cycle > 1 ? " · round " + st.cycle : ""}. Answer every question, then submit.</p>
+    <form data-section-form="${esc(id)}">${d.section.questions.map((q, qi) => `<fieldset class="quizq"><legend><span class="mono">${qi + 1}</span> ${esc(q.q)}</legend>${q.options.map((o, oi) => `<label><input type="radio" name="s${qi}" value="${oi}" required> <span>${esc(o)}</span></label>`).join("")}</fieldset>`).join("")}
+    <button class="btn primary" type="submit">Submit try ${st.used + 1} of ${st.max}</button></form>`;
+}
+document.addEventListener("submit", async e => {
+  const f = e.target.closest("[data-section-form]"); if (!f) return;
+  e.preventDefault();
+  const id = f.dataset.sectionForm, k = id.lastIndexOf("-"), cid = id.slice(0, k), chc = id.slice(k + 1), d = SECSTATE[id];
+  const answers = d.section.questions.map((_, qi) => { const x = f.querySelector(`input[name="s${qi}"]:checked`); return x ? +x.value : null; });
+  if (answers.some(x => x === null)) return;
+  const btn = f.querySelector("button"); btn.disabled = true; btn.textContent = "Grading…";
+  let r = null, body = null;
+  try { await pushProgress(); r = await fetch(SESSION.api + "/api/academy/section/" + cid + "/" + chc + "/submit", { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: JSON.stringify({ answers }) }); body = await r.json(); } catch (err) { body = null; }
+  if (!r || !r.ok || !body) { btn.disabled = false; btn.textContent = "Submit"; const n = document.createElement("p"); n.className = "note"; n.textContent = (body && body.error) || "Not sent. Try again in a moment."; f.appendChild(n); return; }
+  if (body.reset) { for (const code of body.lessons) { done.delete(code); if (WATCH._lq) delete WATCH._lq[code]; } save(); saveWatch(); }
+  takeProgress(body.progress);
+  d.state = Object.assign({}, body.state, { lessons_done: !body.reset });
+  drawSection(id, body);
+  const rail = document.querySelector(".rail"); if (rail) { const c = DATA.courses.find(x => x.id === cid); const p = pct(c); rail.innerHTML = `<div class="rhead"><a href="#course-${c.id}">${esc(c.title)}</a><div class="bar"><i style="width:${p}%"></i></div><span class="mono note">${p}% complete</span></div>${railItems(c)}`; }
+  const live = $(`[data-section-live="${id}"]`); if (live) live.scrollIntoView({ block: "start" });
+});
 
 function lessonView(code) {
   const hit = ALL.find(l => l.code === code);
@@ -587,6 +659,7 @@ function lessonView(code) {
       <details class="mobile-toc"><summary>Course contents · ${p}%</summary><div class="rail-in">${railItems(c)}</div></details>
       <div class="crumb"><a href="#course-${c.id}">${esc(c.title)}</a> / ${esc(l.ch.code)} ${esc(l.ch.title)} <span class="chip">${esc(l.code)}</span><span class="chip">${l.minutes} min</span></div>
       <h1>${esc(l.title)}</h1>
+      ${sectionLock(l) ? `<div class="banner" role="status">This section opens once the ${esc(sectionLock(l).code)} section test is passed. <a href="#section-${c.id}-${esc(sectionLock(l).code)}">Take the ${esc(sectionLock(l).code)} test</a></div>` : ""}
       <div class="objective"><span class="eyebrow">Objective</span><span>${esc(l.objective)}</span></div>
       ${l.video ? `<video class="video" controls playsinline preload="metadata" src="${esc(l.video)}"${l.poster ? ` poster="${esc(l.poster)}"` : ""}>${l.captions ? `<track kind="captions" srclang="en" label="English" src="${esc(l.captions)}">` : ""}</video>
         <div class="watch" data-watch="${esc(l.code)}"><div class="wbar"><canvas width="760" height="8" aria-hidden="true"></canvas></div><span class="wtxt mono">Watched 0%</span></div>` : ""}
@@ -600,7 +673,7 @@ function lessonView(code) {
       ${stuckBox(l.code, l.title)}
       <div class="pager">
         ${prev ? `<a class="btn" href="#${slug(prev.code)}">← ${esc(prev.code)}</a>` : `<a class="btn" href="#course-${c.id}">← Course</a>`}
-        <button class="btn primary" data-complete="${esc(l.code)}" data-next="${next ? slug(next.code) : "exam-" + c.id}" ${gateOpen(l) ? "" : "disabled"}>${done.has(l.code) ? "Completed · next" : gateOpen(l) ? "Mark complete · next" : gateLabel(l)} →</button>
+        <button class="btn primary" data-complete="${esc(l.code)}" data-next="${c.sections && last ? "section-" + c.id + "-" + l.ch.code : next ? slug(next.code) : "exam-" + c.id}" ${gateOpen(l) ? "" : "disabled"}>${done.has(l.code) ? "Completed · next" : gateOpen(l) ? "Mark complete · next" : gateLabel(l)} →</button>
       </div>
     </article>
   </div>`;
@@ -920,7 +993,7 @@ const saveWatch = () => { try { localStorage.setItem("kphi-academy-watch", JSON.
 /* ── Progress on the account (K-phi-engine, blocks/academy/practice.js) ──
    Completed lessons and watched parts of videos follow the learner from one
    device to another; the server merges, so nothing completed is ever lost. */
-let EXAMS_DONE = {}, CERTS = [], _pushT = null, SEL_PATH = null, SCROLL_CUR = false;
+let EXAMS_DONE = {}, CERTS = [], SECTIONS = {}, SECSTATE = {}, _pushT = null, SEL_PATH = null, SCROLL_CUR = false;
 const _cov = w => (w && w.ranges ? w.ranges.reduce((a, r) => a + Math.max(0, r[1] - r[0]), 0) : 0);
 function pushSoon() { if (!SESSION) return; clearTimeout(_pushT); _pushT = setTimeout(pushProgress, 1500); }
 async function pushProgress() {
@@ -940,6 +1013,7 @@ function takeProgress(d) {
   }
   if (d.checks) { for (const k of Object.keys(d.checks)) { if (!PASSED[k]) { PASSED[k] = d.checks[k]; changed = true; } if (lessonByCode(k) && !done.has(k)) { done.add(k); changed = true; } } }
   if (d.exams && JSON.stringify(d.exams) !== JSON.stringify(EXAMS_DONE)) { EXAMS_DONE = d.exams; changed = true; }
+  if (d.sections && JSON.stringify(d.sections) !== JSON.stringify(SECTIONS)) { SECTIONS = d.sections; changed = true; }
   const pc = (d.certs || []).filter(x => x.kind === "path"); if (d.certs && JSON.stringify(pc) !== JSON.stringify(CERTS)) { CERTS = pc; changed = true; }
   try { localStorage.setItem("kphi-academy-done", JSON.stringify([...done])); localStorage.setItem("kphi-academy-watch", JSON.stringify(WATCH)); } catch (e) {}
   return changed;
@@ -962,8 +1036,9 @@ function checkAnswered(l) {
   const a = (WATCH._checks || {})[l.ch.code] || [];
   return l.ch.check.every((_, i) => a.includes(i));
 }
-function gateOpen(l) { return done.has(l.code) || ((!l.video || coverage(l.code) >= NEED) && checkAnswered(l) && practicePassed(l)); }
+function gateOpen(l) { if (sectionLock(l) && !done.has(l.code)) return false; return done.has(l.code) || ((!l.video || coverage(l.code) >= NEED) && checkAnswered(l) && practicePassed(l)); }
 function gateLabel(l) {
+  if (sectionLock(l)) return "Pass the " + sectionLock(l).code + " section test first";
   if (l.video && coverage(l.code) < NEED) return `Watch the video to continue · ${Math.round(coverage(l.code) * 100)}%`;
   if (!practicePassed(l)) return "Pass the check in Try it to continue";
   if (l.qcm && !((WATCH._lq || {})[l.code] >= 0)) return "Answer the question to continue";
@@ -1114,6 +1189,7 @@ function render() {
   else if (h.startsWith("path-")) { html = pathView(h.slice(5)); }
   else if (h.startsWith("lesson-")) { const code = h.slice(7).toUpperCase().replace(/-/, "."); html = lessonView(code); nav = "learn"; }
   else if (h.startsWith("exam-")) { html = examView(h.slice(5)); nav = "learn"; }
+  else if (h.startsWith("section-")) { html = sectionView(h.slice(8)); nav = "learn"; }
   else if (h === "certificate-sample") { html = certView(); nav = "cert"; }
   else if (/^cert-KP[AS]-/i.test(h)) { html = certPage(h.slice(5).toUpperCase()); nav = "cert"; }
   else if (h === "prepare-practice") html = prepareView("practice");
@@ -1128,6 +1204,7 @@ function render() {
   const learn = document.querySelector('[data-nav="learn"]'); if (learn) learn.href = "#course-" + current().id;
   setupWatch();
   if (h.startsWith("exam-")) loadExam(h.slice(5));
+  if (h.startsWith("section-")) loadSection(h.slice(8));
   if (h === "prepare-practice") runPrepare("practice"); else if (h.startsWith("prepare-exam-")) runPrepare("exam", h.slice(13)); else PREP = null;
   const curBlock = SCROLL_CUR && document.querySelector("[data-cur]"); SCROLL_CUR = false;
   if (curBlock) curBlock.scrollIntoView({ block: "start", behavior: "smooth" }); else window.scrollTo(0, 0);
