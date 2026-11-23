@@ -571,6 +571,14 @@ function lessonView(code) {
         `<label class="opt" for="q-${esc(l.ch.code)}-${qi}-${oi}"><input type="radio" id="q-${esc(l.ch.code)}-${qi}-${oi}" name="q-${esc(l.ch.code)}-${qi}" value="${oi}"> ${esc(o)}</label>`).join("")}</div>
         <p class="why" hidden></p></div>`).join("")}
     </section>` : "";
+  /* one question per lesson (owner, 2026-11-23): any answer opens "Mark complete"; a wrong one shows the right one */
+  const qcm = l.qcm ? `
+    <section class="check" aria-label="Lesson question">
+      <div class="eyebrow">Question · ${esc(l.code)}</div>
+      <div class="q" data-lq="${esc(l.code)}"><p>${esc(l.qcm.q)}</p><div class="opts">${l.qcm.options.map((o, oi) =>
+        `<label class="opt" for="lq-${esc(l.code)}-${oi}"><input type="radio" id="lq-${esc(l.code)}-${oi}" name="lq-${esc(l.code)}" value="${oi}"> ${esc(o)}</label>`).join("")}</div>
+        <p class="why" hidden></p></div>
+    </section>` : "";
   const p = pct(c);
   return `
   <div class="player">
@@ -587,6 +595,7 @@ function lessonView(code) {
         ${/\bIn your practice company\b/.test(l.try) ? practiceLink("practice") : /K-φ account/.test(l.try) ? practiceLink("account") : ""}${verifyBox(l)}${l.files ? `<div class="files">${l.files.map(f => `<a class="btn" href="${esc(f)}" download>Download ${esc(f.split("/").pop())}</a>`).join("")}</div>` : ""}${l.answer ? `<details class="answer"><summary>Check your answer</summary><p>${esc(l.answer)}</p></details>` : ""}</section>
       <section><div class="eyebrow" style="margin-bottom:10px">Key points</div><ul class="keys">${l.points.map(k => `<li>${esc(k)}</li>`).join("")}</ul></section>
       ${l.resources ? `<section><div class="eyebrow" style="margin-bottom:10px">Resources</div><div class="res">${l.resources.map(r => `<span class="chip">${esc(r)} · pilot</span>`).join("")}</div></section>` : ""}
+      ${qcm}
       ${check}
       ${stuckBox(l.code, l.title)}
       <div class="pager">
@@ -947,6 +956,7 @@ function mergeRanges(rs) {
 const coverage = (code) => { const w = WATCH[code]; if (!w || !w.dur) return 0; return Math.min(1, w.ranges.reduce((s, r) => s + (r[1] - r[0]), 0) / w.dur); };
 const lessonByCode = (code) => ALL.find(x => x.code === code);
 function checkAnswered(l) {
+  if (l.qcm && !((WATCH._lq || {})[l.code] >= 0)) return false;
   const lastOfCh = l.ch.lessons[l.ch.lessons.length - 1].code === l.code;
   if (!lastOfCh || !l.ch.check) return true;
   const a = (WATCH._checks || {})[l.ch.code] || [];
@@ -956,6 +966,7 @@ function gateOpen(l) { return done.has(l.code) || ((!l.video || coverage(l.code)
 function gateLabel(l) {
   if (l.video && coverage(l.code) < NEED) return `Watch the video to continue · ${Math.round(coverage(l.code) * 100)}%`;
   if (!practicePassed(l)) return "Pass the check in Try it to continue";
+  if (l.qcm && !((WATCH._lq || {})[l.code] >= 0)) return "Answer the question to continue";
   return "Answer the self-check to continue";
 }
 function refreshGate(code) {
@@ -1131,6 +1142,12 @@ document.addEventListener("click", e => {
     const m = $("[data-certmsg]"), url = "https://academy.k-phi.com/verify/KPA-26-0007";
     const ok = () => { m.textContent = "Link copied."; m.hidden = false; };
     try { navigator.clipboard.writeText(url).then(ok, () => { m.textContent = url; m.hidden = false; }); } catch (err) { m.textContent = url; m.hidden = false; }
+  }
+  else if (t.matches("input[type=radio]") && t.closest("[data-lq]")) {   /* the lesson's own question: formative */
+    const qEl = t.closest("[data-lq]"), code = qEl.dataset.lq, l = lessonByCode(code), q = l.qcm, pick = +t.value;
+    qEl.querySelectorAll(".opt").forEach((o, oi) => { o.classList.remove("right", "wrong"); if (oi === q.answer) o.classList.add("right"); else if (oi === pick) o.classList.add("wrong"); });
+    const w = qEl.querySelector(".why"); w.textContent = (pick === q.answer ? "Right. " : "Not quite: the right answer is marked. ") + q.why; w.hidden = false;
+    WATCH._lq = WATCH._lq || {}; WATCH._lq[code] = pick; saveWatch(); refreshGate(code);
   }
   else if (t.matches("input[type=radio]") && t.closest(".q") && t.name.startsWith("q-")) {   /* a lesson self-check only: the exam's own questions are graded on submit */
     const qEl = t.closest(".q"), ch = ALL.find(l => t.name.startsWith("q-" + l.ch.code + "-")).ch;

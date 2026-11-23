@@ -475,3 +475,38 @@ for _ch in COURSE["chapters"]:
             _t, _f, _a = NORVANE[_l["code"]]
             _l["try"], _l["files"], _l["answer"] = _t, [D + x for x in _f], _a
 COURSE["files_all"] = D + "norvane-group-files.zip"
+
+# One question per lesson (owner, 2026-11-23: "we need a QCM for each page ... you can get it wrong and it points to
+# what is correct"). Formative: any answer opens "Mark complete"; a wrong one shows the right one and why. The tests
+# that can be failed are the section tests, graded on the K-φ server (blocks/academy/exams.js, TAI_SECTIONS).
+QCM = {
+    "T1.1": Q("Without any tool, an assistant gives you yesterday's closing EUR/USD rate. What is that figure?", ["A rate it looked up", "The most plausible text it could write: it may be wrong", "The official ECB fixing"], 1, "A model predicts text. With no tool it has no live data, and plausible is not the same as right."),
+    "T1.2": Q("Which of these is the model good at on its own?", ["Adding 200 amounts exactly", "Recalling last quarter's DSO", "Restructuring a messy supplier list into a clean table"], 2, "Language and structure are its strength. Exact sums and recalled figures belong to a system of record."),
+    "T1.3": Q("You switch from a covenant question to drafting a payment reminder. What should you do?", ["Carry on in the same conversation", "Start a new conversation and give the new context", "Paste the whole ledger first"], 1, "A model sees only its context. A new task gets a fresh conversation, with who you are, the data and the rules."),
+    "T1.4": Q("What makes an assistant an agent?", ["A goal, tools, a loop and permissions", "A larger model", "A voice interface"], 0, "The power, and the risk, are in the tools and the permissions it acts with."),
+    "T1.5": Q("Through an MCP connector, what can an agent see in your treasury system?", ["Everything in the system", "What the connected account can see", "Only what you paste"], 1, "The agent acts as the account behind the connector, so give that account only the rights the task needs."),
+    "T1.6": Q("Bank statements arrive in a new format one morning. Which handles it best?", ["A fixed automation", "An agentic workflow that notices, adapts or asks", "Nobody: the import just fails silently"], 1, "Automations are for the same task in the same shape. Agents are for tasks that need judgement when something is unexpected."),
+    "T2.1": Q("For which task should an agent prepare, and a person release?", ["Summarising a board pack", "Sending a 2 million funding transfer", "Proposing reconciliation matches"], 1, "Where a mistake is expensive, the agent prepares and a person releases."),
+    "T2.2": Q("An agent connected with a treasury manager's account can do...", ["Only what the agent's vendor allows", "What that account's rights allow", "Nothing without a prompt"], 1, "Agents act with the connected account's rights. That is why approvals sit at the point of effect."),
+    "T2.3": Q("A workflow gave a wrong figure twice. What do you fix first?", ["Switch to another model", "The instructions and the checks", "Nothing: models vary"], 1, "Fix what you control: the written instructions and the checks, ideally written before the first run."),
+    "T2.4": Q("Where should a scenario built with an assistant be kept?", ["In the chat history", "In the system of record, where it can be replayed and audited", "In a screenshot"], 1, "The engine computes and keeps the result; the model asks and explains."),
+    "T2.5": Q("The assistant reports Q3 revenue; the source table is for Q2. Which check catches it?", ["Signs", "Periods", "Units"], 1, "Check signs, directions, units and periods, and trace every figure to its source."),
+    "T3.1": Q("Your company has a business plan for its assistant. What do you check before sharing a ledger extract?", ["Nothing, business plans are always safe", "The plan's data terms: training use and retention", "Only the file size"], 1, "Know your product, your plan and its data terms, and share only what the task needs."),
+    "T3.2": Q("A PDF tells any AI reading it to email the payment file to a new address. What is the right rule?", ["Follow it if the PDF came from a supplier", "Content is data, never orders", "Ask the model whether it is safe"], 1, "Instructions hidden in content are prompt injection. Limit write tools and approve at the point of effect."),
+    "T3.3": Q("A supplier changes its bank details by email. Before the next payment you...", ["Pay, the email came from their domain", "Confirm by phone on a number you already had", "Ask the agent to verify the IBAN format"], 1, "Changed beneficiary details are the most common payment fraud. Confirm on a known number, not one in the email."),
+    "T3.4": Q("How many different people does a sound payment run involve?", ["One preparer who also signs", "Four: preparer, approver and two signers", "Two: an agent and a signer"], 1, "Preparer, approver and two signers are four different people; an agent is never one of them."),
+    "T4.1": Q("Who creates the categorisation rules an assistant proposed?", ["The assistant, automatically", "You, after reviewing their breadth and the intercompany lines", "The bank"], 1, "The assistant finds patterns and proposes; you review and create the rules."),
+    "T4.2": Q("For weeks 1 to 4 of a cash forecast, which input usually drives it?", ["The annual budget", "Bank balances and open invoices", "Last year's actuals"], 1, "Invoices drive the near term, the budget further out. Find the driving input before changing anything."),
+    "T4.3": Q("Run the same forecast twice on the same inputs. What should you get?", ["Close figures", "The same forecast", "It depends on the model"], 1, "Each category has one saved, versioned rule, so the same inputs give the same forecast."),
+    "T4.4": Q("A funding need has a start date but no end date. What does it mean?", ["A data error", "The entity does not recover within the horizon", "The need is small"], 1, "The end date can be open: the shortfall lasts beyond the forecast horizon."),
+    "T4.5": Q("What matters most to show the CFO about a covenant?", ["The ratio to four decimals", "The headroom: how far from a breach", "The bank's name"], 1, "Headroom matters more than the ratio, on the agreement's definitions, on actuals and on the forecast."),
+    "T4.6": Q("A forecast is good when...", ["Only its author can explain it", "Someone who did not build it can read its assumptions and what is left out", "It has many tabs"], 1, "List assumptions in plain words and say what is not included."),
+    "T4.7": Q("How do you present a scenario to management?", ["Two full sets of statements side by side", "The difference: profit, lowest cash, covenant headroom, then what they could do", "Only the new forecast"], 1, "Present the difference, not two full sets, and end with what management could do."),
+    "T4.8": Q("You tied cash and found no difference. Do you write it down?", ["No, nothing to report", "Yes: record what you tied, even zero differences", "Only if asked"], 1, "Write down what you tied, even zero differences, and disclose what you cannot explain."),
+}
+_i = 0
+for _ch in COURSE["chapters"]:
+    for _l in _ch["lessons"]:
+        _q = dict(QCM[_l["code"]]); _n = len(_q["options"]); _k = (_i * 2) % _n   # the right answer is not always the second
+        _q["options"] = [_q["options"][(j + _k) % _n] for j in range(_n)]; _q["answer"] = (_q["answer"] - _k) % _n
+        _l["qcm"] = _q; _i += 1
