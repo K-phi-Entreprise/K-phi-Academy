@@ -670,7 +670,7 @@ function lessonView(code) {
       ${l.resources ? `<section><div class="eyebrow" style="margin-bottom:10px">Resources</div><div class="res">${l.resources.map(r => `<span class="chip">${esc(r)} · pilot</span>`).join("")}</div></section>` : ""}
       ${qcm}
       ${check}
-      ${stuckBox(l.code, l.title)}
+      ${c.neutral ? "" : stuckBox(l.code, l.title)}
       <div class="pager">
         ${prev ? `<a class="btn" href="#${slug(prev.code)}">← ${esc(prev.code)}</a>` : `<a class="btn" href="#course-${c.id}">← Course</a>`}
         <button class="btn primary" data-complete="${esc(l.code)}" data-next="${c.sections && last ? "section-" + c.id + "-" + l.ch.code : next ? slug(next.code) : "exam-" + c.id}" ${gateOpen(l) ? "" : "disabled"}>${done.has(l.code) ? "Completed · next" : gateOpen(l) ? "Mark complete · next" : gateLabel(l)} →</button>
