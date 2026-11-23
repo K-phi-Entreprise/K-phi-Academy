@@ -29,10 +29,10 @@ OUTLINES = [
 # whole K-φ AI Foundation (F, A and M), shown as one block on its card
 PATHS = [
     {"id": "practitioner", "title": "K-φ AI Foundation", "who": "Everyone starting on K-φ", "courses": ["ai", "mcp", "foundation"], "credential": "K-φ AI Foundation", "hours": "5 h"},
-    {"id": "fpa", "title": "K-φ Agentic FP&A", "who": "Controllers and FP&A teams", "base": "practitioner", "courses": ["ai", "mcp", "foundation", "fpa"], "credential": "K-φ Agentic FP&A", "hours": "8 h"},
-    {"id": "cash", "title": "K-φ Agentic Treasury", "who": "Treasurers and cash managers", "base": "practitioner", "courses": ["ai", "mcp", "foundation", "cash"], "credential": "K-φ Agentic Treasury", "hours": "8 h"},
-    {"id": "builder", "title": "K-φ Builder", "who": "People who build on K-φ with an LLM", "base": "practitioner", "courses": ["ai", "mcp", "foundation", "build"], "credential": "K-φ Builder", "hours": "8 h"},
-    {"id": "architect", "title": "K-φ Agentic Architect", "who": "Implementers who design and run K-φ for clients", "base": "practitioner", "courses": ["ai", "mcp", "foundation", "fpa", "cash", "build", "implementation"], "credential": "K-φ Agentic Architect", "hours": "18 h"},
+    {"id": "fpa", "preview": True, "title": "K-φ Agentic FP&A", "who": "Controllers and FP&A teams", "base": "practitioner", "courses": ["ai", "mcp", "foundation", "fpa"], "credential": "K-φ Agentic FP&A", "hours": "8 h"},
+    {"id": "cash", "preview": True, "title": "K-φ Agentic Treasury", "who": "Treasurers and cash managers", "base": "practitioner", "courses": ["ai", "mcp", "foundation", "cash"], "credential": "K-φ Agentic Treasury", "hours": "8 h"},
+    {"id": "builder", "preview": True, "title": "K-φ Builder", "who": "People who build on K-φ with an LLM", "base": "practitioner", "courses": ["ai", "mcp", "foundation", "build"], "credential": "K-φ Builder", "hours": "8 h"},
+    {"id": "architect", "preview": True, "title": "K-φ Agentic Architect", "who": "Implementers who design and run K-φ for clients", "base": "practitioner", "courses": ["ai", "mcp", "foundation", "fpa", "cash", "build", "implementation"], "credential": "K-φ Agentic Architect", "hours": "18 h"},
     # owner, 2026-11-20: a vendor-neutral course, built from sessions that use no K-φ material, for continuing education
     {"id": "treasury-ai", "title": "Agentic AI in Treasury", "who": "Treasurers, cash managers and finance teams", "neutral": True, "courses": ["treasury-ai"], "credential": "Agentic AI in Treasury, certificate of completion", "hours": "2.5 h"},
 ]

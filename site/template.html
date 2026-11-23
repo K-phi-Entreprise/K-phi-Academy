@@ -105,6 +105,7 @@ section.block h2 { font-size: 24px; }
 .path { display: grid; gap: 10px; align-content: start; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
 [data-cur] { scroll-margin-top: 84px; }
 .path .chip { white-space: normal; max-width: 100%; overflow-wrap: anywhere; }
+.pv { display: inline-block; margin-left: 8px; padding: 2px 7px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--hi) 55%, var(--line)); color: var(--hi); font: 700 10px/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; vertical-align: 2px; }
 .path.alt { position: relative; margin-right: 16px; border-color: color-mix(in srgb, var(--alt) 45%, var(--line)); background: color-mix(in srgb, var(--alt) 7%, var(--surface)); }
 .path.alt::after { content: ""; position: absolute; right: -16px; top: 6px; bottom: 6px; border-left: 1px dashed var(--line); }
 .path.alt .eyebrow, .path.alt .cred { color: var(--alt); } .path.alt .chip.ctp { color: var(--alt); border-color: color-mix(in srgb, var(--alt) 55%, var(--line)); }
@@ -408,7 +409,7 @@ function home() {
      courses as it is a curriculum of its own": every card opens its path; the AI Foundation stands apart, first */
   const paths = DATA.paths.filter(pa => !pa.neutral).map(pa => `
     <article class="path ${pa.id === SEL_PATH || (!pa.base && !SEL_PATH) ? "sel" : ""}" data-href="#path-${pa.id === SEL_PATH || !pa.base ? "practitioner" : pa.id}" tabindex="0" role="button" aria-pressed="${pa.id === SEL_PATH || (!pa.base && !SEL_PATH)}" aria-label="${esc(pa.title)}">
-      <div class="eyebrow">${esc(pa.hours)}</div><h3>${esc(pa.title)}</h3><p>${esc(pa.who)}</p>
+      <div class="eyebrow">${esc(pa.hours)}${pa.preview ? PV : ""}</div><h3>${esc(pa.title)}</h3><p>${esc(pa.who)}</p>
       ${(() => { const ps = pathSteps(pa);
         /* a path built on the AI Foundation shows it as one block, then its own courses */
         const bp = pa.base && DATA.paths.find(x => x.id === pa.base), own = bp ? pa.courses.filter(id => !bp.courses.includes(id)) : pa.courses;
@@ -476,7 +477,7 @@ function foundationBlock() {
     <div style="margin-top:12px">${pathCred(fp)}</div></section>`;
   /* owner, 2026-11-20: "clickable yes but it should update the curriculum upper" */
   const own = pa.courses.filter(x => !fp.courses.includes(x)), fcert = CERTS.find(x => x.kind === "path" && x.ref === fp.id), fps = pathSteps(fp);
-  return `<section class="block foundation" data-cur><header><h2>${esc(pa.title)}</h2><span class="note">${esc(pa.hours)} · ${esc(pa.who)} · free · its own credential · <a href="#path-practitioner">back to the ${esc(fp.title)}</a></span></header>
+  return `<section class="block foundation" data-cur><header><h2>${esc(pa.title)}${pa.preview ? PV : ""}</h2><span class="note">${esc(pa.hours)} · ${esc(pa.who)} · free · its own credential · <a href="#path-practitioner">back to the ${esc(fp.title)}</a></span></header>
     <div class="courses">
       <a class="crow" href="#path-practitioner"><span class="code">${fcert ? "✓" : "1"}</span><div><h3>${esc(fp.title)}</h3><p>${fp.courses.map(x => esc(course(x).title)).join(" · ")} · exam</p></div><span class="chip ${fcert ? "live" : ""}">${fcert ? "✓ Credential" : fps.got + " of " + fps.steps.length + " steps"}</span></a>
       ${pathCourseRows(Object.assign({}, pa, { courses: own }))}${pathExam(Object.assign({}, pa, { courses: own }))}</div>
@@ -493,6 +494,8 @@ function altTile() {
       ${pc ? `<a class="cred" href="#cert-${esc(pc.id)}">✓ Certificate · view · share</a>` : `<div class="cred">Certificate of completion</div>`}
     </article>`;
 }
+/* "Preview" on the paths still under review (content_outlines.py, "preview": True); removed path by path once reviewed */
+const PV = `<span class="pv" title="Under review: content may still change">Preview</span>`;
 function pathView(id) { SEL_PATH = DATA.paths.some(x => x.id === id && (x.base || x.neutral)) ? id : null; SCROLL_CUR = true; return home(); }
 document.addEventListener("click", e => { if (e.target.closest("a, button")) return; const c = e.target.closest("[data-href]"); if (c) location.hash = c.dataset.href; });
 document.addEventListener("keydown", e => { if (e.key !== "Enter") return; const c = e.target.closest && e.target.closest("[data-href]"); if (c) location.hash = c.dataset.href; });
