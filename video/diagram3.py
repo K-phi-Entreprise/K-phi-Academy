@@ -6,6 +6,16 @@ W, H, FPS, DUR = 1920, 1080, 30, 10.0
 N = int(DUR * FPS)
 BG = (11, 15, 26); YEL = (230, 255, 0); WHITE = (240, 242, 246); GREY = (150, 158, 175)
 DIM = (80, 88, 108); PANEL = (18, 24, 40); PANEL2 = (28, 36, 58)
+# Light theme (default): every colour drawn through Canvas is mapped from the dark palette,
+# so scenes keep their dark-palette names. KPHI_THEME=dark renders the old look.
+import os
+LIGHT = os.environ.get("KPHI_THEME", "light") != "dark"
+TO_LIGHT = {(230, 255, 0): (34, 48, 122), (240, 242, 246): (18, 26, 46), (150, 158, 175): (86, 96, 122),
+            (80, 88, 108): (196, 204, 220), (18, 24, 40): (255, 255, 255), (28, 36, 58): (255, 255, 255),
+            (6, 8, 16): (255, 255, 255), (255, 122, 122): (194, 58, 58), (54, 214, 160): (17, 132, 90),
+            (255, 190, 90): (178, 106, 0), (197, 179, 88): (150, 122, 20)}
+def _c(c): return TO_LIGHT.get(tuple(c), c) if (LIGHT and c is not None) else c
+if LIGHT: BG = (243, 245, 250)
 FD = "/usr/share/fonts/opentype/inter/"
 def font(w, s): return ImageFont.truetype(FD + f"InterDisplay-{w}.otf", s)
 F_L = font("SemiBold", 34); F_S = font("Regular", 30); F_K = font("Bold", 72); F_CAP = font("Medium", 40); F_T = font("SemiBold", 38)
@@ -31,25 +41,25 @@ class Canvas:
         self.img.alpha_composite(L, (x0, y0))
     def rrect(self, box, r, fill=None, outline=None, width=2, a=1.0, blur=0):
         if a <= 0: return
-        A = int(255 * clamp(a))
+        A = int(255 * clamp(a)); fill, outline = _c(fill), _c(outline)
         self._blit(box, lambda d, ox, oy: d.rounded_rectangle((box[0] + ox, box[1] + oy, box[2] + ox, box[3] + oy), radius=r,
                    fill=fill + (A,) if fill else None, outline=outline + (A,) if outline else None, width=width), blur)
     def text(self, xy, txt, f, color, a=1.0, anchor="mm"):
         if a <= 0: return
-        A = int(255 * clamp(a)); bb = ImageDraw.Draw(Image.new("L", (1, 1))).textbbox(xy, txt, font=f, anchor=anchor)
+        color = _c(color); A = int(255 * clamp(a)); bb = ImageDraw.Draw(Image.new("L", (1, 1))).textbbox(xy, txt, font=f, anchor=anchor)
         self._blit(bb, lambda d, ox, oy: d.text((xy[0] + ox, xy[1] + oy), txt, font=f, fill=color + (A,), anchor=anchor))
     def line(self, pts, color, width, a=1.0, blur=0):
         if a <= 0 or len(pts) < 2: return
-        A = int(255 * clamp(a)); xs = [p[0] for p in pts]; ys = [p[1] for p in pts]
+        color = _c(color); A = int(255 * clamp(a)); xs = [p[0] for p in pts]; ys = [p[1] for p in pts]
         self._blit((min(xs) - width * 3, min(ys) - width * 3, max(xs) + width * 3, max(ys) + width * 3),
                    lambda d, ox, oy: d.line([(x + ox, y + oy) for x, y in pts], fill=color + (A,), width=width, joint="curve"), blur)
     def poly(self, pts, color, a=1.0):
         if a <= 0: return
-        A = int(255 * clamp(a)); xs = [p[0] for p in pts]; ys = [p[1] for p in pts]
+        color = _c(color); A = int(255 * clamp(a)); xs = [p[0] for p in pts]; ys = [p[1] for p in pts]
         self._blit((min(xs), min(ys), max(xs), max(ys)), lambda d, ox, oy: d.polygon([(x + ox, y + oy) for x, y in pts], fill=color + (A,)))
     def dot(self, c, r, color, a=1.0, blur=0):
         if a <= 0: return
-        A = int(255 * clamp(a))
+        color = _c(color); A = int(255 * clamp(a))
         self._blit((c[0] - r, c[1] - r, c[0] + r, c[1] + r), lambda d, ox, oy: d.ellipse((c[0] - r + ox, c[1] - r + oy, c[0] + r + ox, c[1] + r + oy), fill=color + (A,)), blur)
 
 # sources: scattered start -> tidy column once connected

@@ -86,7 +86,7 @@ def sc_flow(cv, img, t, d, s, a):
 def sc_shot(cv, img, t, d, s, a):
     src = shot(s["img"]); bx = s.get("focus")  # (x0, y0, x1, y1) in screenshot pixels
     zt = ease((t - 0.8) / max(1.0, d - 2.5)); zmax = s.get("zoom", 1.6)
-    if bx: fx, fy = (bx[0] + bx[2]) / 2, (bx[1] + bx[3]) / 2
+    if bx: fx, fy = (bx[0] + bx[2]) / 2, (bx[1] + bx[3]) / 2; zmax = max(1.0, min(zmax, W / (bx[2] - bx[0] + 160), H / (bx[3] - bx[1] + 200)))
     else: fx, fy = W / 2, H / 2
     z = 1 + (zmax - 1) * zt; cxx, cyy = lerp(W / 2, fx, zt), lerp(H / 2, fy, zt)
     cw, ch = W / z, H / z; x0 = clamp(cxx - cw / 2, 0, W - cw); y0 = clamp(cyy - ch / 2, 0, H - ch)
@@ -99,7 +99,7 @@ def sc_shot(cv, img, t, d, s, a):
         if s.get("label"):
             lx = r0[2] + 30 if r0[2] + 30 + tw(s["label"], F_H) < W - 40 else r0[0] - 30 - tw(s["label"], F_H)
             ly = (r0[1] + r0[3]) / 2; lx = max(40, lx)
-            cv.rrect((lx - 18, ly - 38, lx + tw(s["label"], F_H) + 18, ly + 38), 14, fill=(6, 8, 16), a=ar * 0.88)
+            cv.rrect((lx - 18, ly - 38, lx + tw(s["label"], F_H) + 18, ly + 38), 14, fill=(6, 8, 16), outline=(YEL if D.LIGHT else None), width=2, a=ar * (0.96 if D.LIGHT else 0.88))
             cv.text((lx, ly), s["label"], F_H, YEL, ar, anchor="lm")
 
 def sc_compare(cv, img, t, d, s, a):
@@ -186,7 +186,7 @@ def render_frame(lesson, tl, caps, total, i):
         ca = win(t, a0, a1, 0.3, 0.25)
         if ca <= 0: continue
         bb = _m.textbbox((W / 2, 1000), txt, font=F_CAP, anchor="mm")
-        cv.rrect((bb[0] - 28, bb[1] - 18, bb[2] + 28, bb[3] + 18), 14, fill=(6, 8, 16), a=0.75 * ca)
+        cv.rrect((bb[0] - 28, bb[1] - 18, bb[2] + 28, bb[3] + 18), 14, fill=(6, 8, 16), outline=(DIM if D.LIGHT else None), width=2, a=(0.94 if D.LIGHT else 0.75) * ca)
         cv.text((W / 2, 1000), txt, F_CAP, WHITE, ca)
     return img.convert("RGB")
 
