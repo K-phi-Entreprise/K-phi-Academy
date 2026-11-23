@@ -70,7 +70,7 @@ Context has a size limit. Very long conversations push early details out, and th
               'Ask the same variance question twice: once with no context, once with your role, the fiscal year and the figures. Compare.',
               ['A model sees only its context.', 'Say who you are, give the data, state the rules.', 'Start a new conversation for a new task.']),
             # from A2.1
-            L('T1.4', 'From chat to agent', 7,
+            L('T1.4', 'From chat to agent', 9,
               'Know what makes an assistant an agent.',
               """
 In a **chat**, you ask and the model answers. Nothing happens outside the conversation.
@@ -83,9 +83,20 @@ An **agent** is a model that can **act**. It has four parts:
 4. **Permissions**: what it is allowed to read and to change.
 
 The intelligence is in the model; the **power is in the tools and the permissions**. An agent with read-only tools can be wrong but cannot do damage. An agent that can write to a ledger or release a payment needs the same controls as a person who can.
+
+### The harness
+
+The model never touches your systems by itself. It runs inside a **harness**: the software around it that turns its words into actions. Claude, ChatGPT and Copilot each come with one, and a company can build its own. The harness decides:
+
+- **which tools** the agent can call: the connectors you added, and which of their tools are switched on;
+- **with which account**: each connector signs in as someone, and the agent gets that account's rights, no more;
+- **what needs a person**: whether a tool call runs at once or waits for your click;
+- **what it remembers and where it runs**: the conversation, files, a sandbox, logs.
+
+So what an agent can do is the **narrowest of three**: what the model attempts, what the harness allows, and what the account behind each connector may do. An administrator account behind a connector with read tools only can still only read. The same account behind write tools, with approvals switched off, can do what an administrator can. When you assess an agent, ask about all three, not about the model.
 """,
               "Ask your assistant to plan, step by step, how it would prepare a month's variance commentary. Note which steps need a tool.",
-              ['An agent is a model with a goal, tools, a loop and permissions.', 'The power is in the tools and permissions.', 'Write access needs the same controls as for a person.']),
+              ['An agent is a model with a goal, tools, a loop and permissions.', 'The harness decides its tools, its account and what needs a person.', 'Its reach is the narrowest of model, harness and account.']),
             # from A2.2
             L('T1.5', 'Tools and MCP', 7,
               'Understand how assistants connect to finance systems.',
@@ -256,7 +267,7 @@ Changed beneficiary details remain the classic fraud, now with a new delivery ro
               """
 Payments sit with payables: a **payment run** picks the invoices to pay, the beneficiaries and the account to pay from, then goes for **approval** and **signature**.
 
-Paying a supplier invoice and moving cash between group companies use the same mechanism, with the same controls.
+Paying a supplier invoice and moving cash between group companies should go through the same mechanism, with the same controls. Some systems, or some policies, let intercompany transfers skip a step because the money stays in the group; that gap is exactly what a fraudster or a careless agent uses. If your set-up differs, know where and why.
 
 Before a run, check:
 
@@ -276,7 +287,7 @@ A sound payment process separates every step of a payment run, and the system en
 
 - The person who **prepares** a run cannot approve it or sign it.
 - The **approver** cannot sign it.
-- The run is executed only after **two different signers**, each within their own **signing limit**. "No limit" does not exist: a signer without a limit cannot sign.
+- The run is executed only after **two different signers**, each within their own **signing limit**. Find out how your system reads a blank limit: some read it as unlimited. Sound practice is the opposite: a signer without a limit cannot sign until one is set.
 - A change to anyone's payment rights takes effect only when a **second administrator** confirms it.
 
 The consequence is deliberate: a company with a single user cannot pay. Like a bank, it needs a second person. An agent never counts as that second person.
@@ -483,7 +494,7 @@ QCM = {
     "T1.1": Q("Without any tool, an assistant gives you yesterday's closing EUR/USD rate. What is that figure?", ["A rate it looked up", "The most plausible text it could write: it may be wrong", "The official ECB fixing"], 1, "A model predicts text. With no tool it has no live data, and plausible is not the same as right."),
     "T1.2": Q("Which of these is the model good at on its own?", ["Adding 200 amounts exactly", "Recalling last quarter's DSO", "Restructuring a messy supplier list into a clean table"], 2, "Language and structure are its strength. Exact sums and recalled figures belong to a system of record."),
     "T1.3": Q("You switch from a covenant question to drafting a payment reminder. What should you do?", ["Carry on in the same conversation", "Start a new conversation and give the new context", "Paste the whole ledger first"], 1, "A model sees only its context. A new task gets a fresh conversation, with who you are, the data and the rules."),
-    "T1.4": Q("What makes an assistant an agent?", ["A goal, tools, a loop and permissions", "A larger model", "A voice interface"], 0, "The power, and the risk, are in the tools and the permissions it acts with."),
+    "T1.4": Q("What decides which tools an agent can call, with which account, and whether a call waits for your click?", ["The model", "The harness around the model", "The prompt"], 1, "The model only proposes. The harness turns its proposals into actions, within the tools, accounts and approvals it is set up with."),
     "T1.5": Q("Through an MCP connector, what can an agent see in your treasury system?", ["Everything in the system", "What the connected account can see, through the tools the connector offers", "Only what you paste"], 1, "The agent acts as the account behind the connector, so give that account only the rights the task needs."),
     "T1.6": Q("Bank statements arrive in a new format one morning. Which handles it best?", ["A fixed automation", "An agentic workflow that notices, adapts or asks", "Nobody: the import just fails silently"], 1, "Automations are for the same task in the same shape. Agents are for tasks that need judgement when something is unexpected."),
     "T2.1": Q("For which task should an agent prepare, and a person release?", ["Summarising a board pack", "Sending a 2 million funding transfer", "Proposing reconciliation matches"], 1, "Where a mistake is expensive, the agent prepares and a person releases."),
