@@ -589,9 +589,9 @@ async function loadSection(id) {
   const box = $(`[data-section-live="${id}"]`); if (!box) return;
   const k = id.lastIndexOf("-"), cid = id.slice(0, k), chc = id.slice(k + 1);
   const api = (SESSION && SESSION.api) || apiBase() || AUTH_HOSTS.prod;
-  let d = null;
-  for (let i = 0; i < 3 && !d; i++) { try { const r = await fetch(api + "/api/academy/section/" + cid + "/" + chc, { headers: SESSION ? { Authorization: "Bearer " + SESSION.token } : {} }); d = r.ok ? await r.json() : null; if (!d && r.status < 500) break; } catch (e) { /* again */ } if (!d) await new Promise(z => setTimeout(z, 2500)); }
-  SECSTATE[id] = d; drawSection(id);
+  let d = null, status = 0;
+  if (SESSION) for (let i = 0; i < 3 && !d; i++) { try { const r = await fetch(api + "/api/academy/section/" + cid + "/" + chc, { headers: { Authorization: "Bearer " + SESSION.token } }); status = r.status; d = r.ok ? await r.json() : null; if (!d && r.status < 500) break; } catch (e) { /* again */ } if (!d) await new Promise(z => setTimeout(z, 2500)); }
+  SECSTATE[id] = d; SECSTATE[id + ":status"] = status; drawSection(id);
 }
 function drawSection(id, result) {
   const box = $(`[data-section-live="${id}"]`); if (!box) return;
@@ -599,8 +599,8 @@ function drawSection(id, result) {
   const c = DATA.courses.find(x => x.id === cid), i = c.chapters.findIndex(x => x.code === chc), nextCh = c.chapters[i + 1];
   const nextHref = nextCh ? "#" + slug(nextCh.lessons[0].code) : "#exam-" + c.id, nextLabel = nextCh ? "Next section: " + nextCh.title : "The final assessment";
   const d = SECSTATE[id];
-  if (!d) { box.innerHTML = `<p class="note">The test could not be loaded. Try again in a minute.</p>`; return; }
   if (!SESSION) { box.innerHTML = `<h3>Sign in to take the test</h3><p>Section tests are graded on the K-φ server, so your tries are kept.</p><a class="btn primary" href="${esc(apiBase() || AUTH_HOSTS.prod)}/academy/signin">Sign in</a>`; return; }
+  if (!d) { box.innerHTML = `<p class="note">${SECSTATE[id + ":status"] === 404 ? "Section tests open with the next K-φ release, in a few minutes." : "The test could not be loaded. Try again in a minute."}</p>`; return; }
   const st = d.state || {}, ch = c.chapters[i];
   const msg = result ? (result.passed ? `<div class="verdict ok"><b>Passed: ${result.right} of ${result.of}.</b></div>`
     : result.reset ? `<div class="verdict bad"><b>${result.right} of ${result.of}: third failed try.</b> The section starts again: its lessons are marked not done. Go through them again; then you get three new tries.</div>`
