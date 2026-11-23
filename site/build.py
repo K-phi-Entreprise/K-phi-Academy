@@ -65,7 +65,8 @@ HEAD = (f'<title>{TITLE}</title>\n<meta name="description" content="{DESC}">\n<l
         f'<meta property="og:title" content="{TITLE}">\n'
         f'<meta property="og:description" content="{DESC}">\n'
         '<meta property="og:url" content="https://academy.k-phi.com/">\n'
-        '<meta property="og:image" content="https://academy.k-phi.com/og-image.png">\n'
+        '<meta property="og:image" content="https://academy.k-phi.com/og-academy-2.png">\n'
+        '<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n'
         '<meta name="twitter:card" content="summary_large_image">\n')
 
 
@@ -104,7 +105,7 @@ def page(title, desc, url, ld, body):
             '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
             f'<title>{esc(title)}</title>\n<meta name="description" content="{esc(desc)}">\n<link rel="canonical" href="{url}">\n'
             f'<meta property="og:title" content="{esc(title)}">\n<meta property="og:description" content="{esc(desc)}">\n'
-            f'<meta property="og:url" content="{url}">\n<meta property="og:image" content="{SITE}og-image.png">\n'
+            f'<meta property="og:url" content="{url}">\n<meta property="og:image" content="{SITE}og-academy-2.png">\n'
             '<link rel="icon" type="image/svg+xml" href="../favicon.svg">\n'
             '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + '</script>\n'
             '<style>body{font:16px/1.6 system-ui,sans-serif;max-width:760px;margin:0 auto;padding:24px 16px;background:#0B0F1A;color:#EDEFF5}'
