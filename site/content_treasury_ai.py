@@ -103,7 +103,7 @@ Tools fall into two kinds. **Read tools** fetch data: balances, a P&L, a forecas
 More and more treasury and accounting systems, banks and data providers publish MCP servers. Before connecting one, ask the vendor which tools it exposes, which of them write, and which account the agent will act as.
 """,
               'List the tools your assistant shows for one connector you use, and mark each as read or write.',
-              ['MCP connects assistants to systems through tools.', 'The agent sees what the connected account sees.', 'Separate read tools from write tools.']),
+              ['MCP connects assistants to systems through tools.', 'The agent sees what the connected account sees, through the tools the connector offers.', 'Separate read tools from write tools.']),
             # from A2.3
             L('T1.6', 'Chat, automation and agentic workflow', 6,
               'Pick the right kind of AI help for a task.',
@@ -153,13 +153,13 @@ Approve at the **point of effect**, not at every step. Reviewing each of an agen
 
 The controls that govern people should govern agents too. Check that your systems enforce these, not only your policy:
 
-- An agent acts with the rights of the account it is connected with.
+- An agent acts with the rights of the account it is connected with, limited to the tools and approvals its connector and harness allow. An administrator account behind a read-only connector can only read; the same account behind write tools can do what an administrator can.
 - Sensitive changes need a governance approver, whoever prepared them, person or agent.
 - Payments need two signers. An agent can prepare a run; it cannot be one of the signers.
 - Every change is in the audit trail, including those made through a connector.
 """,
               'For the task you picked in T2.1, mark the single point where a person must approve, and name who. Then check in your own treasury system that sensitive changes (a new user, a bank account, a signing limit) need a second person.',
-              ['Approve at the point of effect, not every step.', "Agents act with the connected account's rights.", 'Agents can prepare payments, never sign them.']),
+              ['Approve at the point of effect, not every step.', "Agents act with the connected account's rights, within what the connector allows.", 'Agents can prepare payments, never sign them.']),
             # from A3.3
             L('T2.3', 'Designing an agentic workflow', 8,
               'Write down a workflow so it can be run, checked and improved.',
@@ -484,10 +484,10 @@ QCM = {
     "T1.2": Q("Which of these is the model good at on its own?", ["Adding 200 amounts exactly", "Recalling last quarter's DSO", "Restructuring a messy supplier list into a clean table"], 2, "Language and structure are its strength. Exact sums and recalled figures belong to a system of record."),
     "T1.3": Q("You switch from a covenant question to drafting a payment reminder. What should you do?", ["Carry on in the same conversation", "Start a new conversation and give the new context", "Paste the whole ledger first"], 1, "A model sees only its context. A new task gets a fresh conversation, with who you are, the data and the rules."),
     "T1.4": Q("What makes an assistant an agent?", ["A goal, tools, a loop and permissions", "A larger model", "A voice interface"], 0, "The power, and the risk, are in the tools and the permissions it acts with."),
-    "T1.5": Q("Through an MCP connector, what can an agent see in your treasury system?", ["Everything in the system", "What the connected account can see", "Only what you paste"], 1, "The agent acts as the account behind the connector, so give that account only the rights the task needs."),
+    "T1.5": Q("Through an MCP connector, what can an agent see in your treasury system?", ["Everything in the system", "What the connected account can see, through the tools the connector offers", "Only what you paste"], 1, "The agent acts as the account behind the connector, so give that account only the rights the task needs."),
     "T1.6": Q("Bank statements arrive in a new format one morning. Which handles it best?", ["A fixed automation", "An agentic workflow that notices, adapts or asks", "Nobody: the import just fails silently"], 1, "Automations are for the same task in the same shape. Agents are for tasks that need judgement when something is unexpected."),
     "T2.1": Q("For which task should an agent prepare, and a person release?", ["Summarising a board pack", "Sending a 2 million funding transfer", "Proposing reconciliation matches"], 1, "Where a mistake is expensive, the agent prepares and a person releases."),
-    "T2.2": Q("An agent connected with a treasury manager's account can do...", ["Only what the agent's vendor allows", "What that account's rights allow", "Nothing without a prompt"], 1, "Agents act with the connected account's rights. That is why approvals sit at the point of effect."),
+    "T2.2": Q("An agent connected with a treasury manager's account, through a connector with write tools, can do...", ["Only what the agent's vendor allows", "What that account's rights allow, within the connector's tools", "Nothing without a prompt"], 1, "Agents act with the connected account's rights. That is why approvals sit at the point of effect."),
     "T2.3": Q("A workflow gave a wrong figure twice. What do you fix first?", ["Switch to another model", "The instructions and the checks", "Nothing: models vary"], 1, "Fix what you control: the written instructions and the checks, ideally written before the first run."),
     "T2.4": Q("Where should a scenario built with an assistant be kept?", ["In the chat history", "In the system of record, where it can be replayed and audited", "In a screenshot"], 1, "The engine computes and keeps the result; the model asks and explains."),
     "T2.5": Q("The assistant reports Q3 revenue; the source table is for Q2. Which check catches it?", ["Signs", "Periods", "Units"], 1, "Check signs, directions, units and periods, and trace every figure to its source."),
