@@ -13,18 +13,34 @@ The P&L restarts at zero at the start of each fiscal year.
 The balance sheet is cumulative: balances at a date.
 
 4
-00:00:16.619 --> 00:00:21.056
-Statements are built from the ledger lines and each account's classification.
+00:00:16.619 --> 00:00:22.830
+Here is the P&L, month by month, built from the ledger lines and each account's classification.
 
 5
-00:00:21.106 --> 00:00:25.261
-A group view brings the entities together in the reporting currency.
+00:00:22.880 --> 00:00:27.452
+Each version is a closing: pick one month, or all of them side by side.
 
 6
-00:00:26.411 --> 00:00:29.939
-If either fails, look at account classification first.
+00:00:28.602 --> 00:00:31.589
+The balance sheet shows balances at each month end.
 
 7
-00:00:34.711 --> 00:00:38.445
+00:00:31.639 --> 00:00:37.922
+In a group view, intercompany balances are eliminated, so the total intercompany line is zero.
+
+8
+00:00:39.072 --> 00:00:45.335
+The cash flow statement is derived from both: net income, then the changes in working capital.
+
+9
+00:00:45.385 --> 00:00:47.934
+Each month is compared with the month before.
+
+10
+00:00:49.084 --> 00:00:52.612
+If either fails, look at account classification first.
+
+11
+00:00:57.384 --> 00:01:01.118
 Next: P1.2  Drilling down to ledger lines
 

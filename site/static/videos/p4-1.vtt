@@ -13,10 +13,26 @@ Each forecast line follows a saved rule, replayed every time.
 When a figure moves, an input or a rule changed, and both are visible.
 
 4
-00:00:16.329 --> 00:00:20.786
-Typing over a forecast line breaks the link between inputs and output.
+00:00:16.329 --> 00:00:22.379
+The flow rules page lists every rule: account, cash flow category, timing and cadence.
 
 5
-00:00:24.629 --> 00:00:28.308
+00:00:22.429 --> 00:00:29.277
+Receivables are collected by aging; payroll follows its twelve-month average; leases follow their schedule.
+
+6
+00:00:30.427 --> 00:00:33.635
+The forecast replays those rules month by month.
+
+7
+00:00:33.685 --> 00:00:38.563
+Drag the cutoff: actuals run off up to it, the budget takes over after it.
+
+8
+00:00:39.713 --> 00:00:44.170
+Typing over a forecast line breaks the link between inputs and output.
+
+9
+00:00:48.013 --> 00:00:51.692
 Next: P4.2  Ledger or open invoices
 

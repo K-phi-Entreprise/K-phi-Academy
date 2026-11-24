@@ -9,10 +9,18 @@ P5.1 · Building a scenario
 A scenario changes a few drivers on top of a version.
 
 3
-00:00:09.031 --> 00:00:13.338
-"What if our largest customer pays 30 days later?" is a scenario.
+00:00:09.031 --> 00:00:12.694
+"What if our customers pay 30 days later?" is a scenario.
 
 4
-00:00:15.750 --> 00:00:19.031
+00:00:15.450 --> 00:00:22.781
+In the scenario simulator, add a lever: here, AR terms, DSO from 73 to 103 days.
+
+5
+00:00:22.831 --> 00:00:28.085
+Levers cover staffing, revenue, costs, payment terms, capex, debt and FX.
+
+6
+00:00:29.535 --> 00:00:32.816
 Next: P5.2  Presenting the difference
 

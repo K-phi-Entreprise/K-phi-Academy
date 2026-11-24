@@ -13,18 +13,26 @@ DSO, DPO and DIO estimate days to collect, to sell stock, and to pay.
 The cash conversion cycle is DSO plus DIO minus DPO.
 
 4
-00:00:19.434 --> 00:00:22.913
-K-φ uses a three-month trailing window by default.
+00:00:19.434 --> 00:00:23.996
+Here, DSO is 86 days, against a benchmark of 42.
 
 5
-00:00:22.963 --> 00:00:25.878
-A single month can mislead in either direction.
+00:00:24.046 --> 00:00:30.774
+K-φ uses a three-month trailing window by default: a single month can mislead in either direction.
 
 6
-00:00:27.434 --> 00:00:32.482
-DSO is a pointer. When it moves, open the receivables by customer.
+00:00:31.924 --> 00:00:36.602
+Below, receivables by customer, with each one's terms and actual days.
 
 7
-00:00:35.734 --> 00:00:38.684
+00:00:36.652 --> 00:00:39.864
+This is where you find which customer moved the DSO.
+
+8
+00:00:41.014 --> 00:00:46.062
+DSO is a pointer. When it moves, open the receivables by customer.
+
+9
+00:00:49.313 --> 00:00:52.264
 Next: P2.3  Covenants and headroom
 

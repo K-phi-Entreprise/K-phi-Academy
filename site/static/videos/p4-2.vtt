@@ -13,6 +13,14 @@ Opening receivables and payables come from the ledger or from open invoices.
 Use open invoices only when the invoices in K-φ are complete.
 
 4
-00:00:18.934 --> 00:00:22.577
+00:00:18.634 --> 00:00:24.153
+The coverage check reconciles the forecast's opening receivables and payables with the books.
+
+5
+00:00:24.203 --> 00:00:28.371
+When it shows reconciles, the forecast starts from the right balances.
+
+6
+00:00:29.821 --> 00:00:33.464
 Next: P4.3  Run-rate assumptions, opt-in
 
