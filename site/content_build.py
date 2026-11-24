@@ -179,5 +179,177 @@ For a consultant, the rule is simple: never carry one client's variables into an
             Q("Your LLM computes DSO itself from raw invoice lines and gets 71 days; the KPI page shows 73. What should the BUILD show?", ["71, since the LLM computed it from the lines", "73, the figure K-φ computed, read through the API", "The average of both"], 1, "Never recompute a figure K-φ already computed: show what the API gives, so the BUILD matches every other screen."),
             Q("A client loads its broker's forward curve as a variable. Who can read it?", ["Every K-φ account, like public series", "Only that account", "Anyone with the series code"], 1, "Variables are client-owned: they stay in the account and are never served to anyone else."),
         ]},
+        {"code": "B4", "title": "Writing back", "lessons": [
+            L("B4.1", "Write-back into Cash", 8,
+              "Let a BUILD feed the cash forecast, within its limits.",
+              """
+A BUILD becomes part of treasury when its results reach CASH. With the **write:cash** scope, an extension can put **its own lines** in CASH > Cash forecasts: committed movements on a bank account and a day, for example the margin calls a model expects, or the retainage released when a job closes.
+
+How these lines behave:
+
+- **Tagged.** Each line carries the BUILD's name. The Cash worksheet, the CASH forecast and Claude in K-φ read them at once, and everyone sees where they came from.
+- **Deleted, never edited.** A person can delete a BUILD's line, not change it. To change it, change the logic and let the BUILD write again.
+- **All or nothing.** A write either saves every row or none, and says which row was refused and why. With "replace", the BUILD first removes the lines it wrote before: a forecast it recomputes never piles up.
+- **Gone with the right.** Withdraw write:cash, or switch the extension off, and its lines leave every forecast at once.
+
+A BUILD page can also sit in CASH > Forecast instead of BUILD, and a BUILD can set funding needs, the minimum to keep on each account, in CASH > Move > Funding needs.
+
+Nothing here touches bank statements or the ledger: the BUILD writes forecasts, not facts.
+""",
+              "In your practice company, ask your assistant to put one forecast line from your BUILD: a payment of 25,000 GBP on Halden Trading Ltd's Operating account, on the 15th of next month. Then find it in CASH > Cash forecasts with your BUILD's name on it.",
+              ["A BUILD writes its own forecast lines, tagged with its name.", "People delete them; only the BUILD rewrites them.", "Forecasts only: never statements or the ledger."]),
+            L("B4.2", "Approval before the first write", 7,
+              "Know which BUILD changes need a second person.",
+              """
+The changes that widen what a BUILD can do are under **dual control**: one admin proposes, a second confirms. The proposer can never confirm their own request.
+
+They are:
+
+- **naming a builder**, with or without the right for BUILD to write to CASH;
+- **changing an extension**: switching it on, changing its scopes (adding write:cash, for example), its address or its limits;
+- **registering an extension**;
+- **issuing a server key**.
+
+The second person is an approver of the account, from the roles already set in Admin > Governance; they approve or reject in Governance or in BUILD > Manage, and are told by email. An account with a single admin has no second person: K-φ confirms instead.
+
+So before a BUILD's first line reaches the cash forecast, two people have agreed that it may: one who asked, one who confirmed. When you implement for a client, name the approver before the build starts, not on the day the first write is needed.
+""",
+              "In your practice company, open Admin > Governance and find the request that made you a builder: who proposed it and who confirmed it?",
+              ["Widening a BUILD needs a second person.", "The proposer never confirms their own request.", "A single-admin account is confirmed by K-φ."]),
+            L("B4.3", "What the audit trail records", 6,
+              "Answer an auditor's questions about a BUILD.",
+              """
+Every step of a BUILD's life is in the account's audit trail, with who and when:
+
+- **Rights:** a builder named or removed, a request proposed, confirmed, rejected or reminded, seats changed.
+- **Credentials:** a Builder pass created, a server key issued or revoked.
+- **Code:** each deploy with its one-line description, each restore of an earlier version.
+- **Settings:** an extension created or changed, its secrets set (the names, never the values), the Copilot switched on for it.
+- **Writes:** a function that changes data, called and by whom.
+
+Beside it, the **call journal** in BUILD > Manage lists every API call the extension made: capability, answer, time taken.
+
+An auditor's three questions have direct answers: who could change this logic (the builders and their approvals), what changed and when (the versions and deploys), and what it wrote (the tagged lines and the write calls).
+""",
+              "In your practice company, open the audit trail and find the Builder pass you created in B2.1, then the deploy from B2.2.",
+              ["Rights, credentials, code, settings and writes are all recorded.", "Secrets are recorded by name, never by value.", "The call journal lists every API call."]),
+        ], "check": [
+            Q("A treasurer edits the amount of a line your BUILD put in the cash forecast. What happens?", ["The amount changes", "It is refused: a BUILD's line can be deleted, not changed", "The BUILD is switched off"], 1, "A BUILD's lines can be deleted by a person, never edited: the BUILD rewrites them from its logic."),
+            Q("An admin proposes to give an extension the write:cash scope. Who can confirm it?", ["The same admin", "A second approver of the account, or K-φ for a single-admin account", "Any builder"], 1, "Dual control: the proposer never confirms their own request."),
+        ]},
+        {"code": "B5", "title": "Verifying AI-built logic", "lessons": [
+            L("B5.1", "Building a known-answer case", 8,
+              "Prove a calculation with a case whose answer you already know.",
+              """
+You do not read the code to know it is right. You test it with a **known-answer case**: inputs small enough to compute by hand, and the answer written down **before** the BUILD runs.
+
+For a margin-call model, for example:
+
+- one contract, one price move, one margin rate;
+- the call you expect, computed on paper or in a spreadsheet you trust;
+- then the same inputs in the BUILD.
+
+Good cases are small and cover the edges: a price move of zero (no call), a move just below the threshold, a move in the other direction, two contracts that offset.
+
+If the BUILD's answer differs, do not let the LLM "explain" the difference away. Either your case is wrong, and you correct it, or the logic is, and you ask for a fix with the case attached.
+""",
+              "Write a known-answer case for adding 20% VAT to a net amount: three inputs, including zero and a negative credit note, with the expected outputs. Ask your assistant for a BUILD page that takes a net amount and shows the VAT and the gross amount, then enter your three inputs.",
+              ["Write the expected answer before the BUILD runs.", "Small cases that cover the edges.", "A difference means the case or the logic is wrong: find which."]),
+            L("B5.2", "Signs, dates, units, quotes", 7,
+              "Check the four places AI-built finance logic most often goes wrong.",
+              """
+Most errors in finance logic written by an LLM fall in four places:
+
+- **Signs.** Is an outflow negative? Is a credit balance shown as a positive liability? K-φ's API states its conventions: check that the BUILD keeps them.
+- **Dates.** Value date or booking date? Month end or calendar day? Is the last day of the month in or out?
+- **Units.** Thousands or units, percent or decimal (5 or 0.05), one currency or several added together without conversion.
+- **Quotes.** EUR/USD at 1.08 means one euro costs 1.08 dollars; inverted, every conversion is wrong by the same factor. Curves quoted in percent per year, not per month.
+
+For each of the four, pick one figure in the BUILD and trace it to its source in K-φ or the Data library. One traced figure per risk catches most mistakes before a user does.
+""",
+              "In your practice company, pick one amount on a BUILD page and trace it: which API call, which version, which sign convention, which unit.",
+              ["Signs, dates, units and quotes cause most errors.", "Trace one figure per risk to its source.", "Check the conventions the API states."]),
+            L("B5.3", "Checking what was written, not what was shown", 6,
+              "Verify a write by reading it back from K-φ.",
+              """
+A page can show the right figure and still have written the wrong one, or written nothing. When a BUILD writes, check the write itself:
+
+- **Read back from K-φ**, not from the BUILD: the lines in CASH > Cash forecasts, with their amount, date, account and currency.
+- **Count them.** The number of lines written should match the number the logic produced.
+- **Run it twice.** With "replace", a second run must leave the same lines, not double them.
+
+The BUILD's own message ("12 lines saved") is a claim. The lines in CASH are the fact.
+""",
+              "In your practice company, run the write from B4.1 a second time with \"replace\", then check in CASH > Cash forecasts that there is still exactly one line from your BUILD.",
+              ["Read the write back from K-φ, not from the page.", "Count the lines.", "A second run must not double them."]),
+            L("B5.4", "Keeping the test with the extension", 6,
+              "Make the known-answer case part of the BUILD.",
+              """
+A test kept in a notebook is lost the day someone else changes the BUILD. Keep it **with** the extension.
+
+K-φ helps for functions: each function declares an **example**, an input with its expected output, and K-φ refuses a deploy whose example does not fit the function's schemas. Put your known-answer case there: it is the function's test, and it is what the developer page shows to anyone who calls it.
+
+For pages and writes, ask your LLM to keep a short test file in the BUILD that lists each known-answer case and how to run it, and to run it before every deploy. After a restore, run it again.
+
+The rule for a consultant handing over a BUILD: no logic without its known-answer case, and no case without the person who confirmed the expected answer.
+""",
+              "In your practice company, ask your assistant to declare a function add_vat with your known-answer case from B5.1 as its example, and deploy. Then ask it to deploy an example whose output is text instead of a number: K-φ refuses it.",
+              ["Keep each known-answer case in the BUILD.", "A function's example is its test, checked at deploy.", "Run the tests again after a restore."]),
+        ], "check": [
+            Q("Your BUILD says \"12 lines saved\". How do you verify the write?", ["Trust the message", "Read the lines back in CASH > Cash forecasts and count them", "Ask the LLM if it is sure"], 1, "The message is a claim; the lines in K-φ are the fact."),
+            Q("A conversion uses EUR/USD 1.08 the wrong way round. What do you see?", ["Nothing: the rate is the same", "Every converted amount is wrong by the same factor", "Only the totals are wrong"], 1, "An inverted quote makes every conversion wrong by the same factor: trace one figure to catch it."),
+        ]},
+        {"code": "B6", "title": "Publishing", "lessons": [
+            L("B6.1", "Functions as APIs", 8,
+              "Turn the logic you built into an API the client's other tools call.",
+              """
+Any reusable logic in a BUILD (a calculation, an allocation, a rule, a check) belongs in a **function**. K-φ serves each function as an API at `/api/v1/fn/<name>`, so the account can call it from its other systems, Excel, a sheet or another tool.
+
+A function declares, in the BUILD:
+
+- its **name** and a one-line **summary**;
+- its **input** and **output**, as schemas: K-φ checks the input before calling and the output after;
+- whether it **writes** (changes data) or only reads;
+- an **example** input and output: its test (lesson B5.4).
+
+K-φ signs every call it forwards to the BUILD, and the BUILD refuses any call without a valid signature. The function's address is public; the signature is what proves the call came from K-φ.
+
+Tell the user in their words: "allocate_cash is now callable from your other tools: it takes a date and returns the split by entity."
+""",
+              "In your practice company, ask your assistant to list the account's functions through the API, and check that add_vat shows its summary, schemas and example. A practice BUILD lists functions but does not run them: they run on a client's own BUILD service.",
+              ["Reusable logic goes in a function.", "K-φ checks inputs and outputs against the schemas.", "Every call is signed by K-φ."]),
+            L("B6.2", "Who can call a function", 6,
+              "Give the right key to the right caller.",
+              """
+A function is called with an API key of the account. An admin creates keys in Settings > API keys and chooses their scopes:
+
+- **run:build** calls the functions that only read.
+- **run:build:write** also calls the functions that change data. An admin grants it deliberately, and each call is recorded in the audit trail.
+
+Give each caller its own key: one for the Excel workbook, one for the ERP, one for a sheet. When one caller stops, revoke its key; the others keep working.
+
+A Builder pass can call its own functions to test them, but it is not a key to hand to another system: it expires in 7 days and belongs to its builder.
+""",
+              "In your practice company, create a key named \"Excel VAT\" with the run:build scope only. Which of your functions can it call?",
+              ["run:build reads; run:build:write also changes data.", "One key per caller, revoked on its own.", "A Builder pass is for building, not for other systems."]),
+            L("B6.3", "Claude in K-φ uses your BUILD", 6,
+              "Let the team use the BUILD from K-φ's own assistant.",
+              """
+When an admin switches it on in BUILD > Manage, Claude in K-φ can use the BUILD:
+
+- **open its pages** on the person's screen ("show me the margin calls");
+- **read what the BUILD stores** for the account;
+- **call its functions**, with the same checks as any caller.
+
+A function that changes data never runs from the assistant on its own: Claude in K-φ says what it will do, and it runs only when the person clicks **Confirm**.
+
+This is where a BUILD pays off for the team: the logic one builder wrote becomes something every user can ask for in plain words, inside K-φ, with the figures K-φ already holds.
+""",
+              "In your practice company, switch the BUILD on for Claude in K-φ in BUILD > Manage, then ask it to open your bank accounts page.",
+              ["Claude in K-φ opens BUILD pages, reads its data and calls its functions.", "A function that writes waits for the person's Confirm.", "One builder's logic, usable by the whole team."]),
+        ], "check": [
+            Q("An ERP must call a function that writes cash lines. Which key?", ["A Builder pass", "Its own key with run:build:write", "Any key with run:build"], 1, "Writing functions need run:build:write, granted deliberately, on a key of the ERP's own."),
+            Q("A user asks Claude in K-φ to run a function that changes data. What happens?", ["It runs at once", "Claude says what it will do; it runs when the person clicks Confirm", "It is refused"], 1, "A function that writes waits for the person's confirmation."),
+        ]},
     ],
 }
