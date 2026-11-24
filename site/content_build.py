@@ -43,7 +43,7 @@ K-φ has three workspaces: FP&A, CASH and BUILD. A BUILD is built **on top of** 
 The limits are enforced by the server, not by the code you write:
 
 - **One account.** The account comes from the credential, never from the request. A BUILD cannot reach another company's data, even by mistake.
-- **Scopes.** An extension can hold at most these rights: read the ledger, cash and forecasts; write scenarios, its own store and, if granted, its own cash forecast lines; read and deploy its own code.
+- **Scopes.** An extension can hold at most these rights: read the ledger, cash and forecasts; read the Data library and write the account's variables; write scenarios, its own store and, if granted, its own cash forecast lines; read and deploy its own code.
 - **Never.** No ledger import, no change to the account's configuration, no change to FP&A or CASH pages. Bank statements and posted entries are never written by a BUILD.
 - **A switch.** Turn the extension off, or revoke its key, and the next call is refused.
 
@@ -51,7 +51,7 @@ Every call an extension makes is recorded: which capability, the answer, how lon
 
 So when a client asks "can the AI break our books?", the answer is no: it can only reach what its scopes allow.
 """,
-              "In your practice company, open BUILD > Manage and read the scopes of the extension. Which of them would let it put lines in the cash forecast?",
+              "In your practice company, open BUILD > Manage and read the scopes of your BUILD. Which of them lets it put lines in the cash forecast? Type it.",
               ["A BUILD reaches one account, through the API only.", "Scopes are enforced by the server.", "It never writes the ledger, bank statements or configuration."]),
         ], "check": [
             Q("A client wants a page that shows the weather in Paris, with no link to their figures. Is that a good BUILD?", ["Yes, any page can be a BUILD", "No: it uses none of the account's data, so it can be built anywhere", "Only if an admin approves it"], 1, "A BUILD earns its place by combining specific logic with the data K-φ already holds."),
@@ -89,7 +89,7 @@ Every deploy is a **version**. In BUILD > Manage > Versions you see each version
 
 When something goes wrong, do not ask the LLM to "fix everything". Restore the last good version, then ask again, smaller.
 """,
-              "In your practice company, ask your assistant for one page that lists Halden's bank accounts with their balances. Then open BUILD > Manage > Versions and find the version it created.",
+              "In your practice company, ask your assistant for one page that lists Halden's bank accounts with their balances. Then ask for a second change, for example a new title. Restore the first version, from BUILD > Manage > Versions or by asking your assistant, and check that the page is back as it was.",
               ["One small request at a time, checked in K-φ.", "Every deploy is a version you can restore.", "Restore, then ask again, smaller."]),
             L("B2.3", "The default dashboard and widgets", 6,
               "Use the Dashboard every BUILD starts with.",
@@ -125,7 +125,7 @@ Three rules keep a BUILD right:
 
 When your LLM shows a figure, ask it which call and which version it came from. That answer is what you check against the screen.
 """,
-              "In your practice company, ask your assistant for Halden Trading Ltd's net income for the latest version, through the API. Check it against FP&A > P&L for the same version and company, then enter it.",
+              "In your practice company, ask your assistant for Halden Trading Ltd's net income for September 2026, through the API. Check it against FP&A > P&L for the same month and company, then type it.",
               ["Read figures from the API; never recompute them.", "Every page follows the top bar.", "A figure is checked with its version."]),
             L("B3.2", "The Data library", 7,
               "Use public market and macro series with their source and licence.",
@@ -214,7 +214,7 @@ The second person is an approver of the account, from the roles already set in A
 
 So before a BUILD's first line reaches the cash forecast, two people have agreed that it may: one who asked, one who confirmed. When you implement for a client, name the approver before the build starts, not on the day the first write is needed.
 """,
-              "In your practice company, open Admin > Governance and find the request that made you a builder: who proposed it and who confirmed it?",
+              "In your practice company, open the audit trail and find who confirmed that you became a builder. In a client's account with two admins, who would have had to confirm it?",
               ["Widening a BUILD needs a second person.", "The proposer never confirms their own request.", "A single-admin account is confirmed by K-φ."]),
             L("B4.3", "What the audit trail records", 6,
               "Answer an auditor's questions about a BUILD.",
@@ -352,4 +352,34 @@ This is where a BUILD pays off for the team: the logic one builder wrote becomes
             Q("A user asks Claude in K-φ to run a function that changes data. What happens?", ["It runs at once", "Claude says what it will do; it runs when the person clicks Confirm", "It is refused"], 1, "A function that writes waits for the person's confirmation."),
         ]},
     ],
+    "exam": {
+        "title": "Exam: one build, start to finish",
+        "situation": "The exam of the K-φ Builder path. You get an exam company: Halden with its three companies, 23 months of ledger and its banks, and its own BUILD. The CFO wants the corporate tax on the third quarter in the cash forecast: for each company, 25% of its net income for July to September 2026, paid on 15 December 2026 from its Operating account, in its currency. Your assistant builds it with a Builder pass; you check it. Every step is something you did in a lesson; the lesson is named at the end of the step. Allow about an hour.",
+        "tasks": [
+            "Start: press Start exam on the right, then Open my exam company. Its BUILD is in the menu, with you as its builder.",
+            "The page: in BUILD > Manage, create a Builder pass and paste it into your assistant. Ask for a page \"Tax payments\" that shows, for each company, its net income for July to September 2026 read through the API, and the tax at 25%. Check one company against FP&A > P&L. (B2.1, B3.1)",
+            "A rollback: ask for a change to the page, restore the version before it, then ask for one more change, so a new version sits on top of the restored one. (B2.2)",
+            "The function: have the tax logic declared as a function too, with a known-answer case as its example, for instance a net income of 100,000 giving a tax of 25,000. (B5.4)",
+            "The payments: ask your assistant to write one payment per company to the cash forecast, then run it a second time with \"replace\". Check in CASH > Cash forecasts that there is exactly one line per company. (B4.1, B5.3)",
+            "The key: in Settings > API keys, create a key for the system that will call your function, with the run:build scope only. (B6.2)",
+            "Check: press Check my exam company. Every step shows PASS, or says what is missing.",
+            "Answer and submit: the tax Halden Trading Ltd will pay on 15 December 2026, as your page shows it, in GBP. Type the amount only, then submit.",
+        ],
+        "checks": [
+            "Your BUILD has a page of its own, deployed",
+            "A version was restored, and a new one deployed on top of it",
+            "A function is declared with its known-answer example",
+            "One tax payment per company on 15 December 2026, from each Operating account, at 25% of the quarter's net income",
+            "A key with run:build only, for the function's callers",
+            "The tax of Halden Trading Ltd you typed is right",
+        ],
+        "report": [
+            ["pass", "A BUILD page", "Your BUILD menu shows \"Tax payments\"."],
+            ["pass", "A rollback, then a new version", "\"Restored version 1: tax page\", then 1 version deployed after it."],
+            ["pass", "A function with its known-answer example", "Function quarter_tax, with its example: K-φ checked it at deploy."],
+            ["fail", "The tax payments in the cash forecast", "6 lines for 3 companies: a second run added instead of replacing. Write with \"replace\"."],
+            ["pass", "A key for the function's callers", "Key \"ERP tax\": run:build only."],
+            ["pass", "The figure on your page", "Right: 23,070.91 GBP."],
+        ],
+    },
 }
