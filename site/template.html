@@ -378,15 +378,20 @@ const courseState = c => {
   if (c.status !== "available") return null;
   const p = pct(c);
   if (examPassed(c.id)) return { p, label: "Passed", cls: "ok" };
+  if (covered(c.id)) return { p, label: "Validated by the exam", cls: "ok" };
   if (p === 100) return c.exam ? { p, label: "Lessons done · exam to pass", cls: "todo" } : { p, label: "Lessons done", cls: "ok" };
   if (p > 0) { const lc = lessonCount(c); return { p, label: lc.n + " of " + lc.of + " lessons", cls: "todo" }; }
   return { p, label: "", cls: "" };
 };
 /* a path = for each of its courses, the lessons then the exam: counted in steps, never in percent */
 const lessonCount = c => { const ls = lessonsOf(c); return { n: ls.filter(l => done.has(l.code)).length, of: ls.length }; };
+/* a passed exam validates the courses it covers (owner, 2026-11-24: "i have validated data in AI foundation ... when i
+   start FP&A it should be already checked"): the Foundation exam is the whole AI Foundation's; the server agrees */
+const EXAM_COVERS = { foundation: ["ai", "mcp", "foundation"], build: ["build"] };
+const covered = id => Object.entries(EXAM_COVERS).some(([e, cs]) => cs.includes(id) && examPassed(e));
 const pathSteps = pa => {
   const cs = pa.courses.map(course).filter(Boolean);
-  const steps = cs.flatMap(c => [{ c, kind: "lessons", ok: c.status === "available" && pct(c) === 100 }].concat(c.exam ? [{ c, kind: "exam", ok: examPassed(c.id) }] : []));   /* one exam only since 2026-11-20 */
+  const steps = cs.flatMap(c => [{ c, kind: "lessons", ok: c.status === "available" && (pct(c) === 100 || covered(c.id)) }].concat(c.exam ? [{ c, kind: "exam", ok: examPassed(c.id) }] : []));   /* one exam only since 2026-11-20 */
   return { steps, got: steps.filter(x => x.ok).length };
 };
 /* the exam still owed: lessons of a course all done, its exam not passed */
@@ -452,7 +457,7 @@ function home() {
 function pathCourseRows(pa) {
   return pa.courses.map(id => { const c = course(id); if (!c) return ""; const lc = lessonCount(c), soon = c.status !== "available";
     return `<a class="crow" href="#course-${c.id}"><span class="code">${esc(c.code)}</span><div><h3>${esc(c.title)}</h3><p>${esc(c.summary)}</p></div>
-      <span class="chip ${!soon && lc.n === lc.of ? "live" : ""}">${soon ? "Lessons soon" : lc.n === lc.of ? "✓ Lessons done" : lc.n + " of " + lc.of + " lessons"}</span></a>`; }).join("");
+      <span class="chip ${!soon && (lc.n === lc.of || covered(c.id)) ? "live" : ""}">${soon ? "Lessons soon" : lc.n === lc.of ? "✓ Lessons done" : covered(c.id) ? "✓ Validated by the exam" : lc.n + " of " + lc.of + " lessons"}</span></a>`; }).join("");
 }
 function pathExam(pa) {
   const ex = pa.courses.map(course).filter(c => c && c.exam);
@@ -476,7 +481,8 @@ function foundationBlock() {
     <div class="courses">${pathCourseRows(fp)}${pathExam(fp)}</div>
     <div style="margin-top:12px">${pathCred(fp)}</div></section>`;
   /* owner, 2026-11-20: "clickable yes but it should update the curriculum upper" */
-  const own = pa.courses.filter(x => !fp.courses.includes(x)), fcert = CERTS.find(x => x.kind === "path" && x.ref === fp.id), fps = pathSteps(fp);
+  const own = pa.courses.filter(x => !fp.courses.includes(x)), fps = pathSteps(fp);
+  const fcert = CERTS.find(x => x.kind === "path" && x.ref === fp.id) || (fps.got === fps.steps.length ? { title: fp.title } : null);
   return `<section class="block foundation" data-cur><header><h2>${esc(pa.title)}${pa.preview ? PV : ""}</h2><span class="note">${esc(pa.hours)} · ${esc(pa.who)} · free · its own credential · <a href="#path-practitioner">back to the ${esc(fp.title)}</a></span></header>
     <div class="courses">
       <a class="crow" href="#path-practitioner"><span class="code">${fcert ? "✓" : "1"}</span><div><h3>${esc(fp.title)}</h3><p>${fp.courses.map(x => esc(course(x).title)).join(" · ")} · exam</p></div><span class="chip ${fcert ? "live" : ""}">${fcert ? "✓ Credential" : fps.got + " of " + fps.steps.length + " steps"}</span></a>
