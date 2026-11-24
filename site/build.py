@@ -11,6 +11,7 @@ from content_ai import COURSE as AI
 from content_cash import COURSE as CASH
 from content_mcp import COURSE as MCP
 from content_treasury_ai import COURSE as TAI
+from content_build import COURSE as BUILD
 from content_outlines import OUTLINES, PATHS
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -23,6 +24,8 @@ def md(text):
 
 
 OPEN = [COURSE, AI, MCP, FPA, CASH, TAI]
+# a course being drafted is built only for review (ACADEMY_DRAFTS=1); the live site keeps its outline ("In preparation")
+if os.environ.get("ACADEMY_DRAFTS"): OPEN.append(BUILD)
 
 
 def data():
@@ -41,7 +44,7 @@ def data():
                     if os.path.exists(os.path.join(HERE, "static", v + ".vtt")): l["captions"] = v + ".vtt"
         out.append(f)
     order = ["ai", "mcp", "foundation", "fpa", "cash", "build", "implementation", "treasury-ai"]  # owner, 2026-11-19: A > M > F
-    allc = {c["id"]: c for c in out + OUTLINES}
+    allc = {c["id"]: c for c in OUTLINES + out}   # an open course replaces its outline
     return {"courses": [allc[i] for i in order], "paths": PATHS}
 
 
