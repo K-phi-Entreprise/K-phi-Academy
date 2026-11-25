@@ -195,12 +195,16 @@ a.lrow:hover { background: var(--surface-2); }
 .prose th { font: 600 12px/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .try { display: grid; gap: 12px; padding: 18px; border-radius: 14px; border: 1px dashed var(--hi); }
 .try .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.try ol.trysteps { margin: 0 0 4px; padding-left: 22px; display: grid; gap: 6px; }
 .verify { display: grid; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
 .verify .ask { font-weight: 600; }
 .verify .files, .try .files { display: flex; flex-wrap: wrap; gap: 8px; } .try .files { margin-top: 12px; }
 .verify .files .btn { font-size: 13px; }
 .verify form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .verify input[type=text] { flex: 1 1 220px; min-width: 0; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.verify .field { flex: 1 1 220px; display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+.verify .field input[type=text] { width: 100%; box-sizing: border-box; }
+.verify form:has(.field) { align-items: end; }
 .verify .out { margin: 0; padding: 10px 12px; border-radius: 10px; }
 .verify .out.pass { color: var(--ok); background: var(--ok-bg); }
 .verify .out.fail { color: var(--bad); background: var(--bad-bg); }
@@ -444,7 +448,7 @@ function home() {
   <section class="block"><header><h2>Paths</h2><span class="note">Agentic AI in Treasury stands on its own. The K-φ specialisations start from the K-φ AI Foundation. Each ends with its own credential; click one to see its curriculum above.</span></header><div class="paths">${altTile()}${paths}</div></section>
   <section class="block"><header><h2>Courses</h2><span class="note">Open for the pilot: ${OPEN.map(c => esc(c.title)).join(", ")}. The others follow.</span></header><div class="courses">${rows}</div></section>
   <section class="block"><header><h2>How certification works</h2></header>
-    <ol class="steps">
+    <ol class="trysteps">
       <li><b>Learn</b><span>Short lessons on K-φ and on working with AI agents, each with a short captioned video and one thing to try in K-φ.</span></li>
       <li><b>Practise</b><span>Sign in and you get your own practice company, a copy of Halden Trading. You set it up yourself from the academy's files, like a client on day one, then try each step there. K-φ checks your work.</span></li>
       <li><b>Take the exam</b><span>A fresh tenant, a brief, any tools you like, including any LLM. 72 hours.</span></li>
@@ -673,7 +677,7 @@ function lessonView(code) {
       ${l.video ? `<video class="video" controls playsinline preload="metadata" src="${esc(l.video)}"${l.poster ? ` poster="${esc(l.poster)}"` : ""}>${l.captions ? `<track kind="captions" srclang="en" label="English" src="${esc(l.captions)}">` : ""}</video>
         <div class="watch" data-watch="${esc(l.code)}"><div class="wbar"><canvas width="760" height="8" aria-hidden="true"></canvas></div><span class="wtxt mono">Watched 0%</span></div>` : ""}
       <div class="prose">${l.read.replace(/<table>/g, '<div class="tablewrap"><table>').replace(/<\/table>/g, "</table></div>")}</div>
-      <section class="try"><div class="eyebrow">Try it</div><div>${esc(l.try)}</div>${c.neutral && /\b(your|an|the) assistant\b/i.test(l.try) ? `<p class="note" style="margin:8px 0 0">Your assistant: the AI assistant you already use, such as Claude, ChatGPT, Microsoft Copilot or Gemini. Any of them works; use your company's plan if it has one (lesson T3.1).</p>` : ""}
+      <section class="try"><div class="eyebrow">Try it</div><div>${tryHtml(l.try)}</div>${c.neutral && /\b(your|an|the) assistant\b/i.test(l.try) ? `<p class="note" style="margin:8px 0 0">Your assistant: the AI assistant you already use, such as Claude, ChatGPT, Microsoft Copilot or Gemini. Any of them works; use your company's plan if it has one (lesson T3.1).</p>` : ""}
         ${/\bIn your practice company\b/.test(l.try) ? practiceLink("practice") : /K-φ account/.test(l.try) ? practiceLink("account") : ""}${verifyBox(l)}${l.files ? `<div class="files">${l.files.map(f => `<a class="btn" href="${esc(f)}" download>Download ${esc(f.split("/").pop())}</a>`).join("")}</div>` : ""}${l.answer ? `<details class="answer"><summary>Check your answer</summary><p>${esc(l.answer)}</p></details>` : ""}</section>
       <section><div class="eyebrow" style="margin-bottom:10px">Key points</div><ul class="keys">${l.points.map(k => `<li>${esc(k)}</li>`).join("")}</ul></section>
       ${l.resources ? `<section><div class="eyebrow" style="margin-bottom:10px">Resources</div><div class="res">${l.resources.map(r => `<span class="chip">${esc(r)} · pilot</span>`).join("")}</div></section>` : ""}
@@ -1106,6 +1110,14 @@ async function loadPracticeErp(code) {
     box.innerHTML = r.ok ? `<div class="eyebrow">Your practice company's Halden ERP</div>${erpRow("Address", d.url)}${erpRow("Key", d.key)}<p class="note">Type the key into the key field the assistant shows you, never into the chat.</p>` : `<div class="eyebrow">Halden ERP</div><p class="note">${esc(d.error || "Open your practice company first.")}</p>`;
   } catch (_e) { box.innerHTML = `<p class="note">Could not reach K-φ. Reload the page.</p>`; }
 }
+/* a "Try it" with numbered lines (owner, 2026-11-25: "give more clues, it is the first course"): the first
+   line stays a sentence, the "1. " lines become a list */
+function tryHtml(t) {
+  const lines = String(t || "").split("\n").map(x => x.trim()).filter(Boolean);
+  const steps = lines.filter(x => /^\d+\.\s/.test(x)), rest = lines.filter(x => !/^\d+\.\s/.test(x));
+  if (!steps.length) return esc(t);
+  return rest.map(x => `<p style="margin:0 0 8px">${esc(x)}</p>`).join("") + `<ol class="trysteps">${steps.map(x => `<li>${esc(x.replace(/^\d+\.\s+/, ""))}</li>`).join("")}</ol>`;
+}
 function verifyBox(l) {
   const c = CHECKCAT && CHECKCAT[l.code]; if (!c) return "";
   const passed = PASSED[l.code];
@@ -1113,7 +1125,9 @@ function verifyBox(l) {
   if (!SESSION) return `<div class="verify">${head}<p class="note">Sign in (top right) to have K-φ check this step in your practice company.</p></div>`;
   const fl = (c.files && c.files.length) ? c.files : (c.file ? [c.file] : []);
   const file = fl.length ? `<div class="files">${fl.map(f => `<button class="btn" type="button" data-file="${esc(f)}">Download ${esc(f)}</button>`).join("")}</div><span class="note">${fl.length === 1 && /\.json$/.test(fl[0]) ? "Set to your practice company: import it in Postman." : `Your own variant of ${fl.length > 1 ? "these files" : "the file"}: import ${fl.length > 1 ? "them" : "it"} in your practice company.`}</span>` : "";
-  const input = c.kind === "answer" ? `<input type="text" name="answer" autocomplete="off" inputmode="${c.unit ? "decimal" : "text"}" placeholder="${c.unit ? "Amount in " + esc(c.unit) : "Your answer"}" aria-label="${esc(c.prompt)}">` : "";
+  /* a check with several boxes (fields): one labelled box each, sent as a list */
+  const input = c.kind === "answer" && c.fields && c.fields.length ? c.fields.map((fl, i) => `<label class="field"><span>${esc(fl)}</span><input type="text" name="answer${i}" data-multi autocomplete="off" inputmode="${c.unit ? "decimal" : "text"}" placeholder="${c.unit ? "Amount in " + esc(c.unit) : "Your answer"}"></label>`).join("")
+    : c.kind === "answer" ? `<input type="text" name="answer" autocomplete="off" inputmode="${c.unit ? "decimal" : "text"}" placeholder="${c.unit ? "Amount in " + esc(c.unit) : "Your answer"}" aria-label="${esc(c.prompt)}">` : "";
   const erp = c.erp ? `<div class="erpbox" data-erpfor="${esc(l.code)}"><div class="eyebrow">Your practice company's Halden ERP</div><p class="note">Loading its address and key…</p></div>` : "";
   if (c.erp) setTimeout(() => loadPracticeErp(l.code), 0);
   /* lesson F5.4: the link Postman imports is the practice company's own server (staging for the academy), never
@@ -1127,7 +1141,8 @@ document.addEventListener("submit", async e => {
   const f = e.target.closest("[data-checkform]"); if (!f) return;
   e.preventDefault(); if (!SESSION) return;
   const code = f.dataset.checkform, out = f.parentElement.querySelector(".out"), b = f.querySelector("button");
-  const answer = f.answer ? f.answer.value : undefined;
+  const multi = [...f.querySelectorAll("[data-multi]")];
+  const answer = multi.length ? multi.map(i => i.value) : f.answer ? f.answer.value : undefined;
   b.disabled = true; const label = b.textContent; b.textContent = "Checking…";
   try {
     const r = await fetch(SESSION.api + "/api/academy/check", { method: "POST", headers: { Authorization: "Bearer " + SESSION.token, "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" }, body: JSON.stringify({ lesson: code, answer }) });

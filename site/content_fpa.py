@@ -35,7 +35,14 @@ The same selectors as everywhere else apply: entity, business unit and third par
 
 Before presenting a statement, check that the balance sheet balances for each entity and that net income, less distributions, matches the movement in retained earnings for the year. If either fails, look at the classification of accounts before anything else.
 """,
-              "In your practice company, open the P&L for Halden Trading Ltd for March 2026 (Company view, Incremental). The app shows figures in the group currency, USD: switch the currency in the top bar to GBP, the company's own, to read its figures as booked. Then switch the entity selector to the group and compare.",
+              """In your practice company, read Halden Trading Ltd's net revenue twice: year to date, then March alone.
+1. In the menu on the left, under FP&A > Statements, open P&L Statement.
+2. In the top bar, open ENTITIES, click None, then tick Halden Trading Ltd.
+3. In the top bar, set the period to 2026-03 (the first box: it lists the months).
+4. In the top bar, click Company next to Group: the amounts change from USD, the group's currency, to GBP, the company's own.
+5. Basis shows YTD, as the P&L opens: the Net Revenue line (sales less discounts, accounts 4000 and 4900) is January to March. Type it in the first box below.
+6. Click Incremental next to YTD: the same line now shows March alone. Type it in the second box.
+7. Last, switch ENTITIES back to all three companies and click Group: the group view adds them up in USD.""",
               ["The P&L is year to date and restarts each fiscal year.", "The balance sheet is cumulative.", "Check balance and net income before presenting."]),
             L("P1.2", "Drilling down to ledger lines", 6,
               "Trace any figure to the lines that make it.",
@@ -52,7 +59,11 @@ Most surprises come from a few large lines: a reclassification booked in the wro
 
 When the cause is a classification, fix it once in the account setup. When it is a booking, the fix belongs in the accounting system, followed by a new import. Never adjust the statement itself.
 """,
-              "In your practice company, drill from the group's operating expenses for September 2026 down to the ledger lines, then do the same for Halden Trading Inc. alone.",
+              """In your practice company, drill from the group's operating expenses for September 2026 down to the ledger lines, then do the same for Halden Trading Inc. alone.
+1. Open P&L Statement (FP&A > Statements) and set the period to 2026-09 in the first box of the top bar.
+2. The operating expenses are the lines under Gross Profit: Personnel Expenses, Sales & Marketing, IT & Software and the rest. The cost of goods sold (account 5000) sits above Gross Profit and is not one of them.
+3. Click the ▶ next to an account to drill down.
+4. In ENTITIES, click None, then tick Halden Trading Inc. Find its largest operating expense account and type its name or number below.""",
               ["Every statement figure opens to its ledger lines.", "Sort by amount; large lines explain most surprises.", "Fix classifications in setup and bookings at the source."]),
             L("P1.3", "Distributions and retained earnings", 6,
               "Show dividends and distributions correctly, past and future.",
