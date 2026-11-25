@@ -77,7 +77,11 @@ Getting this right matters for two reasons. Cash forecasts need the outflow on t
 
 If a client books distributions to an expense account, the P&L margin is understated. Raise it, and agree on the fix in the accounting system.
 """,
-              "In your practice company, find the lines between profit before tax and net income in the P&L for September 2026, and see what feeds them.",
+              """In your practice company, follow Halden Trading Ltd's profit from the P&L to the balance sheet, at September 2026.
+1. Open P&L Statement (FP&A > Statements). In the top bar: ENTITIES, click None, tick Halden Trading Ltd; set the period to 2026-09 (the first box); click Company to read GBP.
+2. Keep Basis on YTD. The last line, Net Income, is January to September 2026. Type it in the first box below.
+3. Open Balance Sheet (FP&A > Statements), same top bar. Under Equity, read the line Retained Earnings (Net Income). Type it in the second box.
+4. Compare. The balance sheet line is larger: it holds every profit not yet closed into account 3200, Retained Earnings. Halden has not booked a year-end closing for 2025, so 2025's profit is still in it. Nothing was distributed, so all of it is retained.""",
               ["Distributions sit below net income.", "Past from confirmed equity accounts; future as a yearly input.", "Distributions booked as expenses distort margins."]),
         ], "check": [
             Q("A user opens the P&L for April. What period does it cover, for a calendar fiscal year?", ["April only", "January to April", "The last twelve months"], 1, "The P&L is year to date and restarts each fiscal year."),
