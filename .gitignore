@@ -1,2 +1,7 @@
 video/__pycache__/
 video/out/
+
+# render temporaries (video/lv.py)
+site/static/videos/*_v.mp4
+site/static/videos/*.m4a
+site/static/videos/*_voice.wav
