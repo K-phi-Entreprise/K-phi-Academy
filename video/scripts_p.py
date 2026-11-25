@@ -107,6 +107,16 @@ LESSONS = {
     S("vara", ["The draft must match this page, figure for figure.", "If the assistant quotes a variance this page does not show, it is wrong."], d=8, zoom=1.2),
     {"type": "quote", "d": 8, "l1": "For costs, over budget", "l2": "is unfavourable.", "cap": "Assistants get favourable and unfavourable wrong more than anything else."},
     E("Next  ·  P4.1  Forecast rules and deterministic replay")]},
+"P4.0": {"scenes": [
+    T("One forecast:", "GL to cash, then budget to cash", M("P4.0", 8), "P4.0 · One forecast: GL to cash, then budget to cash"),
+    {"type": "flow", "d": 12, "eyebrow": "THREE ZONES, ONE LINE OF MONTHS", "heading": "Actuals, GL to cash, budget to cash", "step": 1.2,
+     "nodes": [("Actuals", "up to the latest closing"), ("GL to cash", "open balances run off"), ("Budget to cash", "after the cutoff")],
+     "cap": ["Up to the latest closing, the ledger as booked. Then its open balances turn into cash through the flow rules.", "After the cutoff, the flagged budget takes over, through its own cash rules."]},
+    S("fc", ["The cutoff is the handoff: by default three months after the latest closing, December for a September close.", "Drag it on the cash flows chart to move the handoff."], d=10, zoom=1.2, focus=(1290, 440, 1360, 730), label="Cutoff"),
+    {"type": "bullets", "d": 10, "eyebrow": "ONE LIVING FORECAST", "heading": "Each closing moves it forward", "step": 1.3,
+     "items": [("New closing", "the month's actuals replace the budget"), ("New balances", "the run-off starts again from them"), ("Cutoff", "moves forward with the closing")],
+     "cap": ["Each month you import the ledger, a new closing appears.", "Nobody re-keys the forecast: it is rebuilt from the latest closing every time."]},
+    E("Next  ·  P4.1  Budgets: drivers, import, conversion to cash")]},
 "P4.1": {"scenes": [
     T("Budgets: drivers, import", "and conversion to cash", M("P4.1", 9), "P4.1 · Budgets: drivers, import from Claude, conversion to cash"),
     {"type": "table", "d": 11, "eyebrow": "DRIVER-BASED", "heading": "Set the drivers, K-φ computes the lines", "cols": ["Category", "Drivers"], "widths": [1, 2.2], "step": 1.0,

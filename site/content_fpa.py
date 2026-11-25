@@ -264,6 +264,32 @@ Save the prompt with the month's file. Next month, reuse it and compare.
             Q("A variance comes from an invoice booked one month late. What kind is it?", ["Volume", "Timing", "Price"], 1, "It reverses next month and needs no management action, but it must be named."),
         ]},
         {"code": "P4", "title": "Forecasting", "lessons": [
+            L("P4.0", "One forecast: GL to cash, then budget to cash", 8,
+              "See how the ledger and the budget join into a single cash forecast, and where the handoff sits.",
+              """
+A K-φ cash forecast is one line of months built from two engines, joined at a **cutoff**.
+
+| Zone | Months | Source |
+|---|---|---|
+| Actuals | up to the latest closing | the ledger, as booked |
+| GL to cash | from the closing to the cutoff | the ledger's open balances and its recent pattern, through the flow rules |
+| Budget to cash | after the cutoff | the flagged budget, through the budget cash rules (lesson P4.1) |
+
+**GL to cash.** At the latest closing the ledger still holds money on its way: receivables to collect, payables to pay, accruals, tax due. The flow rules turn each balance into cash at its own timing: receivables by their DSO or their aging, payables by their DPO, payroll and tax on their schedule. That is the most reliable part of any forecast, because the amounts are already booked.
+
+**The cutoff.** By default it sits three months after the latest closing: the month in progress, the next one, and one month of headroom so a late close does not hand months to the budget too early. With the September 2026 close, that is December 2026. On the forecast's cash flows chart the cutoff is a violet line you can drag, and a selector at the top (GL→Budget cutoff, Auto) sets it too.
+
+**Budget to cash.** After the cutoff, the budget flagged for forecasting takes over, converted into cash by its own rules. With no budget, a banner says so: future purchases continue at the average of the last three closed months, as a stated assumption kept out of treasury exports, and new sales are projected only if you tick Project new invoices on the receivables rule (lesson P4.3).
+
+**Why it stays alive.** Each month you import the ledger, a new closing appears (lesson P1.0). The actuals of that month replace the budget's assumption for it, the open balances are the new ones, and the cutoff moves forward with them. Nobody re-keys the forecast: it is rebuilt from the latest closing every time.
+""",
+              """In your practice company, find the three zones on the forecast.
+1. In the menu on the left, under FP&A > Plan, open GL → Cash. A new practice company has no flow rules yet: click Global (15 rules) to create one rule per account family.
+2. Open K-φ Forecast, just below. The chart is titled "Cash flows — drag the cutoff to set the GL→Budget handoff".
+3. The bars before "today" are actuals. The shaded region after them is the forecast, and the violet dashed line marked Dec '26 is the cutoff.
+4. Before the cutoff, the months come from the ledger (GL run-off). After it, from the budget; without one, the banner at the top says which assumption fills them.
+5. Drag the violet line one month later, then set the selector GL→Budget cutoff back to Auto.""",
+              ["Actuals, then GL to cash, then budget to cash.", "Cutoff: three months after the latest closing, draggable.", "Each closing replaces assumptions with actuals."]),
             L("P4.1", "Budgets: drivers, import from Claude, conversion to cash", 9,
               "Bring any client budget into K-φ, and see how it becomes future cash flows.",
               """
