@@ -485,7 +485,7 @@ function foundationBlock() {
   const fcert = CERTS.find(x => x.kind === "path" && x.ref === fp.id) || (fps.got === fps.steps.length ? { title: fp.title } : null);
   return `<section class="block foundation" data-cur><header><h2>${esc(pa.title)}${pa.preview ? PV : ""}</h2><span class="note">${esc(pa.hours)} · ${esc(pa.who)} · free · its own credential · <a href="#path-practitioner">back to the ${esc(fp.title)}</a></span></header>
     <div class="courses">
-      <a class="crow" href="#path-practitioner"><span class="code">${fcert ? "✓" : "1"}</span><div><h3>${esc(fp.title)}</h3><p>${fp.courses.map(x => esc(course(x).title)).join(" · ")} · exam</p></div><span class="chip ${fcert ? "live" : ""}">${fcert ? "✓ Credential" : fps.got + " of " + fps.steps.length + " steps"}</span></a>
+      <a class="crow" href="#path-practitioner"><span class="code">${fcert ? "✓" : "1"}</span><div><h3>${esc(fp.title)}</h3><p>${fp.courses.map(x => esc(course(x).title)).join(" · ")} · exam</p></div><span class="chip ${fcert ? "live" : ""}">${fcert ? "✓ Passed" : fps.got + " of " + fps.steps.length + " steps"}</span></a>
       ${pathCourseRows(Object.assign({}, pa, { courses: own }))}${pathExam(Object.assign({}, pa, { courses: own }))}</div>
     <div style="margin-top:12px">${pathCred(pa)}</div></section>`;
 }
