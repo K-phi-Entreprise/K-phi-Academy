@@ -236,10 +236,10 @@ A variance report is only useful if it says why. For each material variance, fin
 | Timing | An invoice booked a month later than planned |
 | Error | Wrong account or wrong period |
 
-Timing and error variances need no business action (errors need an accounting correction), but they must be named so nobody acts on them. Set a threshold for "material" with the client, for example 5% and a fixed amount, and comment only above it.
+Timing and error variances need no business action (errors need an accounting correction), but they must be named so nobody acts on them. Start with the largest variances in amount: the bridge at the top of the page shows which lines explain the gap in net income.
 """,
               "In your practice company, run budget versus actuals for the group and find the largest variance.",
-              ["Compare any version with actuals.", "Name the cause: volume, price, timing or error.", "Agree a materiality threshold with the client."]),
+              ["Compare any version with actuals.", "Name the cause: volume, price, timing or error.", "Start with the largest variances."]),
             L("P3.4", "Variance commentary with an assistant", 7,
               "Let an assistant draft the commentary, and check it before it goes out.",
               """
@@ -264,21 +264,49 @@ Save the prompt with the month's file. Next month, reuse it and compare.
             Q("A variance comes from an invoice booked one month late. What kind is it?", ["Volume", "Timing", "Price"], 1, "It reverses next month and needs no management action, but it must be named."),
         ]},
         {"code": "P4", "title": "Forecasting", "lessons": [
-            L("P4.1", "Forecast rules and deterministic replay", 8,
-              "Build forecasts that give the same answer every time.",
+            L("P4.1", "Budgets: drivers, import from Claude, conversion to cash", 9,
+              "Bring any client budget into K-φ, and see how it becomes future cash flows.",
               """
-Each forecast line follows a **rule**: a growth rate, a payment term, a fixed amount, a link to another line. Rules are saved with the version and **replayed**. The same inputs always give the same forecast.
+**A K-φ budget is driver-based.** You do not type a figure on every P&L line; you set the drivers and K-φ computes the lines:
 
-That property is what makes a forecast auditable. When a figure changes, there are only two possible reasons: an input changed (new actuals, a new rate) or a rule changed. Both are visible.
+| Category | Drivers |
+|---|---|
+| Revenue | revenue base, or price × volume per product line |
+| Cost of sales | margin in %, plus a fixed part |
+| Payroll | headcount × average salary, plus social charges and bonus |
+| Operating expenses | rent, IT, marketing, travel, other |
+| Below EBITDA | depreciation, interest and debt service, tax, capex |
 
-Practical consequences:
+Gross profit, EBITDA, operating income and net income are always computed, never typed.
 
-- **Change the rule, not the result.** Typing a figure over a forecast line breaks the link between inputs and output.
-- **Keep rules simple.** A rule the client cannot explain will not be maintained.
-- **Document unusual rules** in the line's comment.
+**Main categories fixed, detail free.** The categories above, Revenue, Cost of sales, Payroll, Operating expenses, Depreciation, Financial, Tax, are the canonical structure: they are the same for every client, because K-φ needs to know what each amount is to turn it into cash. What sits under each one is the client's own: their product lines, their cost centres, their names. That is why any budget fits.
+
+**Import it from Claude.** Clients rarely start from a blank page; they have a budget spreadsheet. Two ways bring it in, and both call the same engine functions:
+
+- **Claude, through the K-φ connector (MCP).** Give Claude the spreadsheet and ask it to create the budget in K-φ. Claude reads it in any layout and any language, maps each line to its canonical category and keeps the detail underneath. It can preview first, without writing. The connector needs write access ("Allow write actions" when you connect it).
+- **The Consultant inside K-φ** does the same from the app.
+
+Every write is tagged with where it came from (Claude, the Consultant, the app) and recorded in the audit log. The new budget appears in Plan → Budget like any other, in draft.
+
+**Then K-φ turns it into future cash flows.** Each cash-bearing category gets a cash rule, on the Flow Rules tab of Budget → Cash:
+
+| Category | Becomes cash |
+|---|---|
+| Revenue | collected after the DSO |
+| Cost of sales, operating expenses | paid to suppliers after the DPO |
+| Payroll | salaries paid on their schedule |
+| Interest, tax | paid on their schedule |
+| Depreciation | no cash |
+
+A category without a rule is flagged: its budget will not turn into cash until it has one. Once the rules exist, the budget's cash flows feed the forecast for the months after the cutoff.
 """,
-              "In your practice company, open the forecast and change the growth rule on one revenue line. Note which other lines move.",
-              ["Rules are saved with the version and replayed.", "Same inputs, same forecast.", "Change rules, never results."]),
+              """In your practice company, turn the budget of lesson P3.2 into cash rules.
+1. In the menu on the left, under FP&A > Plan, open Budget → Cash, then the Flow Rules tab.
+2. Read the alert: it lists the categories without a cash rule, whose budget will not convert to cash yet.
+3. Click Generate rules: K-φ proposes one rule per category, with its timing (DSO, DPO or a schedule).
+4. Check the list: Revenue collected after the DSO, Payroll on a schedule, Depreciation without cash.
+5. Open the → Forecast tab to see the budget's cash flows month by month.""",
+              ["Budgets are driver-based; subtotals are computed.", "Canonical categories fixed, detail free: any budget fits.", "Import with Claude (MCP) or the Consultant; rules turn it into cash."]),
             L("P4.2", "Collections and disbursements: ledger or open invoices", 7,
               "Choose the right source for cash coming in and going out.",
               """

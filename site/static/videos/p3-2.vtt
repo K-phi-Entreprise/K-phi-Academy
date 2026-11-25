@@ -21,6 +21,14 @@ On the budget page, Seed from Actuals fills every month from the ledger.
 Then adjust the lines by driver: revenue, cost of goods sold, personnel, operating expenses.
 
 6
-00:00:28.682 --> 00:00:32.059
+00:00:28.382 --> 00:00:34.216
+Linear is the default: steady growth with a seasonal pattern. Flat is a neutral baseline.
+
+7
+00:00:34.266 --> 00:00:41.522
+YoY needs thirteen months. Holt suits noisy history. AI when the client knows what the history cannot show.
+
+8
+00:00:42.972 --> 00:00:46.349
 Next: P3.3  Budget versus actuals
 
