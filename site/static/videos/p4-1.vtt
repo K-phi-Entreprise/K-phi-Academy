@@ -1,38 +1,34 @@
 WEBVTT
 
 1
-00:00:00.750 --> 00:00:05.179
-P4.1 · Forecast rules and deterministic replay
+00:00:00.750 --> 00:00:06.349
+P4.1 · Budgets: drivers, import from Claude, conversion to cash
 
 2
-00:00:06.329 --> 00:00:10.639
-Each forecast line follows a saved rule, replayed every time.
+00:00:07.499 --> 00:00:14.460
+A K-φ budget is driver-based: gross profit, EBITDA and net income are computed, never typed.
 
 3
-00:00:10.689 --> 00:00:14.958
-When a figure moves, an input or a rule changed, and both are visible.
+00:00:14.510 --> 00:00:19.750
+The categories are fixed for every client; what sits under each one is the client's own.
 
 4
-00:00:16.329 --> 00:00:22.379
-The flow rules page lists every rule: account, cash flow category, timing and cadence.
+00:00:20.900 --> 00:00:26.127
+Give the spreadsheet to Claude through the K-φ connector, or to the Consultant in the app.
 
 5
-00:00:22.429 --> 00:00:29.277
-Receivables are collected by aging; payroll follows its twelve-month average; leases follow their schedule.
+00:00:26.177 --> 00:00:31.643
+Each line is mapped to its category, the detail kept underneath; every write is logged.
 
 6
-00:00:30.427 --> 00:00:33.635
-The forecast replays those rules month by month.
+00:00:32.793 --> 00:00:37.347
+On the Flow Rules tab, Generate rules gives each category its timing.
 
 7
-00:00:33.685 --> 00:00:38.563
-Drag the cutoff: actuals run off up to it, the budget takes over after it.
+00:00:37.397 --> 00:00:41.118
+Then the budget's cash flows feed the forecast after the cutoff.
 
 8
-00:00:39.713 --> 00:00:44.170
-Typing over a forecast line breaks the link between inputs and output.
-
-9
-00:00:48.013 --> 00:00:51.692
+00:00:44.093 --> 00:00:47.773
 Next: P4.2  Ledger or open invoices
 
