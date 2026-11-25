@@ -21,6 +21,29 @@ COURSE = {
     "lab": "Practise in your own practice company, a copy of Halden Trading, which opens set up: three companies, 23 months of ledger, and the budget and forecasts you build from it.",
     "chapters": [
         {"code": "P1", "title": "From ledger to statements", "lessons": [
+            L("P1.0", "Versions: one per closing", 6,
+              "Know which closing you are looking at, and go back to any earlier one.",
+              """
+Before reading any statement in K-φ, look at the first box of the top bar. It shows a period, 2026-09 for instance. That is the **version** you are looking at, and in K-φ **a version is a closing**: 2026-09 is the September 2026 close.
+
+Each month you close is kept as a version. A version holds everything as it stood at that close: the ledger, the statements, the forecast made from it, the KPIs. That gives you three things:
+
+- **Keep track.** Each close adds a version; the earlier ones stay.
+- **Freeze.** What you presented for June stays as presented, whatever is booked afterwards.
+- **Go back.** Pick an earlier version and every page shows the situation as it was: the cash at the end of June, what the forecast said then, the DSO then.
+
+The app opens on the latest closing. Most mistakes in a review come from reading the wrong version, so say it out loud in a meeting: "these are the figures at the September close".
+
+Budgets have versions of their own, which are a different thing: lesson P3.1 covers them.
+""",
+              """In your practice company, go back to the June 2026 close and read the cash as it was then.
+1. In the menu on the left, under FP&A > Statements, open Balance Sheet.
+2. In the top bar, open ENTITIES, click None, then tick Halden Trading Inc.
+3. Look at the first box of the top bar: 2026-09, the September close. Read the line Total Cash & Cash Equivalents.
+4. Open that box: it lists the versions, one per closing. Pick 2026-06.
+5. The balance sheet now shows the June close. Read Total Cash & Cash Equivalents again and type it below.
+6. Switch back to 2026-09 before you move on.""",
+              ["A version is a closing, kept as it stood.", "The first box of the top bar says which one you are reading.", "Pick an earlier version to see the situation then."]),
             L("P1.1", "P&L year to date, cumulative balance sheet", 7,
               "Read K-φ's statements the way they are built.",
               """
@@ -147,28 +170,29 @@ Two habits:
             Q("A covenant's EBITDA definition differs from the accounting one. What do you do?", ["Use the accounting EBITDA", "Record and use the agreement's definition", "Average the two"], 1, "The covenant is tested on the agreement's terms."),
         ]},
         {"code": "P3", "title": "Budget and versions", "lessons": [
-            L("P3.1", "Versions and what they freeze", 7,
-              "Go back to any closing and see the situation as it was.",
+            L("P3.1", "Budget versions, approval and overlaps", 8,
+              "Know which budget feeds the forecast, who approved it, and which one wins when two cover the same months.",
               """
-In K-φ, a **version is a closing**. Each month you close is kept as a version, named after its period: 2026-09 is the September 2026 close. The first box of the top bar lists them.
+A budget in K-φ is not a closing version (lesson P1.0). It is a plan for a fiscal year, and a client usually has several: Budget 2026, approved; Budget 2027, in draft; a revised 2027 made in June. Each one lives on its own and keeps its history.
 
-A version keeps everything as it stood at that close: the ledger, the statements, the forecast made from it, the KPIs. That gives you three things:
+**Approval workflow, per company.** Each company in a budget moves through three statuses: draft, submitted, approved. Submitting and approving are separate rights, so a controller can prepare and a CFO can approve. With segregation of duties switched on, whoever submitted a company's budget cannot approve it. Every step is logged with who and when, so "which numbers did the board approve?" has an answer.
 
-- **Keep track.** Each close adds a version; the earlier ones stay.
-- **Freeze.** What you presented for June stays as presented, whatever is booked afterwards.
-- **Go back.** Pick an earlier version and every page shows the situation as it was: what the forecast said in June, what the DSO was then.
+**Which budget feeds the forecast.** Comparing budget against actuals works with any budget you pick. The forecast is different: it uses only the budgets you flag for it, with the star next to the budget's name on the Budget → Cash page. A flag covers a window of months (by default the budget's own year) and a set of companies.
 
-The usual use is the monthly review: last month's forecast against what actually happened.
+**When two flagged budgets overlap.** Say Budget 2027 is flagged for January to December 2027, and the June revision, Budget 2027 R1, is flagged for July to December. For July to December, two budgets claim the same companies and months. K-φ does not choose for you:
 
-**Budgets are separate.** Each budget (FY2027, say) has its own versions and an approval workflow: draft, submitted, approved. Lesson P3.2 creates one.
+- the Budget → Cash page shows a banner listing each conflict, company and month;
+- until you pick, neither budget feeds that month;
+- you click "Use Budget 2027 R1" (or the other) for that company and month, and that choice is kept.
+
+The clean way to avoid conflicts is to end the old flag where the new one starts: Budget 2027 for January to June, R1 for July to December. One month, one company, one budget.
 """,
-              """In your practice company, go back to the June 2026 close and read a KPI as it was then.
-1. In the menu on the left, under FP&A > Analyze, open Financial KPIs. In ENTITIES, click None, then tick Halden Trading Inc.
-2. Read the DSO tile: this is the September 2026 close, the version the app opens on.
-3. Open the first box of the top bar (it shows 2026-09): it lists the versions, one per closing. Pick 2026-06.
-4. The page now shows the situation at the June close. Read the DSO again (WINDOW stays on 3M) and type it below.
-5. Switch back to 2026-09 before you move on.""",
-              ["A version is a closing, kept as it stood.", "Pick an earlier version to see the situation then.", "Budgets have their own versions and approval."]),
+              """In your practice company, find where budgets, their status and the forecast flag live.
+1. In the menu on the left, under FP&A > Plan, open Budget → Cash. A new practice company has no budget yet: lesson P3.2 creates one.
+2. Once a budget exists, its name shows in the bar at the top of the page, with its status: draft, submitted or approved.
+3. Next to the name is a star. Hover it: "Flag as the budget to use for forecasting". A filled star means the forecast uses it.
+4. If two flagged budgets ever cover the same company and month, the banner with the "Use …" buttons appears on this page.""",
+              ["Budgets are plans per fiscal year, not closings.", "Draft, submitted, approved, per company, logged.", "Two flagged budgets on the same month: you pick which one wins."]),
             L("P3.2", "Creating a budget from actuals", 5,
               "Give a client without a budget a starting point in one step.",
               """
@@ -179,15 +203,25 @@ Many smaller clients have no formal budget. K-φ offers two things in that case.
 
 The second is usually the better start. It gives the client figures they recognise, and every change they make is a decision they can explain.
 
-Walk through the result with the client line by line for the largest items: revenue, payroll, rent, major suppliers. The smaller lines can follow the pattern.
+**Seed from Actuals offers five ways to extend the history into the budget year.** All of them work per company and per line (revenue, cost of sales, payroll, rent and the other expenses, plus receivables, payables and stock), from the months in the ledger.
+
+| Method | What it does | When to use it |
+|---|---|---|
+| **Linear** (default) | Measures the seasonality of each calendar month (that month's average revenue against the overall average), removes it, draws a straight trend line through the rest (least squares), projects it and puts the seasonality back. | A business growing or shrinking steadily, with a seasonal pattern. |
+| **Flat** | Repeats the last twelve months as they were. | A mature business, or a neutral baseline the client then adjusts. |
+| **YoY** | Measures the average growth of each month against the same month a year earlier and applies it to last year's months. Needs at least 13 months. | A clear yearly pattern with steady growth. |
+| **Holt** | Smooths the level and the trend of the series, then lets the trend fade month after month so it does not run away; seasonality is put back. | Noisy history, where a straight line would overreact. |
+| **AI** | Claude reads the history and the context you type (industry, headwinds, tailwinds, strategic target) and proposes the months. | When the client knows things the history cannot show: a launch, a lost contract. Review every line. |
+
+Whichever method you pick, the result is a starting point: walk through it with the client line by line for the largest items: revenue, payroll, rent, major suppliers. The smaller lines can follow the pattern.
 """,
               """In your practice company, create a budget from actuals and look at its first lines.
 1. In the menu on the left, under FP&A > Plan, open Budget → Cash.
 2. Click Seed from Actuals. Keep the name (Budget 2027) and the fiscal year, then OK.
-3. Keep the extrapolation method and the three companies, then OK: K-φ fills every month from the ledger and saves the budget.
+3. Choose the extrapolation method (Linear is the default; the table above says what each does), keep the three companies, then OK: K-φ fills every month from the ledger and saves the budget.
 4. It starts as a draft, the first step of its approval workflow (draft, submitted, approved). Press Check below.
 5. Compare it with actuals for one entity and note the line you would adjust first.""",
-              ["No budget: run-rate forecast, flagged as an assumption.", "Better start: create a budget from actuals.", "Review the largest lines with the client."]),
+              ["No budget: run-rate forecast, flagged as an assumption.", "Seed from Actuals: Linear, Flat, YoY, Holt or AI.", "Review the largest lines with the client."]),
             L("P3.3", "Budget versus actuals", 6,
               "Explain variances, not just show them.",
               """
