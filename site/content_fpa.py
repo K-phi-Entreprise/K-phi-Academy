@@ -103,10 +103,14 @@ K-φ computes some thirty KPIs from the tenant's data, each with its formula and
 
 Each KPI shows its formula. Read it before you present the figure, because names are not standard across companies. "EBITDA" in one board pack may exclude items another includes.
 
-When a client uses a different definition, write it down and agree whether to adopt K-φ's or document the gap. Two definitions of the same KPI in one meeting cost more than either definition.
+K-φ's definitions are the defaults, and some can be adjusted: DSO, DPO and DIO use a three-month window, which you can switch to the latest month, six or twelve months; the benchmark industry can be changed too. If a client measures a KPI differently, say so before the meeting and set the window to match.
 """,
-              "In your practice company, open the KPI page and read the formula behind EBITDA margin and the current ratio.",
-              ["About thirty KPIs, each with its formula and thresholds.", "Names are not standard; read the formula.", "Agree on one definition per KPI with the client."]),
+              """In your practice company, read a DSO and the formula behind it.
+1. In the menu on the left, under FP&A > Analyze, open Financial KPIs.
+2. In the top bar, open ENTITIES, click None, then tick Halden Trading Inc.; the period box shows 2026-09.
+3. Read the DSO tile, under the cash conversion cycle. The line under the figure is its formula: receivables divided by the annualized revenue, times 365, with the revenue averaged over 3 months (WINDOW: 3M, top right).
+4. Type the DSO below. Then click Latest, 6M and 12M in WINDOW to see it move, and come back to 3M.""",
+              ["About thirty KPIs, each with its formula and thresholds.", "Names are not standard; read the formula.", "DSO, DPO and DIO: three-month window by default, adjustable."]),
             L("P2.2", "Working capital: DSO, DPO, DIO and trailing windows", 8,
               "Read working capital KPIs without being fooled by seasonality.",
               """
