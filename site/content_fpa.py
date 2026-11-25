@@ -35,7 +35,7 @@ The same selectors as everywhere else apply: entity, business unit and third par
 
 Before presenting a statement, check that the balance sheet balances for each entity and that net income, less distributions, matches the movement in retained earnings for the year. If either fails, look at the classification of accounts before anything else.
 """,
-              "In your practice company, open the P&L for Halden Trading Ltd for March 2026 (Company view, Incremental), then switch the entity selector to the group and compare.",
+              "In your practice company, open the P&L for Halden Trading Ltd for March 2026 (Company view, Incremental). The app shows figures in the group currency, USD: switch the currency in the top bar to GBP, the company's own, to read its figures as booked. Then switch the entity selector to the group and compare.",
               ["The P&L is year to date and restarts each fiscal year.", "The balance sheet is cumulative.", "Check balance and net income before presenting."]),
             L("P1.2", "Drilling down to ledger lines", 6,
               "Trace any figure to the lines that make it.",
@@ -367,7 +367,7 @@ Write down what you tied and the difference found, even when it is zero. A one-p
 
 If a difference stays unexplained, say so in the pack. An unexplained difference that is disclosed is a question; one that is found later is a credibility problem.
 """,
-              "In your practice company, tie the ledger's cash on 31 December 2025 to the bank balances on the same date, company by company.",
+              "In your practice company, tie the ledger's cash on 31 December 2025 to the bank balances on the same date, company by company, each in its own currency (switch the currency in the top bar from the group's USD).",
               ["Tie revenue, cash and balances to independent sources.", "Write down what you tied, even zero differences.", "Disclose differences you cannot explain."]),
         ], "check": [
             Q("The board pack shows the wrong EBITDA. Where do you fix it?", ["In the board pack", "Upstream: import, classification or rule", "In a spreadsheet"], 1, "The board pack calculates nothing; the cause is upstream."),
