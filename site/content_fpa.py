@@ -148,20 +148,27 @@ Two habits:
         ]},
         {"code": "P3", "title": "Budget and versions", "lessons": [
             L("P3.1", "Versions and what they freeze", 7,
-              "Keep budgets and forecasts apart, and know what a version protects.",
+              "Go back to any closing and see the situation as it was.",
               """
-A **version** is a set of figures together with its own forecast rules: the budget, a Q2 reforecast, a downside case.
+In K-φ, a **version is a closing**. Each month you close is kept as a version, named after its period: 2026-09 is the September 2026 close. The first box of the top bar lists them.
 
-- A new version **starts from the rules of the version it is created from**.
-- Editing a version changes **only that version**. The budget stays as the board approved it.
-- **Closing a period** freezes a copy, so last month's forecast can always be compared with what happened.
+A version keeps everything as it stood at that close: the ledger, the statements, the forecast made from it, the KPIs. That gives you three things:
 
-Name versions so that anyone can read them a year later: "Budget 2027", "Reforecast 2027 Q2", not "new v3 final".
+- **Keep track.** Each close adds a version; the earlier ones stay.
+- **Freeze.** What you presented for June stays as presented, whatever is booked afterwards.
+- **Go back.** Pick an earlier version and every page shows the situation as it was: what the forecast said in June, what the DSO was then.
 
-Keep the number of live versions small. Each one is a set of rules someone has to maintain.
+The usual use is the monthly review: last month's forecast against what actually happened.
+
+**Budgets are separate.** Each budget (FY2027, say) has its own versions and an approval workflow: draft, submitted, approved. Lesson P3.2 creates one.
 """,
-              "In your practice company, create a budget from actuals for the group, then a version from it. Change one figure in the version and check the budget is unchanged.",
-              ["A version holds figures and its own rules.", "Editing one version never changes another.", "Closing a period freezes a copy."]),
+              """In your practice company, go back to the June 2026 close and read a KPI as it was then.
+1. In the menu on the left, under FP&A > Analyze, open Financial KPIs. In ENTITIES, click None, then tick Halden Trading Inc.
+2. Read the DSO tile: this is the September 2026 close, the version the app opens on.
+3. Open the first box of the top bar (it shows 2026-09): it lists the versions, one per closing. Pick 2026-06.
+4. The page now shows the situation at the June close. Read the DSO again (WINDOW stays on 3M) and type it below.
+5. Switch back to 2026-09 before you move on.""",
+              ["A version is a closing, kept as it stood.", "Pick an earlier version to see the situation then.", "Budgets have their own versions and approval."]),
             L("P3.2", "Creating a budget from actuals", 5,
               "Give a client without a budget a starting point in one step.",
               """
@@ -174,7 +181,12 @@ The second is usually the better start. It gives the client figures they recogni
 
 Walk through the result with the client line by line for the largest items: revenue, payroll, rent, major suppliers. The smaller lines can follow the pattern.
 """,
-              "In your practice company, look at how the budget compares with actuals for one entity, and note the line you would adjust first.",
+              """In your practice company, create a budget from actuals and look at its first lines.
+1. In the menu on the left, under FP&A > Plan, open Budget → Cash.
+2. Click Seed from Actuals. Keep the name (Budget 2027) and the fiscal year, then OK.
+3. Keep the extrapolation method and the three companies, then OK: K-φ fills every month from the ledger and saves the budget.
+4. It starts as a draft, the first step of its approval workflow (draft, submitted, approved). Press Check below.
+5. Compare it with actuals for one entity and note the line you would adjust first.""",
               ["No budget: run-rate forecast, flagged as an assumption.", "Better start: create a budget from actuals.", "Review the largest lines with the client."]),
             L("P3.3", "Budget versus actuals", 6,
               "Explain variances, not just show them.",
