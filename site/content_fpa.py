@@ -347,17 +347,42 @@ Use open invoices when the client's invoices are complete and up to date in K-φ
 """,
               "In your practice company, find the switch between GL to cash and open invoices, and compare the next eight weeks.",
               ["Two sources: ledger (GL to cash, the default) or open invoices.", "Open invoices is more precise for the near term.", "Use it only when the invoices in K-φ are complete."]),
-            L("P4.3", "Run-rate assumptions, opt-in", 5,
-              "Use run-rate sales without hiding the assumption.",
+            L("P4.3", "Flow rules: generate them, then fit each one", 12,
+              "Create the rules that turn the ledger into cash, and choose the right timing for each flow.",
               """
-A forecast built only from open invoices stops when invoicing stops, which understates future collections. The fix is to add **projected new sales** based on the recent run rate.
+**No rules, no forecast.** GL to cash (lesson P4.0) runs on flow rules: one rule per family of accounts, saying in which direction cash moves and when. Without them, the forecast page shows "No flow rules — no forecast": K-φ would rather show nothing than guess.
 
-In K-φ, this is **opt-in and off by default**. Turning it on is a decision someone has to take and can explain.
+**Generate them.** On GL → Cash, Auto-generate rules proposes a full set from the chart of accounts:
 
-When you turn it on, say so in the forecast's notes: "New sales projected at the run rate of the last three months." A reader who does not know will mistake an assumption for an order book.
+- **Global**: one rule per account family, for all companies. The usual start.
+- **Per Entity**: one set per company, when they collect or pay differently.
+- **Per BU**, **Per Entity×BU**: the same, by business unit.
+
+Each proposal carries a confidence: 0.9 when its parameter was measured from your ledger, 0.7 when the account was identified but the parameter not measured, 0.5 for a generic default to review. Rules belong to the version you are editing (lesson P1.0): change them at the September close and earlier closings keep their own.
+
+**Then fit each one.** The timing decides when cash moves:
+
+| Flow | Timing that fits | Why |
+|---|---|---|
+| Receivables, payables | **Aging buckets** (0-30, 31-60, 61-90, 91-120, 120+), or **DSO / DPO** | Aging gives each age band its own collection and bad-debt rate; DSO or DPO is one figure measured from the ledger |
+| Salaries | **Fixed interval** (every 14 days for biweekly, 30 for monthly) or **Schedule** | Payroll goes out on known dates |
+| Loans, rent, tax instalments | **Schedule**, monthly or quarterly | Contractual dates and amounts |
+| Capex, supplier purchases | **Historical run-rate** | No date to follow: the average of recent months is the honest guess |
+| Stock | **DIO** | Purchases follow the stock you keep, not only what you sell |
+| Income tax | **Custom formula** (on EBIT, with the effective rate) | Tax follows profit, not a calendar alone |
+| Depreciation | **Non-cash** | It reduces book value, never the bank |
+
+**Check the coverage.** Above the table, the coverage bar counts the cash categories with a rule, and lists the missing ones with a → Fix button that proposes the right rule. Warnings say when a rule looks under-sized against history, for example collections far below past months.
+
+**One detail: projected new sales.** The receivables rule collects what is already on the books. With no budget, new invoices are projected only if you tick **Project new invoices** on it. It is off by default because it is an assumption, and it applies to every receivables rule at once. When you turn it on, say so in the forecast's notes (lesson P4.4).
 """,
-              "In your practice company, find where projected new sales are turned on, and write the note you would add.",
-              ["Run-rate new sales are opt-in and off by default.", "Turning it on is a decision to explain.", "Write the assumption in the forecast's notes."]),
+              """In your practice company, create Halden's rules and fit two of them. Halden pays salaries once a month, and its capex has no schedule.
+1. In the menu on the left, under FP&A > Plan, open GL → Cash. The page lists the cash categories without a rule.
+2. Next to "Auto-generate rules", click Global. Read the table: receivables (110) and payables (200) get aging buckets, salaries (600) a fixed interval of 14 days, other expenses 30 days.
+3. Click the row of 600, Salaries & Wages, and set Days to 30.
+4. The coverage still lists CapEx & Asset Acquisitions (accounts 1500 and 1510). Click → Fix next to it, keep Historical run-rate, then Save Rule.
+5. Press Check below.""",
+              ["No rules, no forecast: generate them with Global.", "Fit each timing: aging or DSO/DPO, intervals, schedules, run rate.", "Project new invoices: off by default, an assumption to state."]),
             L("P4.4", "Stating assumptions", 5,
               "Make every forecast readable by someone who did not build it.",
               """

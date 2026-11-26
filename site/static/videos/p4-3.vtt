@@ -1,26 +1,34 @@
 WEBVTT
 
 1
-00:00:00.750 --> 00:00:04.324
-P4.3 · Run-rate assumptions, opt-in
+00:00:00.750 --> 00:00:05.334
+P4.3 · Flow rules: generate them, then fit each one
 
 2
-00:00:05.474 --> 00:00:10.085
-A forecast from open invoices alone understates future collections.
+00:00:06.484 --> 00:00:13.952
+Flow rules say when the ledger's money turns into cash. Without them, K-φ shows no forecast rather than a guess.
 
 3
-00:00:10.135 --> 00:00:14.385
-Projected new sales fix that, and are opt-in, off by default.
+00:00:14.002 --> 00:00:20.666
+On GL → Cash, Auto-generate rules proposes a full set, each with its confidence.
 
 4
-00:00:15.535 --> 00:00:21.984
-On the forecast, reference metrics show what the projection rests on: revenue, DSO, DPO.
+00:00:21.816 --> 00:00:29.861
+Receivables and payables by their age, or by the days measured in the ledger. Salaries on pay dates, loans on their schedule.
 
 5
-00:00:22.034 --> 00:00:24.537
-Read them before trusting the months ahead.
+00:00:29.911 --> 00:00:36.639
+Capex has no date to follow: its own history is the honest guess. Depreciation moves no cash.
 
 6
-00:00:25.987 --> 00:00:28.984
+00:00:37.789 --> 00:00:41.855
+The coverage bar lists what has no rule yet, and proposes one.
+
+7
+00:00:41.905 --> 00:00:48.819
+Projecting new sales is a detail of the receivables rule: an assumption, so it stays off until you choose it.
+
+8
+00:00:50.269 --> 00:00:53.266
 Next: P4.4  Stating assumptions
 
