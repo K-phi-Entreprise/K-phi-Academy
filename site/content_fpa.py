@@ -38,10 +38,10 @@ Budgets have versions of their own, which are a different thing: lesson P3.1 cov
 """,
               """In your practice company, go back to the June 2026 close and read the cash as it was then.
 1. In the menu on the left, under FP&A > Statements, open Balance Sheet.
-2. In the top bar, open ENTITIES, click None, then tick Halden Trading Inc.
+2. In the top bar, open ENTITIES, click None, then tick HTUS, Halden Trading Inc., the US company. Not HTUK, Halden Trading Ltd, the UK one: the names are close.
 3. Look at the first box of the top bar: 2026-09, the September close. Read the line Total Cash & Cash Equivalents.
-4. Open that box: it lists the versions, one per closing. Pick 2026-06.
-5. The balance sheet now shows the June close. Read Total Cash & Cash Equivalents again and type it below.
+4. Open that box: it lists the versions, one per closing. Pick 2026-06. (The Versions row above the statement does the same in columns: click 2026-06 and the June close appears beside September.)
+5. Read Total Cash & Cash Equivalents at the June close and type it below.
 6. Switch back to 2026-09 before you move on.""",
               ["A version is a closing, kept as it stood.", "The first box of the top bar says which one you are reading.", "Pick an earlier version to see the situation then."]),
             L("P1.1", "P&L year to date, cumulative balance sheet", 7,
