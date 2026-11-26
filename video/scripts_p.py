@@ -146,12 +146,6 @@ LESSONS = {
     {"type": "bullets", "d": 9, "eyebrow": "THEN CHECK", "heading": "Coverage, and one detail", "step": 1.3,
      "items": [("Coverage", "missing categories, with → Fix"), ("Warnings", "rules under-sized against history"), ("New invoices", "opt-in, off by default")],
      "cap": ["The coverage bar lists what has no rule yet, and proposes one.", "Projecting new sales is a detail of the receivables rule: an assumption, so it stays off until you choose it."]},
-    E("Next  ·  P4.4  Stating assumptions")]},
-"P4.4": {"scenes": [
-    T("Stating", "assumptions", M("P4.4", 5), "P4.4 · Stating assumptions"),
-    {"type": "table", "d": 12, "eyebrow": "A SHORT TEMPLATE", "heading": "Readable without its author", "cols": ["", ""], "widths": [1, 3], "step": 0.9, "hot": 4, "hot_at": 5,
-     "rows": [["Base", "Actuals to October, budget after"], ["Revenue", "Run rate of three months, plus signed contracts"], ["Collections", "Open invoices for eight weeks, ledger after"], ["Payroll", "Headcount plan of 1 September"], ["Not included", "The acquisition under discussion"]],
-     "cap": ["List a forecast's assumptions in plain words.", "What it leaves out is where the surprises come from."]},
     E("Next  ·  P5.1  Building a scenario")]},
 "P5.1": {"scenes": [
     T("Building", "a scenario", M("P5.1", 7), "P5.1 · Building a scenario"),

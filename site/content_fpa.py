@@ -374,7 +374,7 @@ Each proposal carries a confidence: 0.9 when its parameter was measured from you
 
 **Check the coverage.** Above the table, the coverage bar counts the cash categories with a rule, and lists the missing ones with a → Fix button that proposes the right rule. Warnings say when a rule looks under-sized against history, for example collections far below past months.
 
-**One detail: projected new sales.** The receivables rule collects what is already on the books. With no budget, new invoices are projected only if you tick **Project new invoices** on it. It is off by default because it is an assumption, and it applies to every receivables rule at once. When you turn it on, say so in the forecast's notes (lesson P4.4).
+**One detail: projected new sales.** The receivables rule collects what is already on the books. With no budget, new invoices are projected only if you tick **Project new invoices** on it. It is off by default because it is an assumption, and it applies to every receivables rule at once. When you turn it on, say so to whoever reads the forecast.
 """,
               """In your practice company, create Halden's rules and fit two of them. Halden pays salaries once a month, and its capex has no schedule.
 1. In the menu on the left, under FP&A > Plan, open GL → Cash. The page lists the cash categories without a rule.
@@ -383,23 +383,6 @@ Each proposal carries a confidence: 0.9 when its parameter was measured from you
 4. The coverage still lists CapEx & Asset Acquisitions (accounts 1500 and 1510). Click → Fix next to it, keep Historical run-rate, then Save Rule.
 5. Press Check below.""",
               ["No rules, no forecast: generate them with Global.", "Fit each timing: aging or DSO/DPO, intervals, schedules, run rate.", "Project new invoices: off by default, an assumption to state."]),
-            L("P4.4", "Stating assumptions", 5,
-              "Make every forecast readable by someone who did not build it.",
-              """
-A forecast nobody can explain will not be trusted, however good it is. Before you share one, list its assumptions in plain words.
-
-A short template:
-
-- **Base:** actuals to the end of October, budget for the rest of the year.
-- **Revenue:** run rate of the last three months, plus signed contracts.
-- **Collections:** open invoices for eight weeks, ledger terms after.
-- **Payroll:** headcount plan of 1 September.
-- **Not included:** the acquisition under discussion.
-
-The last line matters as much as the others. What a forecast leaves out is where the surprises come from.
-""",
-              "Write the assumptions of a forecast you know, using the template.",
-              ["List assumptions in plain words.", "Say what is not included.", "A forecast must be readable without its author."]),
         ], "check": [
             Q("In the forecast, where do the figures of a month after the cutoff come from?",
               ["The ledger's open balances, run off by the flow rules", "The budget flagged for the forecast, turned into cash by its cash rules", "Always the run rate of the last three months"], 1,
