@@ -24,13 +24,16 @@ COURSE = {
             L("P1.0", "Versions: one per closing", 6,
               "Know which closing you are looking at, and go back to any earlier one.",
               """
-Before reading any statement in K-φ, look at the first box of the top bar. It shows a period, 2026-09 for instance. That is the **version** you are looking at, and in K-φ **a version is a closing**: 2026-09 is the September 2026 close.
-
-Each month you close is kept as a version. A version holds everything as it stood at that close: the ledger, the statements, the forecast made from it, the KPIs. That gives you three things:
+In K-φ **a version is a closing**: 2026-09 is the September 2026 close. Each month you close is kept as a version, and a version holds everything as it stood at that close: the ledger, the statements, the forecast made from it, the KPIs. That gives you three things:
 
 - **Keep track.** Each close adds a version; the earlier ones stay.
 - **Freeze.** What you presented for June stays as presented, whatever is booked afterwards.
-- **Go back.** Pick an earlier version and every page shows the situation as it was: the cash at the end of June, what the forecast said then, the DSO then.
+- **Go back.** Pick an earlier version and you see the situation as it was: the cash at the end of June, what the forecast said then, the DSO then.
+
+**Where you pick it.**
+
+- **On the statements** (Balance Sheet, P&L, cash flow statement), the **Versions row** above the statement decides the columns. You can pick several closings at once and read them side by side: June beside September.
+- **On the other pages** (KPIs, forecast, variance, exports), the **first box of the top bar** sets the closing you read "as of". On a statement, picking a closing there that is not already in the Versions row replaces the columns with that one closing.
 
 The app opens on the latest closing. Most mistakes in a review come from reading the wrong version, so say it out loud in a meeting: "these are the figures at the September close".
 
@@ -39,11 +42,10 @@ Budgets have versions of their own, which are a different thing: lesson P3.1 cov
               """In your practice company, go back to the June 2026 close and read the cash as it was then.
 1. In the menu on the left, under FP&A > Statements, open Balance Sheet.
 2. Any company will do, or the whole group: the lesson is about versions. ENTITIES in the top bar says which one you are reading.
-3. Look at the first box of the top bar: 2026-09, the September close. Read the line Total Cash & Cash Equivalents.
-4. Open that box: it lists the versions, one per closing. Pick 2026-06. (The Versions row above the statement does the same in columns: click 2026-06 and the June close appears beside September.)
-5. Read Total Cash & Cash Equivalents at the June close and type it below.
-6. Switch back to 2026-09 before you move on.""",
-              ["A version is a closing, kept as it stood.", "The first box of the top bar says which one you are reading.", "Pick an earlier version to see the situation then."]),
+3. Above the statement, the Versions row shows the closings; 2026-09, the September close, is selected. Read the line Total Cash & Cash Equivalents.
+4. In the Versions row, click 2026-06: the June close appears as a column beside September.
+5. Read Total Cash & Cash Equivalents in the 2026-06 column and type it below.""",
+              ["A version is a closing, kept as it stood.", "Statements: the Versions row, several closings side by side.", "Other pages: the first box of the top bar sets the closing."]),
             L("P1.1", "P&L year to date, cumulative balance sheet", 7,
               "Read K-φ's statements the way they are built.",
               """
@@ -61,7 +63,7 @@ Before presenting a statement, check that the balance sheet balances for each en
               """In your practice company, read Halden Trading Ltd's net revenue twice: year to date, then March alone.
 1. In the menu on the left, under FP&A > Statements, open P&L Statement.
 2. In the top bar, open ENTITIES, click None, then tick Halden Trading Ltd.
-3. In the top bar, set the period to 2026-03 (the first box: it lists the months).
+3. In the first box of the top bar, pick 2026-03: the P&L shows that closing alone (lesson P1.0).
 4. In the top bar, click Company next to Group: the amounts change from USD, the group's currency, to GBP, the company's own.
 5. Basis shows YTD, as the P&L opens: the Net Revenue line (sales less discounts, accounts 4000 and 4900) is January to March. Type it in the first box below.
 6. Click Incremental next to YTD: the same line now shows March alone. Type it in the second box.
@@ -83,7 +85,7 @@ Most surprises come from a few large lines: a reclassification booked in the wro
 When the cause is a classification, fix it once in the account setup. When it is a booking, the fix belongs in the accounting system, followed by a new import. Never adjust the statement itself.
 """,
               """In your practice company, drill from the group's operating expenses for September 2026 down to the ledger lines, then do the same for Halden Trading Inc. alone.
-1. Open P&L Statement (FP&A > Statements) and set the period to 2026-09 in the first box of the top bar.
+1. Open P&L Statement (FP&A > Statements). It opens on the September 2026 close, 2026-09.
 2. The operating expenses are the lines under Gross Profit: Personnel Expenses, Sales & Marketing, IT & Software and the rest. The cost of goods sold (account 5000) sits above Gross Profit and is not one of them.
 3. Click the ▶ next to an account to drill down.
 4. In ENTITIES, click None, then tick Halden Trading Inc. Find its largest operating expense account and type its name or number below.""",
@@ -101,7 +103,7 @@ Getting this right matters for two reasons. Cash forecasts need the outflow on t
 If a client books distributions to an expense account, the P&L margin is understated. Raise it, and agree on the fix in the accounting system.
 """,
               """In your practice company, follow Halden Trading Ltd's profit from the P&L to the balance sheet, at September 2026.
-1. Open P&L Statement (FP&A > Statements). In the top bar: ENTITIES, click None, tick Halden Trading Ltd; set the period to 2026-09 (the first box); click Company to read GBP.
+1. Open P&L Statement (FP&A > Statements). In the top bar: ENTITIES, click None, tick Halden Trading Ltd; check the statement shows the September 2026 close, 2026-09; click Company to read GBP.
 2. Keep Basis on YTD. The last line, Net Income, is January to September 2026. Type it in the first box below.
 3. Open Balance Sheet (FP&A > Statements), same top bar. Under Equity, read the line Retained Earnings (Net Income). Type it in the second box.
 4. Compare. The balance sheet line is larger: it holds every profit not yet closed into account 3200, Retained Earnings. Halden has not booked a year-end closing for 2025, so 2025's profit is still in it. Nothing was distributed, so all of it is retained.""",

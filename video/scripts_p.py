@@ -10,11 +10,11 @@ M = lambda code, mins: f"FP&A · {code} · {mins} min"
 LESSONS = {
 "P1.0": {"scenes": [
     T("Versions:", "one per closing", M("P1.0", 6), "P1.0 · Versions: one per closing"),
-    S("bs_m", ["Before reading any statement, look at the first box of the top bar.", "It shows the version you are reading: 2026-09, the September 2026 close."], d=9, zoom=1.6, focus=(338, 9, 508, 35), label="Version"),
     {"type": "bullets", "d": 10, "eyebrow": "A VERSION IS A CLOSING", "heading": "Track, freeze, go back", "step": 1.3,
-     "items": [("Keep track", "each close adds a version"), ("Freeze", "what you presented stays"), ("Go back", "every page as it was then")],
-     "cap": ["A version keeps the ledger, the statements, the forecast and the KPIs as they stood at that close.", "Pick an earlier one and every page shows the situation then."]},
-    S("bs_m", ["The Versions row puts several closings side by side, one column each.", "Say it in a meeting: these are the figures at the September close."], d=9, zoom=1.4, focus=(80, 54, 940, 90), label="Versions"),
+     "items": [("Keep track", "each close adds a version"), ("Freeze", "what you presented stays"), ("Go back", "the situation as it was then")],
+     "cap": ["2026-09 is the September 2026 close. A version keeps the ledger, the statements, the forecast and the KPIs as they stood.", "Pick an earlier one to see the situation then."]},
+    S("bs_m", ["On the statements, the Versions row decides the columns.", "Pick several closings and read them side by side: June beside September."], d=10, zoom=1.4, focus=(80, 54, 940, 90), label="Versions"),
+    S("bs_m", ["On the other pages, KPIs, forecast, variance, the first box of the top bar sets the closing you read.", "Say it in a meeting: these are the figures at the September close."], d=10, zoom=1.6, focus=(338, 9, 508, 35), label="As of"),
     E("Next  ·  P1.1  P&L year to date, cumulative balance sheet")]},
 "P1.1": {"scenes": [
     T("P&L year to date,", "cumulative balance sheet", M("P1.1", 7), "P1.1 · P&L year to date, cumulative balance sheet"),
