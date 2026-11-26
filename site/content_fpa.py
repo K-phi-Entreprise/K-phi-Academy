@@ -376,9 +376,15 @@ The last line matters as much as the others. What a forecast leaves out is where
               "Write the assumptions of a forecast you know, using the template.",
               ["List assumptions in plain words.", "Say what is not included.", "A forecast must be readable without its author."]),
         ], "check": [
-            Q("The forecast changed overnight and no rule was edited. What changed?", ["Nothing, it is random", "An input, such as new actuals", "The theme"], 1, "With deterministic replay, only inputs or rules can move a forecast."),
-            Q("Projected new sales from the run rate are...", ["On by default", "Opt-in, off by default", "Not available"], 1, "They are an assumption, so they are opt-in and off by default."),
-            Q("Which source is more precise for the next few weeks of collections?", ["Open invoices", "The ledger", "The budget"], 0, "Open invoices carry real amounts and due dates."),
+            Q("In the forecast, where do the figures of a month after the cutoff come from?",
+              ["The ledger's open balances, run off by the flow rules", "The budget flagged for the forecast, turned into cash by its cash rules", "Always the run rate of the last three months"], 1,
+              "Up to the cutoff the ledger feeds the forecast (GL to cash); after it, the flagged budget does (budget to cash). The run rate only fills in when there is no budget."),
+            Q("Your latest closing is September 2026. Where does the cutoff sit by default?",
+              ["September 2026", "December 2026", "December 2027"], 1,
+              "Three months after the latest closing: the month in progress, the next one, and one month of headroom so a late close does not hand months to the budget too early. You can drag it."),
+            Q("The October 2026 ledger is imported. What happens to the forecast?",
+              ["Nothing until someone re-keys it", "October's actuals replace the budget for October, the run-off restarts from the new balances and the cutoff moves to January", "The budget is overwritten by the actuals"], 1,
+              "A new closing appears (lesson P1.0). The forecast is rebuilt from it: actuals where they exist, then the ledger's balances, then the budget. The budget itself stays as approved."),
         ]},
         {"code": "P5", "title": "Scenarios", "lessons": [
             L("P5.1", "Building a scenario", 7,
