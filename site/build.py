@@ -28,6 +28,33 @@ OPEN = [COURSE, AI, MCP, FPA, CASH, TAI]
 if os.environ.get("ACADEMY_DRAFTS"): OPEN.append(BUILD)
 
 
+def place_answers(course):
+    """Where the right option sits (owner, 2026-11-27: Alena found the right answer was always the second of three).
+    The content keeps its natural order; the build moves each right option to a place drawn from a balanced, shuffled
+    list for the course (seeded by the course id, so stable between builds): as many A, B and C, with no pattern."""
+    import random
+    qs = []
+    for ch in course["chapters"]:
+        qs += [q for q in (ch.get("check") or [])]
+        qs += [l["qcm"] for l in ch["lessons"] if l.get("qcm")]
+    qs = [q for q in qs if len(q.get("options") or []) >= 2 and isinstance(q.get("answer"), int)]
+    rng = random.Random("kphi-academy|" + course["id"])
+    by_n = {}
+    for q in qs:
+        by_n.setdefault(len(q["options"]), []).append(q)
+    for n, group in by_n.items():
+        targets = [k % n for k in range(len(group))]
+        rng.shuffle(targets)
+        for q, t in zip(group, targets):
+            opts = q["options"]
+            right = opts[q["answer"]]
+            others = [o for k, o in enumerate(opts) if k != q["answer"]]
+            if rng.random() < 0.5:
+                others.reverse()
+            q["options"] = others[:t] + [right] + others[t:]
+            q["answer"] = t
+
+
 def data():
     out = []
     for c in OPEN:
@@ -35,6 +62,7 @@ def data():
             hit = re.findall(r"K-\u03c6|K-phi|Halden|practice company|Copilot in K", json.dumps(c, ensure_ascii=False))
             assert not hit, "neutral course mentions: " + ", ".join(sorted(set(hit)))
         f = json.loads(json.dumps(c))
+        place_answers(f)
         for ch in f["chapters"]:
             for l in ch["lessons"]:
                 l["read"] = md(l["read"])
