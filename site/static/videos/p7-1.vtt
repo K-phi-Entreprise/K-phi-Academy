@@ -1,26 +1,26 @@
 WEBVTT
 
 1
-00:00:00.750 --> 00:00:05.083
-P7.1 · The board pack and why it calculates nothing
+00:00:00.750 --> 00:00:05.593
+P7.1 · The board pack: built once, ready at every close
 
 2
-00:00:06.233 --> 00:00:08.972
-The board pack calculates nothing of its own.
+00:00:06.743 --> 00:00:10.263
+In Reports, a Board Pack is a report you set up once.
 
 3
-00:00:09.022 --> 00:00:13.747
-So its figures always match the screens. A wrong figure is fixed upstream.
+00:00:10.313 --> 00:00:15.262
+Each month it is rebuilt from the latest closing, same sections, same order.
 
 4
-00:00:15.233 --> 00:00:21.448
-On the P&L, the board pack view shows the last closing against budget and against the prior month.
+00:00:18.743 --> 00:00:21.715
+Consolidated, or with one pack per company.
 
 5
-00:00:21.498 --> 00:00:25.258
-The same figures as the statement, on one page for the board.
+00:00:21.765 --> 00:00:25.725
+On Period Close, the month's pack is ready when the close is done.
 
 6
-00:00:26.708 --> 00:00:30.623
+00:00:29.043 --> 00:00:32.959
 Next: P7.2  Reconciling what you present
 

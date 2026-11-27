@@ -478,17 +478,39 @@ A valuation is advice to the client's management, not a fairness opinion. Never 
             Q("Years after the last budget year are...", ["Left out", "Extended at the last growth and margins, labelled extrapolated", "Taken from a public dataset"], 1, "They are extrapolated and labelled so."),
         ]},
         {"code": "P7", "title": "Reporting", "lessons": [
-            L("P7.1", "The board pack and why it calculates nothing", 5,
-              "Use the board pack so its figures always match the app.",
+            L("P7.1", "The board pack: built once, ready at every close", 7,
+              "Set up the board pack once, so it is ready every month without rebuilding it.",
               """
-The board pack **calculates nothing of its own**. It picks statements, KPIs and forecasts from the app, as they are.
+A board pack in K-φ is a **report you set up once**. Each month it is rebuilt from the latest closing, with the same sections in the same order, so the board reads the same document every time.
 
-That is deliberate. If the board pack computed its own figures, they would drift from the screens over time, and someone would spend a meeting explaining why two numbers differ.
+**What goes in it.** In Reports, a Board Pack has eleven sections you switch on or off:
 
-So when a board pack number looks wrong, the fix is never in the board pack. It is upstream: an import, a classification, a forecast rule. Fix it there, and the board pack follows.
+| Section | What it shows |
+|---|---|
+| Risks & Recommendations | risk flags and advice written from the figures: leverage, stock days, DSO, cash conversion |
+| P&L with Variances | the closing against budget and against the prior period |
+| Balance Sheet Snapshot | key lines, working capital, net debt |
+| Cash Flow Summary | operating, investing, financing |
+| KPI Dashboard | margins, DSO and DPO, ratios, trends |
+| Covenant Compliance | each covenant with its headroom, green, amber or red |
+| Cash Position | balances and liquidity |
+| Forecast & Outlook | the year's projection and the rolling forecast |
+| Forecasted P&L, B/S, CFS | last month through three months ahead |
+
+**Consolidated or by entity.** Consolidated gives the group. *Consolidated + by entity* adds one pack per company (its own P&L, balance sheet, cash flow and cash, in its own figures). *By entity only* drops the group.
+
+**When it runs.** Manual runs it when you click Run. *On Period Close* runs it by itself each time a period is closed in Financial Close, so the pack of the month is ready when the close is done. *Scheduled* and *On Validation* are the other two triggers.
+
+**Where it goes.** Run shows it on screen; PDF and PPTX export it for the board, CSV for a spreadsheet. Its figures are the app's own: the same as the statements and the KPI page, so a wrong figure is fixed where it comes from, never in the pack.
 """,
-              "In your practice company, open the board pack and check that its EBITDA matches the KPI page.",
-              ["The board pack only picks figures from the app.", "It always reconciles with the screens.", "Fix wrong figures upstream, never in the pack."]),
+              """In your practice company, set up a board pack that is ready at every close.
+1. In the menu on the left, under REP, open Reports, then click + New Report.
+2. Give it a name, and under Statement type pick Board Pack. Keep the eleven sections.
+3. Under Breakdown by entity, pick Consolidated + by entity.
+4. Under Schedule & triggers, pick On Period Close.
+5. Click Save Report, then Run, and look at the pack: Risks & Recommendations first, then the statements. PDF and PPTX are at the top right.
+6. Press Check below.""",
+              ["Set it up once: sections, entities, versions.", "On Period Close: ready when the close is done.", "Same figures as the screens; PDF and PowerPoint."]),
             L("P7.2", "Reconciling what you present", 5,
               "Make sure every figure you present ties to a source.",
               """

@@ -179,11 +179,13 @@ LESSONS = {
     {"type": "quote", "d": 7, "l1": "Read the assumptions", "l2": "before you send the report.", "cap": "A valuation is advice to management, never a fairness opinion."},
     E("Next  ·  P7.1  The board pack")]},
 "P7.1": {"scenes": [
-    T("The board pack and", "why it calculates nothing", M("P7.1", 5), "P7.1 · The board pack and why it calculates nothing"),
-    {"type": "flow", "d": 9, "eyebrow": "ONE SOURCE OF FIGURES", "heading": "The pack only picks", "step": 1.2,
-     "nodes": [("Statements, KPIs", "computed in K-φ"), ("Board pack", "picks them as they are")],
-     "cap": ["The board pack calculates nothing of its own.", "So its figures always match the screens. A wrong figure is fixed upstream."]},
-    S("pl_bp", ["On the P&L, the board pack view shows the last closing against budget and against the prior month.", "The same figures as the statement, on one page for the board."], d=10, zoom=1.2, focus=(1290, 110, 1450, 965), label="vs Budget"),
+    T("The board pack:", "built once, ready at every close", M("P7.1", 7), "P7.1 · The board pack: built once, ready at every close"),
+    {"type": "table", "d": 12, "eyebrow": "SET UP ONCE", "heading": "Eleven sections, on or off", "cols": ["Section", "What it shows"], "widths": [1, 1.8], "step": 0.9,
+     "rows": [["Risks & Recommendations", "flags and advice from the figures"], ["P&L with Variances", "against budget and prior period"], ["Balance sheet, cash flow", "snapshot and summary"], ["KPIs, covenants", "ratios, headroom, red amber green"], ["Forecast", "outlook, then three months ahead"]],
+     "cap": ["In Reports, a Board Pack is a report you set up once.", "Each month it is rebuilt from the latest closing, same sections, same order."]},
+    {"type": "flow", "d": 10, "eyebrow": "READY AT EVERY CLOSE", "heading": "On Period Close", "step": 1.2,
+     "nodes": [("Close the period", "in Financial Close"), ("The pack runs", "by itself"), ("PDF or PPTX", "for the board")],
+     "cap": ["Consolidated, or with one pack per company.", "On Period Close, the month's pack is ready when the close is done."]},
     E("Next  ·  P7.2  Reconciling what you present")]},
 "P7.2": {"scenes": [
     T("Reconciling", "what you present", M("P7.2", 5), "P7.2 · Reconciling what you present"),
