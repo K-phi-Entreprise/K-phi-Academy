@@ -622,7 +622,7 @@ function drawSection(id, result) {
   const missing = ch.lessons.filter(l => !done.has(l.code));
   if (!st.lessons_done || missing.length) { box.innerHTML = `${msg}<h3>Finish the section first</h3><p>The test opens once every lesson of the section is done. Left: ${missing.map(l => `<a href="#${slug(l.code)}">${esc(l.code)}</a>`).join(", ") || "sync in progress"}.</p>`; return; }
   box.innerHTML = `${msg}<p class="note">Try ${st.used + 1} of ${st.max}${st.cycle > 1 ? " · round " + st.cycle : ""}. Answer every question, then submit.</p>
-    <form data-section-form="${esc(id)}">${d.section.questions.map((q, qi) => `<fieldset class="quizq"><legend><span class="mono">${qi + 1}</span> ${esc(q.q)}</legend>${q.options.map((o, oi) => `<label><input type="radio" name="s${qi}" value="${oi}" required> <span>${esc(o)}</span></label>`).join("")}</fieldset>`).join("")}
+    <form data-section-form="${esc(id)}">${d.section.questions.map((q, qi) => `<fieldset class="quizq"><legend><span class="mono">${qi + 1}</span> ${esc(q.q)}</legend>${mix(q.options).map(([o, oi]) => `<label><input type="radio" name="s${qi}" value="${oi}" required> <span>${esc(o)}</span></label>`).join("")}</fieldset>`).join("")}
     <button class="btn primary" type="submit">Submit try ${st.used + 1} of ${st.max}</button></form>`;
 }
 document.addEventListener("submit", async e => {
@@ -652,7 +652,7 @@ function lessonView(code) {
   const check = last && l.ch.check ? `
     <section class="check" aria-label="Chapter self-check">
       <div><div class="eyebrow">Self-check · ${esc(l.ch.code)} · ungraded</div><h3 style="margin-top:6px">Before you move on</h3></div>
-      ${l.ch.check.map((q, qi) => `<div class="q" data-q="${qi}"><p>${qi + 1}. ${esc(q.q)}</p><div class="opts">${q.options.map((o, oi) =>
+      ${l.ch.check.map((q, qi) => `<div class="q" data-q="${qi}"><p>${qi + 1}. ${esc(q.q)}</p><div class="opts">${mix(q.options).map(([o, oi]) =>
         `<label class="opt" for="q-${esc(l.ch.code)}-${qi}-${oi}"><input type="radio" id="q-${esc(l.ch.code)}-${qi}-${oi}" name="q-${esc(l.ch.code)}-${qi}" value="${oi}"> ${esc(o)}</label>`).join("")}</div>
         <p class="why" hidden></p></div>`).join("")}
     </section>` : "";
@@ -660,7 +660,7 @@ function lessonView(code) {
   const qcm = l.qcm ? `
     <section class="check" aria-label="Lesson question">
       <div class="eyebrow">Question · ${esc(l.code)}</div>
-      <div class="q" data-lq="${esc(l.code)}"><p>${esc(l.qcm.q)}</p><div class="opts">${l.qcm.options.map((o, oi) =>
+      <div class="q" data-lq="${esc(l.code)}"><p>${esc(l.qcm.q)}</p><div class="opts">${mix(l.qcm.options).map(([o, oi]) =>
         `<label class="opt" for="lq-${esc(l.code)}-${oi}"><input type="radio" id="lq-${esc(l.code)}-${oi}" name="lq-${esc(l.code)}" value="${oi}"> ${esc(o)}</label>`).join("")}</div>
         <p class="why" hidden></p></div>
     </section>` : "";
@@ -798,13 +798,13 @@ function drawExam(id, status) {
     /* a multiple-choice exam (course M): the questions in the main column, no company to open */
     const qz = $("[data-exam-quiz]");
     if (d.exam.quiz) {
-      const qs = d.exam.form.map((f, i) => `<fieldset class="quizq"><legend><span class="mono">${i + 1}</span> ${esc(f.label)}</legend>${(f.options || []).map((o, j) => `<label><input type="radio" name="${esc(f.id)}" value="${j}"> <span>${esc(o)}</span></label>`).join("")}</fieldset>`).join("");
+      const qs = d.exam.form.map((f, i) => `<fieldset class="quizq"><legend><span class="mono">${i + 1}</span> ${esc(f.label)}</legend>${mix(f.options || []).map(([o, j]) => `<label><input type="radio" name="${esc(f.id)}" value="${j}"> <span>${esc(o)}</span></label>`).join("")}</fieldset>`).join("");
       if (qz) qz.innerHTML = `<form class="panel examform quiz" data-examsubmit="${esc(id)}"><h3>Your answers</h3>${qs}<button class="btn primary" type="submit">Submit for checking</button><p class="note">One choice per question. Submitting closes the attempt.</p><p class="out" role="status" hidden></p></form>`;
       box.innerHTML = `<h3>Attempt ${st.open.attempt} of ${st.max}</h3><p class="note">Open until ${esc(when(st.open.expires_at))}. The questions are on the left.</p>`;
       draftRestore(id); return;
     }
     if (qz) qz.innerHTML = "";
-    const fields = d.exam.form.map(f => f.type === "choice" ? `<fieldset class="field quizq"><legend>${esc(f.label)}</legend>${(f.options || []).map((o, j) => `<label><input type="radio" name="${esc(f.id)}" value="${j}"> <span>${esc(o)}</span></label>`).join("")}</fieldset>` : `<label class="field"><span>${esc(f.label)}</span>${f.type === "text" ? `<textarea name="${esc(f.id)}" rows="5"></textarea>` : `<input type="text" name="${esc(f.id)}" autocomplete="off" inputmode="${f.unit ? "decimal" : "text"}">`}</label>`).join("");
+    const fields = d.exam.form.map(f => f.type === "choice" ? `<fieldset class="field quizq"><legend>${esc(f.label)}</legend>${mix(f.options || []).map(([o, j]) => `<label><input type="radio" name="${esc(f.id)}" value="${j}"> <span>${esc(o)}</span></label>`).join("")}</fieldset>` : `<label class="field"><span>${esc(f.label)}</span>${f.type === "text" ? `<textarea name="${esc(f.id)}" rows="5"></textarea>` : `<input type="text" name="${esc(f.id)}" autocomplete="off" inputmode="${f.unit ? "decimal" : "text"}">`}</label>`).join("");
     box.innerHTML = `<h3>Attempt ${st.open.attempt} of ${st.max}</h3><p class="note">Your exam company is open until ${esc(when(st.open.expires_at))}.</p>
       <button class="btn primary" type="button" data-examopen="${esc(id)}">Open my exam company</button>
       ${files ? `<div class="files">${files}</div>` : ""}
@@ -1118,6 +1118,13 @@ function tryHtml(t) {
   if (!steps.length) return esc(t);
   return rest.map(x => `<p style="margin:0 0 8px">${esc(x)}</p>`).join("") + `<ol class="trysteps">${steps.map(x => `<li>${esc(x.replace(/^\d+\.\s+/, ""))}</li>`).join("")}</ol>`;
 }
+/* every multiple choice shows its options in a new random order each time it is drawn (owner, 2026-11-27: "make them
+   random, for every course"); each input keeps the option's own index, so marking and grading are unchanged */
+function mix(opts) {
+  const a = (opts || []).map((o, i) => [o, i]);
+  for (let k = a.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [a[k], a[j]] = [a[j], a[k]]; }
+  return a;
+}
 function verifyBox(l) {
   const c = CHECKCAT && CHECKCAT[l.code]; if (!c) return "";
   const passed = PASSED[l.code];
@@ -1246,14 +1253,14 @@ document.addEventListener("click", e => {
   }
   else if (t.matches("input[type=radio]") && t.closest("[data-lq]")) {   /* the lesson's own question: formative */
     const qEl = t.closest("[data-lq]"), code = qEl.dataset.lq, l = lessonByCode(code), q = l.qcm, pick = +t.value;
-    qEl.querySelectorAll(".opt").forEach((o, oi) => { o.classList.remove("right", "wrong"); if (oi === q.answer) o.classList.add("right"); else if (oi === pick) o.classList.add("wrong"); });
+    qEl.querySelectorAll(".opt").forEach(o => { const oi = +o.querySelector("input").value; o.classList.remove("right", "wrong"); if (oi === q.answer) o.classList.add("right"); else if (oi === pick) o.classList.add("wrong"); });
     const w = qEl.querySelector(".why"); w.textContent = (pick === q.answer ? "Right. " : "Not quite: the right answer is marked. ") + q.why; w.hidden = false;
     WATCH._lq = WATCH._lq || {}; WATCH._lq[code] = pick; saveWatch(); refreshGate(code);
   }
   else if (t.matches("input[type=radio]") && t.closest(".q") && t.name.startsWith("q-")) {   /* a lesson self-check only: the exam's own questions are graded on submit */
     const qEl = t.closest(".q"), ch = ALL.find(l => t.name.startsWith("q-" + l.ch.code + "-")).ch;
     const q = ch.check[+qEl.dataset.q], pick = +t.value;
-    qEl.querySelectorAll(".opt").forEach((o, oi) => { o.classList.remove("right", "wrong"); if (oi === q.answer) o.classList.add("right"); else if (oi === pick) o.classList.add("wrong"); });
+    qEl.querySelectorAll(".opt").forEach(o => { const oi = +o.querySelector("input").value; o.classList.remove("right", "wrong"); if (oi === q.answer) o.classList.add("right"); else if (oi === pick) o.classList.add("wrong"); });
     const w = qEl.querySelector(".why"); w.textContent = (pick === q.answer ? "Right. " : "Not quite. ") + q.why; w.hidden = false;
     WATCH._checks = WATCH._checks || {}; const got = WATCH._checks[ch.code] || [];
     if (!got.includes(+qEl.dataset.q)) got.push(+qEl.dataset.q); WATCH._checks[ch.code] = got; saveWatch();
