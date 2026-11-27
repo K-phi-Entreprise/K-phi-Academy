@@ -434,21 +434,40 @@ End with one sentence on what management could do: draw on a facility, delay a p
             Q("Which line of a scenario summary usually matters most for payment-term changes?", ["EBITDA", "Lowest cash balance", "Headcount"], 1, "Payment terms move cash much more than profit."),
         ]},
         {"code": "P6", "title": "Valuation", "lessons": [
-            L("P6.1", "Inputs measured from the books", 8,
-              "Build a valuation on the client's own data rather than on opinions.",
+            L("P6.1", "Valuation cases, methods and drivers", 10,
+              "Build several valuations of the same company, and know what drives each figure.",
               """
-Valuation sits in FP&A, under **Xplore, Valuation**. Its main difference from a spreadsheet valuation is where the inputs come from.
+**Several cases, side by side.** A valuation in K-φ is a **case**: a name, a valuation date, a currency and its inputs. You can keep as many as you need on the same company: a base case, an investor's view with a higher risk premium, an exit at a lower multiple. **Duplicate** copies a case so you change one assumption and keep the other intact; the Cases menu lists them all.
 
-**Measured from the tenant:** DSO and DPO, customer concentration, churn, burn and runway, cash conversion. These come from the ledger, the invoices and the banks, so they can be traced.
+**Two families of methods, reconciled.**
 
-**Market data:** risk premiums, country risk, betas and multiples come from free public datasets, by region (Europe, Global, US).
+- **Discounted cash flows (DCF).** The free cash flows of the projection (lesson P6.2), discounted at the WACC, plus a terminal value: perpetual growth or an exit multiple.
+- **Comparables.** Your company's metric times the peers' multiple, low, median and high: EV/Revenue, EV/EBITDA, EV/EBIT and P/E. An illiquidity discount applies when the peers are listed and the company is not.
+- **Reconciliation.** By default DCF counts 50% and the comparables' average 50%, or DCF alone when there are no peers. You can change the weights; they must add up to 100%.
 
-**Entered by the user:** the risk-free rate, with a dated suggested value, and the peer companies for comparables.
+Every method goes from enterprise value to equity value through the same bridge (net debt and the other adjustments), then per share.
 
-The earnings base always covers twelve months: trailing, or annualised from several months. A single month is never a basis for value.
+**The drivers of the DCF.**
+
+| Driver | Made of |
+|---|---|
+| Cash flows | base revenue and EBITDA margin from the books, growth per year, D&A, capex and working capital as % of revenue, tax |
+| Cost of equity | risk-free rate + beta × equity risk premium + size, country and specific premiums |
+| Beta | the industry's unlevered beta, relevered with the company's debt-to-equity and tax rate |
+| Cost of debt | the pre-tax rate, after tax |
+| WACC | cost of equity and cost of debt, weighted by equity and debt |
+| Terminal value | growth after the last year, or an exit multiple |
+
+**Where the inputs come from.** Operating inputs are **measured from the books**: DSO and DPO, customer concentration, churn, burn and runway, cash conversion, each with its source. Risk premiums, country risk, betas and multiples come from free public datasets by region. You enter the risk-free rate (a dated value is suggested) and the peers.
+
+**What moves the value most.** The Value menu shows a sensitivity grid, WACC against terminal growth (or exit multiple), and flags the usual traps: terminal growth above 4%, comparables and DCF more than 30% apart, no illiquidity discount on a private company.
 """,
-              "In your practice company, create a valuation case for the group and find which inputs were measured from the books.",
-              ["Valuation is under FP&A, Xplore, Valuation.", "Operating inputs are measured from the tenant.", "Market data defaults; risk-free rate and peers entered."]),
+              """In your practice company, build two cases and see what moves the value.
+1. Open Valuation, under Xplore. In New case, name it Base, pick a country and an industry (they set the risk premiums, beta and multiples), then click Create and read the ledger.
+2. In the Inputs panel on the right, read the cost of capital line by line: risk-free rate, equity risk premium, beta, the premiums, the cost of debt.
+3. In Value, read the sensitivity grid: how much one point of WACC or of terminal growth changes the equity value.
+4. Click Duplicate: it opens "Base (copy)", your investor view. Set Company-specific premium to 2 and click Recompute. Compare its equity value with Base (All cases, then open Base).""",
+              ["Several cases on one company: compare the views.", "DCF and comparables, reconciled 50/50 by default.", "WACC and terminal value drive the DCF; see the grid."]),
             L("P6.2", "Projection and extrapolation", 7,
               "Know where projected cash flows come from and where they become guesses.",
               """

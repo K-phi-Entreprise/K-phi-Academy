@@ -1,22 +1,58 @@
 WEBVTT
 
 1
-00:00:00.750 --> 00:00:04.142
-P6.1 · Inputs measured from the books
+00:00:00.750 --> 00:00:05.235
+P6.1 · Valuation cases, methods and drivers
 
 2
-00:00:05.450 --> 00:00:09.664
-Valuation sits in FP&A, under Xplore, Valuation.
+00:00:06.385 --> 00:00:13.528
+A valuation is a case: a date, a currency and its inputs. Keep as many as you need on the same company.
 
 3
-00:00:09.714 --> 00:00:15.816
-Its operating inputs are measured from the company's own books: Update from the books refreshes them.
+00:00:13.578 --> 00:00:18.546
+Duplicate copies a case, so you change one assumption and keep the other intact.
 
 4
-00:00:16.967 --> 00:00:19.739
-The earnings base always covers twelve months.
+00:00:19.696 --> 00:00:24.562
+Each case opens on its value: WACC, enterprise value, equity value.
 
 5
-00:00:26.267 --> 00:00:30.181
+00:00:24.612 --> 00:00:28.143
+Duplicate makes the next case; All cases lists them.
+
+6
+00:00:29.293 --> 00:00:34.965
+The DCF discounts the projected free cash flows at the WACC, plus a terminal value.
+
+7
+00:00:35.015 --> 00:00:41.892
+Comparables apply the peers' multiples. By default each family weighs half; change the weights if you need to.
+
+8
+00:00:43.042 --> 00:00:51.588
+Revenue and margin come from the books. Risk premiums, betas and multiples come from public datasets by country and industry.
+
+9
+00:00:51.638 --> 00:00:55.034
+You enter the risk-free rate and any specific premium.
+
+10
+00:00:56.184 --> 00:01:01.333
+Every input sits in the panel on the right, with its source: dataset, ledger, or you.
+
+11
+00:01:01.383 --> 00:01:04.806
+Change one, click Recompute, and the value follows.
+
+12
+00:01:06.184 --> 00:01:13.159
+The sensitivity grid shows what moves the value most: one point of WACC against one point of terminal growth.
+
+13
+00:01:13.209 --> 00:01:17.949
+Warnings flag the traps, like a terminal value carrying most of the value.
+
+14
+00:01:19.399 --> 00:01:23.314
 Next: P6.2  Projection and extrapolation
 
