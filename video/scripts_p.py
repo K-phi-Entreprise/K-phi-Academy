@@ -146,6 +146,16 @@ LESSONS = {
     {"type": "bullets", "d": 9, "eyebrow": "THEN CHECK", "heading": "Coverage, and one detail", "step": 1.3,
      "items": [("Coverage", "missing categories, with → Fix"), ("Warnings", "rules under-sized against history"), ("New invoices", "opt-in, off by default")],
      "cap": ["The coverage bar lists what has no rule yet, and proposes one.", "Projecting new sales is a detail of the receivables rule: an assumption, so it stays off until you choose it."]},
+    E("Next  ·  P4.4  Exporting the forecast to a TMS or a file")]},
+"P4.4": {"scenes": [
+    T("Exporting the forecast", "to a TMS or a file", M("P4.4", 8), "P4.4 · Exporting the forecast to a TMS or a file"),
+    {"type": "flow", "d": 11, "eyebrow": "WHERE TREASURY WORKS", "heading": "From the forecast to the TMS", "step": 1.2,
+     "nodes": [("Export to TMS", "lines and codes"), ("Forecast List", "the outbox"), ("TMS", "file or upload")],
+     "cap": ["K-φ turns the forecast into liquidity entries: a plan, a company, a budget code, an amount, a due date.", "That is what a treasury system such as Kyriba imports."]},
+    S("fcexport", ["On the K-φ Forecast, Export to TMS: tick the lines to send and give each its budget code, the one your TMS knows.", "Generate Entries makes one entry per line and month. Months at zero are left out."], d=12, zoom=1.15, focus=(100, 250, 1880, 700), label="Lines and codes"),
+    S("fcexport", ["A line goes rolled up, one entry a month, or in detail: its chevron sends one entry per account family, same totals.", "The Liquidity Plan field is the identifier your TMS reads from the file."], d=11, zoom=1.25, focus=(100, 160, 1880, 470), label="Rollup or detail"),
+    S("fclist_x", ["The Forecast List is the outbox, with the scenarios you send from Simulate.", "Download gives the TMS file. Format and Value Mapping fit it to your template.", "K Upload sends it straight to Kyriba."], d=13, zoom=1.2, focus=(1180, 60, 1890, 190), label="Download, upload"),
+    {"type": "quote", "d": 8, "l1": "An assumption", "l2": "never reaches a TMS.", "cap": "Without a budget, the run rate shows on screen and is left out of every treasury export."},
     E("Next  ·  P5.1  Building a scenario")]},
 "P5.1": {"scenes": [
     T("Building", "a scenario", M("P5.1", 7), "P5.1 · Building a scenario"),

@@ -1,0 +1,50 @@
+WEBVTT
+
+1
+00:00:00.750 --> 00:00:05.297
+P4.4 · Exporting the forecast to a TMS or a file
+
+2
+00:00:06.447 --> 00:00:13.871
+K-φ turns the forecast into liquidity entries: a plan, a company, a budget code, an amount, a due date.
+
+3
+00:00:13.921 --> 00:00:17.561
+That is what a treasury system such as Kyriba imports.
+
+4
+00:00:18.711 --> 00:00:27.225
+On the K-φ Forecast, Export to TMS: tick the lines to send and give each its budget code, the one your TMS knows.
+
+5
+00:00:27.275 --> 00:00:32.651
+Generate Entries makes one entry per line and month. Months at zero are left out.
+
+6
+00:00:33.801 --> 00:00:41.767
+A line goes rolled up, one entry a month, or in detail: its chevron sends one entry per account family, same totals.
+
+7
+00:00:41.817 --> 00:00:46.759
+The Liquidity Plan field is the identifier your TMS reads from the file.
+
+8
+00:00:47.909 --> 00:00:52.645
+The Forecast List is the outbox, with the scenarios you send from Simulate.
+
+9
+00:00:52.695 --> 00:00:57.946
+Download gives the TMS file. Format and Value Mapping fit it to your template.
+
+10
+00:00:57.996 --> 00:01:00.513
+K Upload sends it straight to Kyriba.
+
+11
+00:01:01.663 --> 00:01:07.077
+Without a budget, the run rate shows on screen and is left out of every treasury export.
+
+12
+00:01:09.963 --> 00:01:13.210
+Next: P5.1  Building a scenario
+

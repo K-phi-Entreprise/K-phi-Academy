@@ -385,6 +385,38 @@ Each proposal carries a confidence: 0.9 when its parameter was measured from you
 4. The coverage still lists CapEx & Asset Acquisitions (accounts 1500 and 1510). Click → Fix next to it, keep Historical run-rate, then Save Rule.
 5. Press Check below.""",
               ["No rules, no forecast: generate them with Global.", "Fit each timing: aging or DSO/DPO, intervals, schedules, run rate.", "Project new invoices: off by default, an assumption to state."]),
+            L("P4.4", "Exporting the forecast to a TMS or a file", 8,
+              "Send the forecast where treasury works: liquidity entries for a TMS, or a file.",
+              """
+A forecast is only useful where treasury works. K-φ turns it into **liquidity entries**, the lines a treasury management system (TMS) such as Kyriba imports: a liquidity plan, a company, a budget code, an amount, a due date.
+
+**Three steps, on the K-φ Forecast's Export to TMS tab.**
+
+| Step | What you do |
+|---|---|
+| Choose the lines | tick the forecast lines to send: collections, payments, payroll, tax, interest, or the net cash flow |
+| Give each line its code | the budget code your TMS knows it by; K-φ proposes one (AR, PAYROLL, FUNDING), you type your own |
+| Generate Entries | one entry per line and month; months at zero are left out |
+
+A line can go **rolled up**, one entry per month, or **in detail**: click its chevron and it sends one entry per component (per account family or rule), each with its own code. The totals are the same either way. The **Liq. Plan** field is the liquidity plan identifier your TMS reads from the file; left blank, it is the current month.
+
+**The Forecast List is the outbox.** Generated entries land there, with the scenarios you send from Simulate (Generate Forecast List). Filter by date, tick rows, then:
+
+- **Download** gives the TMS file. **⚙ Format** sets its columns, separator and line endings, and **Value Mapping** translates codes, so the file fits your TMS's import template.
+- **K Upload** sends the entries straight to Kyriba and runs its process template, when the TMS connection is set up.
+- Each entry keeps its source (forecast from actuals, or a scenario) and whether it was exported.
+
+**What never leaves.** An assumption is not a forecast: when there is no budget, the purchases K-φ continues at the run rate are shown on screen but **left out of treasury exports**. With Global rules, the entries are the group's; rules per company give one forecast per company.
+
+For a file rather than a TMS, **Export** at the top of the K-φ Forecast downloads the page as Excel or CSV.
+""",
+              """In your practice company, send the forecast to the Forecast List.
+1. If the forecast has no rules yet, open GL → Cash and click Global next to "Auto-generate rules" (lesson P4.3).
+2. Open K-φ Forecast and click Export to TMS at the top.
+3. Tick Collections (AR), Payments (AP) and Payroll & Benefits. Keep the codes K-φ proposes, or type your own.
+4. Click Generate Entries: the entries appear below, one per line and month.
+5. Click Forecast List: the same entries, ready to Download or upload. Click ⚙ Format to see the columns of the file.""",
+              ["Export to TMS: lines, budget codes, Generate Entries.", "The Forecast List is the outbox: Download or upload to the TMS.", "Run-rate assumptions never reach a TMS."]),
         ], "check": [
             Q("In the forecast, where do the figures of a month after the cutoff come from?",
               ["The ledger's open balances, run off by the flow rules", "The budget flagged for the forecast, turned into cash by its cash rules", "Always the run rate of the last three months"], 1,
