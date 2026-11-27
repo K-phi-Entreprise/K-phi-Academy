@@ -603,4 +603,25 @@ If a difference stays unexplained, say so in the pack. An unexplained difference
             Q("You cannot explain a small difference in cash before a board meeting. What do you do?", ["Adjust it", "Disclose it in the pack", "Leave it out"], 1, "Disclosed, it is a question; found later, it is a credibility problem."),
         ]},
     ],
+    "exam": {
+        "title": "Exam: K-φ Agentic FP&A",
+        "situation": "The FP&A exam: the heart of the product, from a client's budget to the cash it produces. You get an exam company, a copy of Halden Trading with its ledger and closings to September 2026, no flow rules and no budget. FP&A sends you Halden Trading Inc.'s budget for 2027 as an Excel file. Bring it in, let K-φ build the cash rules, and read the forecast.",
+        "tasks": [
+            "Start: press Start exam on the right, then Open my exam company. The budget file appears on this page: download it.",
+            "The budget: open the Copilot, choose \u26a1 Consultant at its top, attach halden-trading-inc-HTUS-budget-FY2027.xlsx and send /import_template. K-φ reads the company from the file name, keeps the file's lines under the canonical categories and checks that it reproduces the file's gross profit and EBITDA. On Budget \u2192 Cash, the budget shows \u2605 Used for forecasting, January to December 2027. (P4.1)",
+            "The flow rules: on GL \u2192 Cash, click Global next to Auto-generate rules, then Regenerate. K-φ makes the rules from the ledger: receivables and payables, payroll, tax, interest. (P4.3)",
+            "Check: press Check my exam company. Both steps show PASS, or say what is missing. Submit uses no attempt until they pass.",
+            "Answer and submit: on K-φ Forecast, the group (All), Monthly, read the Mar '27 column, the Net cash flow line, in USD. Type it and submit. (P4.0)"
+        ],
+        "checks": [
+            "The budget is imported for Halden Trading Inc., reproduces the file, and is used for the forecast",
+            "The flow rules are generated from the ledger, receivables and payables included",
+            "The group's net cash flow in March 2027 is the one the K-φ Forecast shows in your company"
+        ],
+        "report": [
+            ["pass", "The budget, imported and used for the forecast", "\u201chalden-trading-inc-HTUS-budget-FY2027\u201d: revenue 2,850,000, gross profit 1,083,000 and EBITDA 446,500 in January 2027, used for the forecast from 2027-01 to 2027-12."],
+            ["pass", "The flow rules, generated", "17 rules from the ledger, receivables and payables included."],
+            ["fail", "March 2027 on the K-φ Forecast", "Not what your company shows. K-φ Forecast, the group (All), Monthly: the Mar '27 column, the Net cash flow line."]
+        ]
+    },
 }
