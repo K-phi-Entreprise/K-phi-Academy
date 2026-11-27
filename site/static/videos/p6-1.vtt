@@ -29,30 +29,38 @@ The DCF discounts the projected free cash flows at the WACC, plus a terminal val
 Comparables apply the peers' multiples. By default each family weighs half; change the weights if you need to.
 
 8
-00:00:43.042 --> 00:00:51.588
-Revenue and margin come from the books. Risk premiums, betas and multiples come from public datasets by country and industry.
+00:00:43.042 --> 00:00:49.879
+With a budget, the projection is the budget, company by company. Later years are extrapolated, and labelled.
 
 9
-00:00:51.638 --> 00:00:55.034
-You enter the risk-free rate and any specific premium.
+00:00:49.929 --> 00:00:54.897
+Without a budget, the case projects from twelve months of the ledger and your drivers.
 
 10
-00:00:56.184 --> 00:01:01.333
-Every input sits in the panel on the right, with its source: dataset, ledger, or you.
+00:00:56.047 --> 00:01:04.593
+Revenue and margin come from the books. Risk premiums, betas and multiples come from public datasets by country and industry.
 
 11
-00:01:01.383 --> 00:01:04.806
-Change one, click Recompute, and the value follows.
+00:01:04.643 --> 00:01:08.039
+You enter the risk-free rate and any specific premium.
 
 12
-00:01:06.184 --> 00:01:13.159
-The sensitivity grid shows what moves the value most: one point of WACC against one point of terminal growth.
+00:01:09.189 --> 00:01:14.338
+Every input sits in the panel on the right, with its source: dataset, ledger, or you.
 
 13
-00:01:13.209 --> 00:01:17.949
-Warnings flag the traps, like a terminal value carrying most of the value.
+00:01:14.388 --> 00:01:17.811
+Change one, click Recompute, and the value follows.
 
 14
-00:01:19.399 --> 00:01:23.314
-Next: P6.2  Projection and extrapolation
+00:01:19.189 --> 00:01:26.164
+The sensitivity grid shows what moves the value most: one point of WACC against one point of terminal growth.
+
+15
+00:01:26.214 --> 00:01:30.954
+Warnings flag the traps, like a terminal value carrying most of the value.
+
+16
+00:01:32.404 --> 00:01:36.159
+Next: P6.2  Value over time: what moved it
 

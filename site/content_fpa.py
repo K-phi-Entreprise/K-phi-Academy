@@ -441,7 +441,7 @@ End with one sentence on what management could do: draw on a facility, delay a p
 
 **Two families of methods, reconciled.**
 
-- **Discounted cash flows (DCF).** The free cash flows of the projection (lesson P6.2), discounted at the WACC, plus a terminal value: perpetual growth or an exit multiple.
+- **Discounted cash flows (DCF).** The free cash flows of the projection (below), discounted at the WACC, plus a terminal value: perpetual growth or an exit multiple.
 - **Comparables.** Your company's metric times the peers' multiple, low, median and high: EV/Revenue, EV/EBITDA, EV/EBIT and P/E. An illiquidity discount applies when the peers are listed and the company is not.
 - **Reconciliation.** By default DCF counts 50% and the comparables' average 50%, or DCF alone when there are no peers. You can change the weights; they must add up to 100%.
 
@@ -458,6 +458,10 @@ Every method goes from enterprise value to equity value through the same bridge 
 | WACC | cost of equity and cost of debt, weighted by equity and debt |
 | Terminal value | growth after the last year, or an exit multiple |
 
+**Where the cash flows come from.** With a budget, the projection is the budget, company by company, read through the K-φ forecast. After the last budget year it runs on to five years at the budget's last growth and margins, and those years are labelled **extrapolated**: say so when you present, and test how much of the value rests on them. Without a budget, the case projects from the ledger: twelve months of revenue and EBITDA margin, then your growth, capex and working capital drivers.
+
+For a group, the **entity filter drives the valuation**. Multi-country groups are valued bottom-up by default, each company with its own country risk; other groups are valued on the consolidated figures.
+
 **Where the inputs come from.** Operating inputs are **measured from the books**: DSO and DPO, customer concentration, churn, burn and runway, cash conversion, each with its source. Risk premiums, country risk, betas and multiples come from free public datasets by region. You enter the risk-free rate (a dated value is suggested) and the peers.
 
 **What moves the value most.** The Value menu shows a sensitivity grid, WACC against terminal growth (or exit multiple), and flags the usual traps: terminal growth above 4%, comparables and DCF more than 30% apart, no illiquidity discount on a private company.
@@ -468,23 +472,40 @@ Every method goes from enterprise value to equity value through the same bridge 
 3. In Value, read the sensitivity grid: how much one point of WACC or of terminal growth changes the equity value.
 4. Click Duplicate: it opens "Base (copy)", your investor view. Set Company-specific premium to 2 and click Recompute. Compare its equity value with Base (All cases, then open Base).""",
               ["Several cases on one company: compare the views.", "DCF and comparables, reconciled 50/50 by default.", "WACC and terminal value drive the DCF; see the grid."]),
-            L("P6.2", "Projection and extrapolation", 7,
-              "Know where projected cash flows come from and where they become guesses.",
+            L("P6.2", "Value over time: what moved it", 8,
+              "Keep the valuation live from the books, and explain each change in value.",
               """
-Projected cash flows come **from the budget, per company**. After the last budget year, K-φ extends the projection to five years at the budget's last growth and margins, and labels those years **extrapolated**.
+A valuation done once a year is out of date the month after. In K-φ a case is read from the books, so it can follow the company.
 
-The extrapolated years are an assumption. Say so when you present, and test how much of the value depends on them.
+**Update at each close.** After a closing, **Update from the books** reads the ledger and the forecast again: revenue, EBITDA, net debt and the measured inputs. **Recompute** values the case. The value is recorded once a day, so the **Value over time** card on the Value menu draws the line of the reconciled value, with its range as a band.
 
-For groups, the **entity filter drives the valuation**. Multi-country groups are valued bottom-up by default, each company with its own risk; other groups are valued on the consolidated figures. A company that cannot be valued on its own stays in the filter: it cannot be unchecked.
+**The value walk.** Between two points, K-φ explains the change step by step. It swaps one group of inputs at a time from the earlier state to the later one and values the case after each swap:
+
+| Step | Who moved it |
+|---|---|
+| Operating performance (EBITDA, cash flows) | management |
+| Working capital | management |
+| Net debt and bridge items | management and financing |
+| Market multiples | the market |
+| Cost of capital and terminal assumptions | the market and you |
+| Method weights | you |
+
+The steps add up to the total change. This is the key value: it separates the value management created from what the market did. "Equity value rose 4 million, 3 of them from EBITDA and working capital, despite higher rates" is a sentence a board remembers.
+
+**Sign off with Lock.** A locked case never changes; duplicate it to continue. The Home page's Valuation tile shows the most recent locked value, so everyone reads the figure that was signed off, not a draft.
 """,
-              "In your practice company, find which projection years are labelled extrapolated, and change one entity in the filter.",
-              ["Cash flows come from the budget, per company.", "Years after the budget are extrapolated and labelled.", "The entity filter drives the valuation."]),
+              """In your practice company, sign off a value.
+1. Open your Base case and, in Value, find the Value over time card: one point so far, today's.
+2. Click Lock and confirm. The case can no longer change.
+3. Open Home: the Valuation tile shows Base's value, without "draft".
+4. Click Duplicate on Base to keep working; next month, Update from the books on the copy and read the walk.""",
+              ["Update from the books at each close; the value is recorded.", "The walk splits the change: management, market, method.", "Lock signs off a value; the Home tile shows it."]),
             L("P6.3", "Football field and the report", 6,
               "Reconcile methods into one range and present it carefully.",
               """
 Each method (discounted cash flow, comparables and others) gives a range. The **football field** shows them side by side, with **weights you can edit**, and reconciles them into one value range.
 
-A range is more honest than a single figure. Present it that way.
+A range is more honest than a single figure. Present it that way, and say which years of the projection are extrapolated.
 
 The printable **report** opens in its own window. It includes an assumptions and limiting conditions section. Read it before you send the report; it states what the valuation does and does not claim, and the client must agree with it.
 
@@ -543,7 +564,7 @@ Write down what you tied and the difference found, even when it is zero. A one-p
 
 If a difference stays unexplained, say so in the pack. An unexplained difference that is disclosed is a question; one that is found later is a credibility problem.
 """,
-              "In your practice company, tie the ledger's cash on 31 December 2025 to the bank balances on the same date, company by company, each in its own currency (switch the currency in the top bar from the group's USD).",
+              "In your practice company, tie the ledger's cash on 31 December 2025 to the bank balances on the same date, company by company, each in its own currency (click Company in the top bar; Group shows everything in the group's USD).",
               ["Tie revenue, cash and balances to independent sources.", "Write down what you tied, even zero differences.", "Disclose differences you cannot explain."]),
         ], "check": [
             Q("The board pack shows the wrong EBITDA. Where do you fix it?", ["In the board pack", "Upstream: import, classification or rule", "In a spreadsheet"], 1, "The board pack calculates nothing; the cause is upstream."),
